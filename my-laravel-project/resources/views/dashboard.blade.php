@@ -39,13 +39,69 @@
     </nav>
 
     <div class="container mt-4">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Dashboard</div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Dashboard</span>
+                        @if(Auth::user()->user_type === 'zakelijk')
+                            <a href="{{ route('contract.generate', Auth::user()->id) }}" class="btn btn-primary btn-sm">
+                                Contract downloaden (PDF)
+                            </a>
+                        @endif
+                    </div>
                     <div class="card-body">
                         <h3>Welkom {{ Auth::user()->name }}</h3>
                         <p>Je bent succesvol ingelogd!</p>
+                        
+                        <div class="mt-4">
+                            <h4>Account details</h4>
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Naam</th>
+                                        <td>{{ Auth::user()->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ Auth::user()->email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type</th>
+                                        <td>
+                                            @if(Auth::user()->user_type === 'particulier')
+                                                Particuliere adverteerder
+                                            @else
+                                                Zakelijke adverteerder
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Geregistreerd op</th>
+                                        <td>{{ Auth::user()->created_at->format('d-m-Y H:i') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        @if(Auth::user()->user_type === 'zakelijk')
+                            <div class="mt-4 p-3 bg-light rounded">
+                                <h5>Zakelijke account informatie</h5>
+                                <p>Als zakelijke adverteerder heb je toegang tot extra functionaliteiten:</p>
+                                <ul>
+                                    <li>Onbeperkt aantal advertenties plaatsen</li>
+                                    <li>Statistieken over je advertenties</li>
+                                    <li>Prioriteit in zoekresultaten</li>
+                                </ul>
+                                <p>Download je contract om de samenwerking te formaliseren.</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
