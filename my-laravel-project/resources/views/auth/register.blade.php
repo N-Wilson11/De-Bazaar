@@ -37,6 +37,27 @@
                             </div>
 
                             <div class="mb-3">
+                                <label class="form-label">Type adverteerder</label>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="user_type" id="particulier" value="particulier" {{ old('user_type', 'particulier') === 'particulier' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="particulier">
+                                        Particuliere adverteerder
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="user_type" id="zakelijk" value="zakelijk" {{ old('user_type') === 'zakelijk' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="zakelijk">
+                                        Zakelijke adverteerder
+                                    </label>
+                                </div>
+                                @error('user_type')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="password" class="form-label">Wachtwoord</label>
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
                                 @error('password')
