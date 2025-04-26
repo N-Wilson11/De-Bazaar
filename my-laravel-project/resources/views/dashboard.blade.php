@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - De Bazaar</title>
+    <title>{{ __('general.dashboard') }} - De Bazaar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -16,10 +16,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link active" href="{{ route('dashboard') }}">{{ __('general.dashboard') }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <li class="nav-item me-3 d-flex align-items-center">
+                        @include('shared.language_selector')
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::user()->name }}
@@ -28,7 +31,7 @@
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Uitloggen</button>
+                                    <button type="submit" class="dropdown-item">{{ __('general.logout') }}</button>
                                 </form>
                             </li>
                         </ul>
@@ -49,41 +52,41 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Dashboard</span>
+                        <span>{{ __('general.dashboard') }}</span>
                         @if(Auth::user()->user_type === 'zakelijk')
                             <a href="{{ route('contract.generate', Auth::user()->id) }}" class="btn btn-primary btn-sm">
-                                Contract downloaden (PDF)
+                                {{ __('general.download_contract') }}
                             </a>
                         @endif
                     </div>
                     <div class="card-body">
-                        <h3>Welkom {{ Auth::user()->name }}</h3>
-                        <p>Je bent succesvol ingelogd!</p>
+                        <h3>{{ __('general.welcome') }}, {{ Auth::user()->name }}</h3>
+                        <p>{{ __('You have successfully logged in!') }}</p>
                         
                         <div class="mt-4">
-                            <h4>Account details</h4>
+                            <h4>{{ __('general.account_details') }}</h4>
                             <table class="table">
                                 <tbody>
                                     <tr>
-                                        <th>Naam</th>
+                                        <th>{{ __('general.name') }}</th>
                                         <td>{{ Auth::user()->name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Email</th>
+                                        <th>{{ __('general.email') }}</th>
                                         <td>{{ Auth::user()->email }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Type</th>
+                                        <th>{{ __('general.user_type') }}</th>
                                         <td>
                                             @if(Auth::user()->user_type === 'particulier')
-                                                Particuliere adverteerder
+                                                {{ __('general.private_user') }}
                                             @else
-                                                Zakelijke adverteerder
+                                                {{ __('general.business_user') }}
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Geregistreerd op</th>
+                                        <th>{{ __('general.registered_on') }}</th>
                                         <td>{{ Auth::user()->created_at->format('d-m-Y H:i') }}</td>
                                     </tr>
                                 </tbody>
@@ -92,14 +95,14 @@
                         
                         @if(Auth::user()->user_type === 'zakelijk')
                             <div class="mt-4 p-3 bg-light rounded">
-                                <h5>Zakelijke account informatie</h5>
-                                <p>Als zakelijke adverteerder heb je toegang tot extra functionaliteiten:</p>
+                                <h5>{{ __('general.business_info') }}</h5>
+                                <p>{{ __('general.business_features') }}</p>
                                 <ul>
-                                    <li>Onbeperkt aantal advertenties plaatsen</li>
-                                    <li>Statistieken over je advertenties</li>
-                                    <li>Prioriteit in zoekresultaten</li>
+                                    <li>{{ __('general.unlimited_ads') }}</li>
+                                    <li>{{ __('general.stats') }}</li>
+                                    <li>{{ __('general.priority_search') }}</li>
                                 </ul>
-                                <p>Download je contract om de samenwerking te formaliseren.</p>
+                                <p>{{ __('general.download_contract_info') }}</p>
                             </div>
                         @endif
                     </div>
