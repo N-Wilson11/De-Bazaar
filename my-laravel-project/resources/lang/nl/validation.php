@@ -22,4 +22,5 @@ return [
     'auth' => [
         'failed' => 'Deze gegevens komen niet overeen met onze gegevens.',
     ],
+    'contracterror' => 'U bent geen platform eigenaar, dus u kunt niet naar deze pagina.',
 ];

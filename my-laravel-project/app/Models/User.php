@@ -6,11 +6,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * User types
+     */
+    const TYPE_PARTICULIER = 'particulier';
+    const TYPE_ZAKELIJK = 'zakelijk';
+    const TYPE_ADMIN = 'admin'; // Platformeigenaar
 
     /**
      * The attributes that are mass assignable.
@@ -45,5 +53,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is admin (platform owner)
+     * 
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->user_type === self::TYPE_ADMIN;
+    }
+
+    /**
+     * Check if user is a business user
+     * 
+     * @return bool
+     */
+    public function isBusinessUser(): bool
+    {
+        return $this->user_type === self::TYPE_ZAKELIJK;
+    }
+
+    /**
+     * Get the contracts associated with the user.
+     */
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(Contract::class);
     }
 }

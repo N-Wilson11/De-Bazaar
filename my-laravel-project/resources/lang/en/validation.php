@@ -22,4 +22,5 @@ return [
     'auth' => [
         'failed' => 'These credentials do not match our records.',
     ],
+    'contracterror' => 'You are not a platform owner, so you cannot access this page.',
 ];

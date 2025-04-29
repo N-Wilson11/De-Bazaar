@@ -21,9 +21,11 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">{{ __('general.dashboard') }}</a>
                         </li>
+                        @if(Auth::user()->user_type === 'admin')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}" href="{{ route('contracts.index') }}">{{ __('Contracten') }}</a>
                         </li>
+                        @endif
                     @endauth
                 </ul>
                 <ul class="navbar-nav">
