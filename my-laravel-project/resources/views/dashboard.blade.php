@@ -61,7 +61,7 @@
                     </div>
                     <div class="card-body">
                         <h3>{{ __('general.welcome') }}, {{ Auth::user()->name }}</h3>
-                        <p>{{ __('You have successfully logged in!') }}</p>
+                        <p>{{ __('general.successfulllogin') }}</p>
                         
                         <div class="mt-4">
                             <h4>{{ __('general.account_details') }}</h4>

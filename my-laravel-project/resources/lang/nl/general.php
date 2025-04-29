@@ -30,4 +30,5 @@ return [
     'priority_search' => 'Prioriteit in zoekresultaten',
     'download_contract_info' => 'Download je contract om de samenwerking te formaliseren.',
     'advertiser_type' => 'Type adverteerder',
+    'successfulllogin' => 'Je bent succesvol ingelogd.',
 ];
