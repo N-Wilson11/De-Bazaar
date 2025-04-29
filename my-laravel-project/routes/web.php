@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ContractsController; // Nieuwe controller toegevoegd
 use App\Http\Controllers\LanguageController;
 
 // Pas de Language middleware toe op alle routes
@@ -37,8 +38,17 @@ Route::middleware('language')->group(function () {
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
-        // Contract routes
+        // Contract download route
         Route::get('/contract/{userId}', [ContractController::class, 'generateBusinessContract'])->name('contract.generate');
+        
+        // Contract management routes
+        Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');
+        Route::get('/contracts/create', [ContractsController::class, 'create'])->name('contracts.create');
+        Route::post('/contracts', [ContractsController::class, 'store'])->name('contracts.store');
+        Route::get('/contracts/{contract}', [ContractsController::class, 'show'])->name('contracts.show');
+        Route::get('/contracts/{contract}/download', [ContractsController::class, 'download'])->name('contracts.download');
+        Route::post('/contracts/{contract}/review', [ContractsController::class, 'review'])->name('contracts.review');
+        Route::delete('/contracts/{contract}', [ContractsController::class, 'destroy'])->name('contracts.destroy');
     });
     
 });
