@@ -89,6 +89,9 @@
             color: {{ $dbTextColor }} !important;
             margin: 0 !important;
             padding: 0 !important;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         
         /* Text kleur for normale tekst */
@@ -119,6 +122,9 @@
         /* Navigatiebalk */
         .navbar {
             background-color: {{ $dbPrimaryColor }} !important;
+            width: 100%;
+            position: relative;
+            z-index: 100;
         }
         
         /* Specifiek voor navbarNav element */
@@ -126,10 +132,27 @@
             background-color: {{ $dbPrimaryColor }} !important;
         }
         
+        /* Header-styling - zorgt dat de header bovenaan blijft */
+        header {
+            width: 100%;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Main content - vult de beschikbare ruimte tussen header en footer */
+        main {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
         /* Footer styling */
         .footer {
             background-color: {{ $dbPrimaryColor }} !important;
             color: #ffffff !important;
+            width: 100%;
+            position: relative;
+            z-index: 100;
         }
         
         /* Primaire kleur elementen */
