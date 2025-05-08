@@ -202,8 +202,8 @@
                 </button>
                 
                 <div class="collapse navbar-collapse" id="navbarNav" style="background-color: {{ $dbPrimaryColor }} !important;">
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Navigation Links -->
+                    <!-- Left side navigation items -->
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('/') }}">{{ __('Home') }}</a>
                         </li>
@@ -225,7 +225,10 @@
                                 </li>
                             @endif
                         @endauth
-                        
+                    </ul>
+                    
+                    <!-- Right side navigation items -->
+                    <ul class="navbar-nav ms-auto">
                         <!-- Language Switcher -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
