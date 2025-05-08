@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', __('general.dashboard'))
-
 @section('content')
 <div class="container mt-4">
     @if(session('error'))

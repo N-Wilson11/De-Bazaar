@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         // Call the UserTypesSeeder to create our admin, particulier, and zakelijk users
         $this->call([
             UserTypesSeeder::class,
+            CompanyThemeSeeder::class,
         ]);
     }
 }
