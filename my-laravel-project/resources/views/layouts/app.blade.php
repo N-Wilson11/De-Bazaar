@@ -190,14 +190,14 @@
                         
                         <!-- Admin Menu Items -->
                         @auth
-                            @if(auth()->user()->user_type === 'platform_owner')
+                            @if(auth()->user()->user_type === 'admin')
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                                        {{ __('Admin') }}
+                                        {{ __('Extra') }}
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ route('contracts.index') }}">{{ __('Contracts') }}</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('theme.settings') }}">{{ __('Theme Settings') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ url('/theme/settings') }}">{{ __('Themes') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ url('/contracts') }}">{{ __('Contracts') }}</a></li>
                                     </ul>
                                 </li>
                             @endif

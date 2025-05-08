@@ -31,4 +31,5 @@ return [
     'download_contract_info' => 'Download your contract to formalize the partnership.',
     'advertiser_type' => 'Advertiser type',
     'successfulllogin' => 'You have successfully logged in.',
+    
 ];
