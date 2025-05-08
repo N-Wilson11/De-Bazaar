@@ -7,9 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\ThemeController;
+use App\Http\Middleware\CompanyThemeMiddleware;
 
-// Pas de Language middleware toe op alle routes
-Route::middleware('language')->group(function () {
+// Apply both language and theme middleware to all routes
+Route::middleware(['language', CompanyThemeMiddleware::class])->group(function () {
     
     Route::get('/', function () {
         return view('welcome');
@@ -21,6 +23,10 @@ Route::middleware('language')->group(function () {
 
     // Taal route
     Route::get('/language/{locale}', [LanguageController::class, 'changeLanguage'])->name('language.switch');
+    
+    // Company theme switch routes (accessible to everyone)
+    Route::get('/company/{companyId}', [ThemeController::class, 'switchCompany'])->name('company.switch');
+    Route::post('/company/{companyId}', [ThemeController::class, 'switchCompany']);
 
     // Authenticatie Routes
     Route::middleware('guest')->group(function () {
@@ -50,6 +56,10 @@ Route::middleware('language')->group(function () {
             Route::get('/contracts/{contract}/download', [ContractsController::class, 'download'])->name('contracts.download');
             Route::post('/contracts/{contract}/review', [ContractsController::class, 'review'])->name('contracts.review');
             Route::delete('/contracts/{contract}', [ContractsController::class, 'destroy'])->name('contracts.destroy');
+            
+            // Theme management routes - alleen toegankelijk voor admin
+            Route::get('/theme/settings', [ThemeController::class, 'index'])->name('theme.settings');
+            Route::post('/theme/update', [ThemeController::class, 'update'])->name('theme.update');
         });
     });
     
