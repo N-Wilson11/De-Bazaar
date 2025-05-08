@@ -145,4 +145,130 @@ class ThemeController extends Controller
         return redirect()->route('theme.settings')
             ->with('success', __('Company switched to') . ': ' . $companyId);
     }
+
+    /**
+     * Display logo change form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function changeLogo()
+    {
+        // Get current company ID from session or use a default
+        $companyId = Session::get('company_id', 'default');
+        
+        // Load the company theme from database
+        $companyTheme = CompanyTheme::where('company_id', $companyId)
+                        ->where('is_active', true)
+                        ->first();
+        
+        return view('theme.change_logo', [
+            'companyTheme' => $companyTheme,
+            'companyId' => $companyId
+        ]);
+    }
+
+    /**
+     * Update company logo.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateLogo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Get current company ID from session or use a default
+        $companyId = Session::get('company_id', 'default');
+
+        // Find the company theme
+        $companyTheme = CompanyTheme::where('company_id', $companyId)->first();
+        
+        if (!$companyTheme) {
+            return redirect()->back()
+                ->with('error', __('Company theme not found'));
+        }
+
+        // Handle logo upload
+        $image = $request->file('logo');
+        $logoName = time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('/images/theme/' . $companyId);
+        
+        // Create directory if it doesn't exist
+        if (!File::exists($destinationPath)) {
+            File::makeDirectory($destinationPath, 0755, true);
+        }
+        
+        // Delete old logo file if it exists and is not a default logo
+        if ($companyTheme->logo_path && File::exists(public_path($companyTheme->logo_path)) && 
+            !str_starts_with($companyTheme->logo_path, '/default/')) {
+            File::delete(public_path($companyTheme->logo_path));
+        }
+        
+        // Upload and save new logo
+        $image->move($destinationPath, $logoName);
+        $logoPath = '/images/theme/' . $companyId . '/' . $logoName;
+        
+        // Update theme logo path
+        $companyTheme->logo_path = $logoPath;
+        $companyTheme->save();
+        
+        // Clear view cache to ensure changes are visible immediately
+        try {
+            Artisan::call('view:clear');
+            Artisan::call('cache:clear');
+        } catch (\Exception $e) {
+            // Continue even if cache clearing fails
+        }
+
+        return redirect()->route('theme.change-logo')
+            ->with('success', __('Logo updated successfully'));
+    }
+    
+    /**
+     * Remove company logo and revert to default.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeLogo()
+    {
+        // Get current company ID from session or use a default
+        $companyId = Session::get('company_id', 'default');
+
+        // Find the company theme
+        $companyTheme = CompanyTheme::where('company_id', $companyId)->first();
+        
+        if (!$companyTheme) {
+            return redirect()->route('theme.change-logo')
+                ->with('error', __('Company theme not found'));
+        }
+
+        // Delete existing logo file if it exists and is not a default logo
+        if ($companyTheme->logo_path && File::exists(public_path($companyTheme->logo_path)) && 
+            !str_starts_with($companyTheme->logo_path, '/default/')) {
+            File::delete(public_path($companyTheme->logo_path));
+        }
+        
+        // Set logo path to null or default logo
+        $companyTheme->logo_path = null; // Or set to a default logo path if you have one
+        $companyTheme->save();
+        
+        // Clear view cache to ensure changes are visible immediately
+        try {
+            Artisan::call('view:clear');
+            Artisan::call('cache:clear');
+        } catch (\Exception $e) {
+            // Continue even if cache clearing fails
+        }
+
+        return redirect()->route('theme.change-logo')
+            ->with('success', __('Logo removed successfully'));
+    }
 }

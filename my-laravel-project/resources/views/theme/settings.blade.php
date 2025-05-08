@@ -88,6 +88,15 @@
                                         style="max-height: 100px; max-width: 300px;">
                                 </div>
                             @endif
+
+                            <div class="mt-3">
+                                <a href="{{ route('theme.change-logo') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-image"></i> {{ __('Ga naar speciale logo pagina') }}
+                                </a>
+                                <small class="d-block mt-1 text-muted">
+                                    {{ __('Gebruik deze link om alleen het logo te wijzigen') }}
+                                </small>
+                            </div>
                         </div>
                         
                         <div class="mb-3">

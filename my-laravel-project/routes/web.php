@@ -57,9 +57,12 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
             Route::post('/contracts/{contract}/review', [ContractsController::class, 'review'])->name('contracts.review');
             Route::delete('/contracts/{contract}', [ContractsController::class, 'destroy'])->name('contracts.destroy');
             
-            // Theme management routes - alleen toegankelijk voor admin
+            // Thema-instellingen routes
             Route::get('/theme/settings', [ThemeController::class, 'index'])->name('theme.settings');
             Route::post('/theme/update', [ThemeController::class, 'update'])->name('theme.update');
+            Route::get('/theme/logo', [ThemeController::class, 'changeLogo'])->name('theme.change-logo');
+            Route::post('/theme/logo/update', [ThemeController::class, 'updateLogo'])->name('theme.update-logo');
+            Route::post('/theme/logo/remove', [ThemeController::class, 'removeLogo'])->name('theme.remove-logo');
         });
     });
     
