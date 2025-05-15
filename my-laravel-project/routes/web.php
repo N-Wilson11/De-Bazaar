@@ -47,6 +47,23 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         // Contract download route
         Route::get('/contract/{userId}', [ContractController::class, 'generateBusinessContract'])->name('contract.generate');
         
+        // Advertentie routes
+        Route::get('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'index'])->name('advertisements.index');
+        Route::get('/advertisements/create', [App\Http\Controllers\AdvertisementController::class, 'create'])->name('advertisements.create');
+        Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
+        Route::get('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'show'])->name('advertisements.show');
+        Route::get('/advertisements/{advertisement}/edit', [App\Http\Controllers\AdvertisementController::class, 'edit'])->name('advertisements.edit');
+        Route::put('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'update'])->name('advertisements.update');
+        Route::delete('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
+        
+        // Speciale verhuur advertentie routes
+        Route::get('/rentals', [App\Http\Controllers\AdvertisementController::class, 'rentals'])->name('rentals.index');
+        Route::get('/my-rentals', [App\Http\Controllers\AdvertisementController::class, 'myRentals'])->name('rentals.my');
+        Route::get('/rentals/create', [App\Http\Controllers\AdvertisementController::class, 'createRental'])->name('rentals.create');
+        Route::post('/rentals', [App\Http\Controllers\AdvertisementController::class, 'storeRental'])->name('rentals.store');
+        Route::get('/rentals/{advertisement}/calendar', [App\Http\Controllers\AdvertisementController::class, 'calendar'])->name('advertisements.calendar');
+        Route::post('/rentals/{advertisement}/availability', [App\Http\Controllers\AdvertisementController::class, 'updateAvailability'])->name('advertisements.update-availability');
+        
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {
             Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');

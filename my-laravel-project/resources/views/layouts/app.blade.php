@@ -211,6 +211,23 @@
                             <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a>
                         </li>
                         
+                        @auth
+                            <!-- Advertentie menu items -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="advertentiesDropdown" role="button" data-bs-toggle="dropdown">
+                                    {{ __('Advertenties') }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('Mijn Advertenties') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('Nieuwe Advertentie') }}</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('rentals.my') }}">{{ __('Mijn Verhuuraanbod') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('Nieuw Verhuuraanbod') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('rentals.index') }}">{{ __('Alle Verhuuradvertenties') }}</a></li>
+                                </ul>
+                            </li>
+                        @endauth
+                        
                         <!-- Admin Menu Items -->
                         @auth
                             @if(auth()->user()->user_type === 'admin')

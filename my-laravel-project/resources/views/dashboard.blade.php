@@ -92,5 +92,48 @@
             </div>
         </div>
     </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>{{ __('general.advertisements') }}</span>
+                    <a href="{{ route('advertisements.create') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> {{ __('general.new_advertisement') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <p>{{ __('Plaats je advertenties en bereik kopers op De Bazaar.') }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('advertisements.index') }}" class="btn btn-outline-primary">
+                            {{ __('general.my_advertisements') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>{{ __('general.rentals') }}</span>
+                    <a href="{{ route('rentals.create') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle"></i> {{ __('general.new_rental') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <p>{{ __('Verhuur je spullen en verdien extra inkomsten.') }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('rentals.my') }}" class="btn btn-outline-success">
+                            {{ __('general.my_rentals') }}
+                        </a>
+                        <a href="{{ route('rentals.index') }}" class="btn btn-outline-info">
+                            {{ __('Bekijk verhuuraanbod') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

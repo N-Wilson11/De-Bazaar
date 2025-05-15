@@ -103,4 +103,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Company::class);
     }
+
+    /**
+     * Get the advertisements associated with the user.
+     */
+    public function advertisements(): HasMany
+    {
+        return $this->hasMany(Advertisement::class);
+    }
+    
+    /**
+     * Get only rental advertisements associated with the user.
+     */
+    public function rentalAdvertisements(): HasMany
+    {
+        return $this->hasMany(Advertisement::class)->where('is_rental', true);
+    }
 }
