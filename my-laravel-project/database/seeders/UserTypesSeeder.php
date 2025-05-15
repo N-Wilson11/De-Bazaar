@@ -27,13 +27,19 @@ class UserTypesSeeder extends Seeder
             'email' => 'particulier@example.com',
             'user_type' => 'particulier',
             'password' => Hash::make('password'),
-        ]);
-
-        // Create business user (zakelijk)
+        ]);        // Create business user (zakelijk)
         User::factory()->create([
             'name' => 'Zakelijk User',
             'email' => 'zakelijk@example.com',
             'user_type' => 'zakelijk',
+            'password' => Hash::make('password'),
+        ]);
+        
+        // Create normal user (normaal)
+        User::factory()->create([
+            'name' => 'Normale Gebruiker',
+            'email' => 'normaal@example.com',
+            'user_type' => 'normaal',
             'password' => Hash::make('password'),
         ]);
     }

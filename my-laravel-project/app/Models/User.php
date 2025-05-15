@@ -20,6 +20,7 @@ class User extends Authenticatable
     const TYPE_PARTICULIER = 'particulier';
     const TYPE_ZAKELIJK = 'zakelijk';
     const TYPE_ADMIN = 'admin'; // Platformeigenaar
+    const TYPE_NORMAAL = 'normaal'; // Normale gebruiker
 
     /**
      * The attributes that are mass assignable.
@@ -75,6 +76,16 @@ class User extends Authenticatable
     public function isBusinessUser(): bool
     {
         return $this->user_type === self::TYPE_ZAKELIJK;
+    }
+    
+    /**
+     * Check if user is a normal user
+     * 
+     * @return bool
+     */
+    public function isNormalUser(): bool
+    {
+        return $this->user_type === self::TYPE_NORMAAL;
     }
 
     /**

@@ -31,5 +31,13 @@ return [
     'download_contract_info' => 'Download je contract om de samenwerking te formaliseren.',
     'advertiser_type' => 'Type adverteerder',
     'successfulllogin' => 'Je bent succesvol ingelogd.',
+    'normal_user' => 'Normale gebruiker',
+    'normal_user_info' => 'Normale gebruikersaccount informatie',
+    'normal_user_features' => 'Als normale gebruiker heb je toegang tot deze functionaliteiten:',
+    'basic_ads' => 'Standaard aantal advertenties',
+    'standard_search' => 'Standaard zoekfunctionaliteit',
+    'private_user_info' => 'Particuliere gebruikersaccount informatie',
+    'private_user_features' => 'Als particuliere gebruiker heb je toegang tot deze functionaliteiten:',
+    'limited_ads' => 'Beperkt aantal advertenties',
     
 ];

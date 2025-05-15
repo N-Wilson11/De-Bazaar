@@ -54,6 +54,12 @@
                                         {{ __('general.business_user') }}
                                     </label>
                                 </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="user_type" id="normaal" value="normaal" {{ old('user_type') === 'normaal' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="normaal">
+                                        {{ __('general.normal_user') }}
+                                    </label>
+                                </div>
                                 @error('user_type')
                                     <span class="invalid-feedback d-block" role="alert">
                                         <strong>{{ $message }}</strong>

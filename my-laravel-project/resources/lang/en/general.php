@@ -31,5 +31,13 @@ return [
     'download_contract_info' => 'Download your contract to formalize the partnership.',
     'advertiser_type' => 'Advertiser type',
     'successfulllogin' => 'You have successfully logged in.',
+    'normal_user' => 'Normal user',
+    'normal_user_info' => 'Normal user account information',
+    'normal_user_features' => 'As a normal user, you have access to these features:',
+    'basic_ads' => 'Standard number of advertisements',
+    'standard_search' => 'Standard search functionality',
+    'private_user_info' => 'Private user account information',
+    'private_user_features' => 'As a private user, you have access to these features:',
+    'limited_ads' => 'Limited number of advertisements',
     
 ];

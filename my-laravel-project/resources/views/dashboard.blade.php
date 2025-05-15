@@ -41,8 +41,12 @@
                                     <td>
                                         @if(Auth::user()->user_type === 'particulier')
                                             {{ __('general.private_user') }}
-                                        @else
+                                        @elseif(Auth::user()->user_type === 'zakelijk')
                                             {{ __('general.business_user') }}
+                                        @elseif(Auth::user()->user_type === 'normaal')
+                                            {{ __('general.normal_user') }}
+                                        @else
+                                            {{ Auth::user()->user_type }}
                                         @endif
                                     </td>
                                 </tr>
@@ -64,6 +68,24 @@
                                 <li>{{ __('general.priority_search') }}</li>
                             </ul>
                             <p>{{ __('general.download_contract_info') }}</p>
+                        </div>
+                    @elseif(Auth::user()->user_type === 'normaal')
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h5>{{ __('general.normal_user_info') }}</h5>
+                            <p>{{ __('general.normal_user_features') }}</p>
+                            <ul>
+                                <li>{{ __('general.basic_ads') }}</li>
+                                <li>{{ __('general.standard_search') }}</li>
+                            </ul>
+                        </div>
+                    @elseif(Auth::user()->user_type === 'particulier')
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h5>{{ __('general.private_user_info') }}</h5>
+                            <p>{{ __('general.private_user_features') }}</p>
+                            <ul>
+                                <li>{{ __('general.limited_ads') }}</li>
+                                <li>{{ __('general.standard_search') }}</li>
+                            </ul>
                         </div>
                     @endif
                 </div>
