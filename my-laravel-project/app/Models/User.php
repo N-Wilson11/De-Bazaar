@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'user_type',
+        'company_id',
         'password',
     ];
 
@@ -81,5 +83,13 @@ class User extends Authenticatable
     public function contracts(): HasMany
     {
         return $this->hasMany(Contract::class);
+    }
+
+    /**
+     * Get the company this user belongs to.
+     */
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 }
