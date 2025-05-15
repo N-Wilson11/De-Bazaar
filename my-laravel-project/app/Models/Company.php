@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Company extends Model
 {
@@ -58,7 +59,7 @@ class Company extends Model
     /**
      * Get the contracts associated with the company through its users.
      */
-    public function contracts(): HasMany
+    public function contracts(): HasManyThrough
     {
         return $this->hasManyThrough(Contract::class, User::class);
     }
