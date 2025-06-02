@@ -22,18 +22,19 @@
                         <span class="badge bg-light text-dark border">{{ __('Categorie') }}: {{ ucfirst($advertisement->category) }}</span>
                         <span class="badge bg-light text-dark border">{{ __('Conditie') }}: {{ ucfirst($advertisement->condition) }}</span>
                     </div>
-                    
-                    @if(count($advertisement->images ?? []) > 0)
+                      @php
+                        $images = is_array($advertisement->images) ? $advertisement->images : [];
+                    @endphp
+                    @if(count($images) > 0)
                         <div class="advertisement-images mb-4">
                             <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner rounded">
-                                    @foreach($advertisement->images as $index => $image)
+                                    @foreach($images as $index => $image)
                                         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                             <img src="{{ Storage::url($image) }}" class="d-block w-100" alt="{{ $advertisement->title }}">
                                         </div>
-                                    @endforeach
-                                </div>
-                                @if(count($advertisement->images) > 1)
+                                    @endforeach                                </div>
+                                @if(count($images) > 1)
                                     <button class="carousel-control-prev" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">{{ __('Vorige') }}</span>
@@ -44,10 +45,9 @@
                                     </button>
                                 @endif
                             </div>
-                            
-                            @if(count($advertisement->images) > 1)
+                              @if(count($images) > 1)
                                 <div class="row mt-2">
-                                    @foreach($advertisement->images as $index => $image)
+                                    @foreach($images as $index => $image)
                                         <div class="col-3 mt-2">
                                             <img src="{{ Storage::url($image) }}" class="img-thumbnail" alt="{{ $advertisement->title }}"
                                                 onclick="document.querySelector('#advertisementCarousel').carousel({{ $index }})">

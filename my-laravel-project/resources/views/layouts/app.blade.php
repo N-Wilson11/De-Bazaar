@@ -207,19 +207,25 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('/') }}">{{ __('Home') }}</a>
                         </li>
+                        
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a>
+                            <a class="nav-link" href="{{ route('advertisements.browse') }}">{{ __('Advertenties') }}</a>
                         </li>
                         
                         @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a>
+                            </li>
+                            
                             <!-- Advertentie menu items -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="advertentiesDropdown" role="button" data-bs-toggle="dropdown">
-                                    {{ __('Advertenties') }}
+                                    {{ __('Mijn Advertenties') }}
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('Mijn Advertenties') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('Nieuwe Advertentie') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('Alle Advertenties') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{{ route('rentals.my') }}">{{ __('Mijn Verhuuraanbod') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('Nieuw Verhuuraanbod') }}</a></li>

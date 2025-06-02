@@ -21,6 +21,10 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         return view('home');
     });
 
+    // Public advertisement routes
+    Route::get('/browse', [App\Http\Controllers\AdvertisementController::class, 'browse'])->name('advertisements.browse');
+    Route::get('/rentals', [App\Http\Controllers\AdvertisementController::class, 'rentals'])->name('rentals.index');
+
     // Taal route
     Route::get('/language/{locale}', [LanguageController::class, 'changeLanguage'])->name('language.switch');
     
@@ -47,7 +51,7 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         // Contract download route
         Route::get('/contract/{userId}', [ContractController::class, 'generateBusinessContract'])->name('contract.generate');
         
-        // Advertentie routes
+        // Alle advertentie routes
         Route::get('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'index'])->name('advertisements.index');
         Route::get('/advertisements/create', [App\Http\Controllers\AdvertisementController::class, 'create'])->name('advertisements.create');
         Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
@@ -57,7 +61,6 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::delete('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
         
         // Speciale verhuur advertentie routes
-        Route::get('/rentals', [App\Http\Controllers\AdvertisementController::class, 'rentals'])->name('rentals.index');
         Route::get('/my-rentals', [App\Http\Controllers\AdvertisementController::class, 'myRentals'])->name('rentals.my');
         Route::get('/rentals/create', [App\Http\Controllers\AdvertisementController::class, 'createRental'])->name('rentals.create');
         Route::post('/rentals', [App\Http\Controllers\AdvertisementController::class, 'storeRental'])->name('rentals.store');

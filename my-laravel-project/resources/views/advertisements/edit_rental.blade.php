@@ -233,14 +233,16 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
-                        
-                        @if(count($advertisement->images ?? []) > 0)
+                        </div>                        
+                        @php
+                            $images = is_array($advertisement->images) ? $advertisement->images : [];
+                        @endphp
+                        @if(count($images) > 0)
                             <div class="row mb-4">
                                 <div class="col-md-12">
                                     <label class="form-label fw-semibold">{{ __('Huidige afbeeldingen') }}</label>
                                     <div class="row">
-                                        @foreach($advertisement->images as $index => $image)
+                                        @foreach($images as $index => $image)
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
                                                     <img src="{{ Storage::url($image) }}" class="card-img-top" alt="Afbeelding {{ $index + 1 }}">

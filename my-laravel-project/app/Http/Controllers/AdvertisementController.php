@@ -10,13 +10,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdvertisementController extends Controller
-{
-    /**
+{    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['browse', 'rentals', 'show']]);
     }
 
     /**
@@ -371,5 +370,36 @@ class AdvertisementController extends Controller
             'rental_pickup_location' => 'nullable|string|max:200',
             'rental_availability_dates' => 'nullable|string',
         ]);
+    }
+
+    /**
+     * Display all regular (non-rental) advertisements
+     */
+    public function browse(Request $request)
+    {
+        $query = Advertisement::where('is_rental', false)
+            ->where('status', 'active');
+            
+        // Apply filters
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+        
+        if ($request->filled('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+        
+        if ($request->filled('condition')) {
+            $query->where('condition', $request->condition);
+        }
+        
+        if ($request->filled('location')) {
+            $query->where('location', 'LIKE', '%' . $request->location . '%');
+        }
+        
+        $advertisements = $query->orderBy('created_at', 'desc')
+            ->paginate(12);
+            
+        return view('advertisements.browse', compact('advertisements'));
     }
 }
