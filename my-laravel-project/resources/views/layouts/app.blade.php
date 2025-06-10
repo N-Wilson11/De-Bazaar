@@ -209,10 +209,6 @@
                             <a class="nav-link" href="{{ url('/') }}">{{ __('Home') }}</a>
                         </li>
                         
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('advertisements.browse') }}">{{ __('Advertenties') }}</a>
-                        </li>
-                        
                         @auth
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a>
@@ -221,7 +217,7 @@
                             <!-- Advertentie menu items -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="advertentiesDropdown" role="button" data-bs-toggle="dropdown">
-                                    {{ __('Mijn Advertenties') }}
+                                    {{ __('Advertenties') }}
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('Mijn Advertenties') }}</a></li>
