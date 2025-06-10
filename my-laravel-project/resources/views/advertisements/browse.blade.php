@@ -58,18 +58,38 @@
                                 <option value="gebruikt" {{ request('condition') == 'gebruikt' ? 'selected' : '' }}>{{ __('Gebruikt') }}</option>
                             </select>
                         </div>
-                        
-                        <div class="mb-3">
+                          <div class="mb-3">
                             <label for="location" class="form-label">{{ __('Locatie') }}</label>
                             <input type="text" id="location" name="location" class="form-control" value="{{ request('location') }}">
                         </div>
                         
-                        <div class="d-grid">
+                        <div class="mb-3">
+                            <label for="sort" class="form-label">{{ __('Sorteren op') }}</label>
+                            <select id="sort" name="sort" class="form-select">
+                                <option value="created_at|desc" {{ request('sort') == 'created_at|desc' ? 'selected' : '' }}>{{ __('Nieuwste eerst') }}</option>
+                                <option value="created_at|asc" {{ request('sort') == 'created_at|asc' ? 'selected' : '' }}>{{ __('Oudste eerst') }}</option>
+                                <option value="title|asc" {{ request('sort') == 'title|asc' ? 'selected' : '' }}>{{ __('Titel: A-Z') }}</option>
+                                <option value="title|desc" {{ request('sort') == 'title|desc' ? 'selected' : '' }}>{{ __('Titel: Z-A') }}</option>
+                                <option value="price|asc" {{ request('sort') == 'price|asc' ? 'selected' : '' }}>{{ __('Prijs: laag - hoog') }}</option>
+                                <option value="price|desc" {{ request('sort') == 'price|desc' ? 'selected' : '' }}>{{ __('Prijs: hoog - laag') }}</option>
+                                <option value="views|desc" {{ request('sort') == 'views|desc' ? 'selected' : '' }}>{{ __('Meest bekeken') }}</option>
+                            </select>
+                        </div>
+                          <div class="d-grid">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-filter me-1"></i>{{ __('Filteren') }}
                             </button>
                         </div>
                     </form>
+                    
+                    <!-- Reset link -->
+                    @if(request('category') || request('price_max') || request('condition') || request('location') || request('sort'))
+                        <div class="text-end mt-2">
+                            <a href="{{ route('advertisements.browse') }}" class="text-decoration-none">
+                                <i class="bi bi-x-circle"></i> {{ __('Reset filters') }}
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
             

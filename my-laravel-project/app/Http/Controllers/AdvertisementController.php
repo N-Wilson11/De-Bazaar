@@ -45,8 +45,21 @@ class AdvertisementController extends Controller
             $query->where('title', 'LIKE', '%' . $request->search . '%');
         }
         
+        // Bepaal de sorteervolgorde
+        $sortField = 'created_at'; // standaard sorteerveld
+        $sortOrder = 'desc';       // standaard sorteervolgorde
+        
+        if ($request->filled('sort')) {
+            // Sorteer op basis van het geselecteerde veld
+            $sortParts = explode('|', $request->sort);
+            if (count($sortParts) == 2) {
+                $sortField = $sortParts[0];
+                $sortOrder = $sortParts[1];
+            }
+        }
+        
         // Haal de gefilterde advertenties op
-        $advertisements = $query->orderBy('created_at', 'desc')
+        $advertisements = $query->orderBy($sortField, $sortOrder)
             ->paginate(6);
         
         // Behoud de zoekparameter bij paginering
@@ -261,12 +274,42 @@ class AdvertisementController extends Controller
     /**
      * Display all rental advertisements
      */
-    public function rentals()
+    public function rentals(Request $request)
     {
-        $rentals = Advertisement::where('is_rental', true)
-            ->where('status', 'active')
-            ->orderBy('created_at', 'desc')
+        $query = Advertisement::where('is_rental', true)
+            ->where('status', 'active');
+            
+        // Apply filters
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+        
+        if ($request->filled('price_max')) {
+            $query->where('rental_price_day', '<=', $request->price_max);
+        }
+        
+        if ($request->filled('location')) {
+            $query->where('location', 'LIKE', '%' . $request->location . '%');
+        }
+        
+        // Sorteerlogica toepassen
+        $sortField = 'created_at'; // standaard sorteerveld
+        $sortOrder = 'desc'; // standaard sorteervolgorde
+        
+        if ($request->filled('sort')) {
+            // Sorteer op basis van het geselecteerde veld
+            $sortParts = explode('|', $request->sort);
+            if (count($sortParts) == 2) {
+                $sortField = $sortParts[0];
+                $sortOrder = $sortParts[1];
+            }
+        }
+        
+        $rentals = $query->orderBy($sortField, $sortOrder)
             ->paginate(6);
+            
+        // Behoud zoekopdracht-parameters bij paginering
+        $rentals->appends($request->except('page'));
             
         return view('advertisements.rentals', compact('rentals'));
     }
@@ -423,8 +466,24 @@ class AdvertisementController extends Controller
             $query->where('location', 'LIKE', '%' . $request->location . '%');
         }
         
-        $advertisements = $query->orderBy('created_at', 'desc')
+        // Sorteerlogica toepassen
+        $sortField = 'created_at'; // standaard sorteerveld
+        $sortOrder = 'desc'; // standaard sorteervolgorde
+        
+        if ($request->filled('sort')) {
+            // Sorteer op basis van het geselecteerde veld
+            $sortParts = explode('|', $request->sort);
+            if (count($sortParts) == 2) {
+                $sortField = $sortParts[0];
+                $sortOrder = $sortParts[1];
+            }
+        }
+        
+        $advertisements = $query->orderBy($sortField, $sortOrder)
             ->paginate(6);
+            
+        // Behoud zoekopdracht-parameters bij paginering
+        $advertisements->appends($request->except('page'));
             
         return view('advertisements.browse', compact('advertisements'));
     }

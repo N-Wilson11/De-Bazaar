@@ -52,8 +52,7 @@
                                 </select>
                             </div>
                             
-                            <div class="col-md-4">
-                                <label for="category" class="form-label">{{ __('Categorie') }}</label>
+                            <div class="col-md-4">                                <label for="category" class="form-label">{{ __('Categorie') }}</label>
                                 <select id="category" name="category" class="form-select">
                                     <option value="all">{{ __('Alle categorieën') }}</option>
                                     @foreach($categories as $key => $value)
@@ -63,7 +62,20 @@
                             </div>
                             
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary w-100">
+                                <label for="sort" class="form-label">{{ __('Sorteren') }}</label>
+                                <select id="sort" name="sort" class="form-select">
+                                    <option value="created_at|desc" {{ request('sort') == 'created_at|desc' ? 'selected' : '' }}>{{ __('Datum: nieuwste eerst') }}</option>
+                                    <option value="created_at|asc" {{ request('sort') == 'created_at|asc' ? 'selected' : '' }}>{{ __('Datum: oudste eerst') }}</option>
+                                    <option value="title|asc" {{ request('sort') == 'title|asc' ? 'selected' : '' }}>{{ __('Titel: A-Z') }}</option>
+                                    <option value="title|desc" {{ request('sort') == 'title|desc' ? 'selected' : '' }}>{{ __('Titel: Z-A') }}</option>
+                                    <option value="price|asc" {{ request('sort') == 'price|asc' ? 'selected' : '' }}>{{ __('Prijs: laag - hoog') }}</option>
+                                    <option value="price|desc" {{ request('sort') == 'price|desc' ? 'selected' : '' }}>{{ __('Prijs: hoog - laag') }}</option>
+                                    <option value="views|desc" {{ request('sort') == 'views|desc' ? 'selected' : '' }}>{{ __('Populariteit') }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100 mt-4">
                                     <i class="bi bi-filter me-1"></i>{{ __('Filteren') }}
                                 </button>
                             </div>
