@@ -7,13 +7,14 @@
     <div class="row">
         <div class="col-md-12 mb-4">
             <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="h3 mb-3">{{ __('Verhuuraanbod') }}</h1>
+                <div class="card-body">                    <h1 class="h3 mb-3">{{ __('Verhuuraanbod') }}</h1>
                     <p>{{ __('Bekijk items die je kunt huren op De Bazaar.') }}</p>
                     
-                    <a href="{{ route('rentals.create') }}" class="btn btn-success">
-                        <i class="bi bi-plus-circle me-1"></i>{{ __('Eigen item verhuren') }}
-                    </a>
+                    @if(Auth::check() && (Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk'))
+                        <a href="{{ route('rentals.create') }}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-1"></i>{{ __('Eigen item verhuren') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -149,10 +150,13 @@
                     <p>{{ __('Er zijn momenteel geen verhuuradvertenties die aan je zoekcriteria voldoen.') }}</p>
                     
                     <hr>
-                    
-                    <p class="mb-0">
+                      <p class="mb-0">
                         {{ __('Heb je zelf iets te verhuren?') }} 
-                        <a href="{{ route('rentals.create') }}" class="alert-link">{{ __('Plaats nu een verhuuradvertentie') }}</a>.
+                        @if(Auth::check() && (Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk'))
+                            <a href="{{ route('rentals.create') }}" class="alert-link">{{ __('Plaats nu een verhuuradvertentie') }}</a>.
+                        @else
+                            {{ __('Alleen particuliere en zakelijke gebruikers kunnen verhuuradvertenties plaatsen.') }}
+                        @endif
                     </p>
                 </div>
             @endif

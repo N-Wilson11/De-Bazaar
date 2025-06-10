@@ -59,6 +59,7 @@
                     </div>
                     
                     <!-- Advertentie statistieken -->
+                    @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                     <div class="mt-4">
                         <h4>{{ __('general.ad_statistics') }}</h4>
                         <div class="row">
@@ -74,9 +75,11 @@
                                                 <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $normalAdsRemaining }}</strong></p>
                                             </div>
                                             <div>
-                                                <a href="{{ route('advertisements.create') }}" class="btn btn-primary {{ $normalAdsRemaining === 0 ? 'disabled' : '' }}">
-                                                    <i class="bi bi-plus-circle me-1"></i>{{ __('general.new_advertisement') }}
-                                                </a>
+                                                @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                                                    <a href="{{ route('advertisements.create') }}" class="btn btn-primary {{ $normalAdsRemaining === 0 ? 'disabled' : '' }}">
+                                                        <i class="bi bi-plus-circle me-1"></i>{{ __('general.new_advertisement') }}
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -95,9 +98,11 @@
                                                 <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $rentalAdsRemaining }}</strong></p>
                                             </div>
                                             <div>
-                                                <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 ? 'disabled' : '' }}">
-                                                    <i class="bi bi-calendar-plus me-1"></i>{{ __('Nieuwe verhuuradvertentie') }}
-                                                </a>
+                                                @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                                                    <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 ? 'disabled' : '' }}">
+                                                        <i class="bi bi-calendar-plus me-1"></i>{{ __('Nieuwe verhuuradvertentie') }}
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -105,6 +110,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                     
                     @if(Auth::user()->user_type === 'zakelijk')
                         <div class="mt-4 p-3 bg-light rounded">
@@ -122,7 +128,8 @@
                             <h5>{{ __('general.normal_user_info') }}</h5>
                             <p>{{ __('general.normal_user_features') }}</p>
                             <ul>
-                                <li>{{ __('general.ad_limit_info') }}</li>
+                                <li>{{ __('Advertenties bekijken en zoeken') }}</li>
+                                <li>{{ __('Contact opnemen met verkopers en verhuurders') }}</li>
                                 <li>{{ __('general.standard_search') }}</li>
                             </ul>
                         </div>

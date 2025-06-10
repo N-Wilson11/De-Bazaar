@@ -9,27 +9,29 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ __('Mijn Advertenties') }}</h5>
-                    <div>
-                        @if($canCreateNormal)
-                            <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
-                                <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
-                            </a>
-                        @else
-                            <button type="button" class="btn btn-sm btn-primary me-2 disabled" title="{{ __('general.max_normal_ads') }}">
-                                <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
-                            </button>
-                        @endif
-                        
-                        @if($canCreateRental)
-                            <a href="{{ route('rentals.create') }}" class="btn btn-sm btn-success">
-                                <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
-                            </a>
-                        @else
-                            <button type="button" class="btn btn-sm btn-success disabled" title="{{ __('general.max_rental_ads') }}">
-                                <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
-                            </button>
-                        @endif
-                    </div>
+                    @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                        <div>
+                            @if($canCreateNormal)
+                                <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
+                                    <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-sm btn-primary me-2 disabled" title="{{ __('general.max_normal_ads') }}">
+                                    <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                                </button>
+                            @endif
+                            
+                            @if($canCreateRental)
+                                <a href="{{ route('rentals.create') }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                                </a>
+                            @else
+                                <button type="button" class="btn btn-sm btn-success disabled" title="{{ __('general.max_rental_ads') }}">
+                                    <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                                </button>
+                            @endif
+                        </div>
+                    @endif
                 </div><div class="card-body">
                     @if (session('success'))
                         <div class="alert alert-success">
@@ -40,7 +42,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                      @if(!$canCreateNormal || !$canCreateRental)
+                      @if((Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk') && (!$canCreateNormal || !$canCreateRental))
                         <div class="alert alert-info mb-4">
                             <h5><i class="bi bi-info-circle me-2"></i>{{ __('general.ad_limit_reached') }}</h5>
                             <p class="mb-0">
@@ -200,27 +202,29 @@
                         <div class="text-center py-4">
                             <p class="mb-4">{{ __('Je hebt nog geen advertenties geplaatst.') }}</p>
                             <div class="d-flex justify-content-center gap-3">
-                                @if($canCreateNormal)
-                                    <a href="{{ route('advertisements.create') }}" class="btn btn-primary">
-                                        <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
-                                    </a>
-                                @else
-                                    <button type="button" class="btn btn-primary disabled" title="{{ __('general.max_normal_ads') }}">
-                                        <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
-                                    </button>
-                                @endif
+                                @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                                    @if($canCreateNormal)
+                                        <a href="{{ route('advertisements.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn btn-primary disabled" title="{{ __('general.max_normal_ads') }}">
+                                            <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
+                                        </button>
+                                    @endif
 
-                                @if($canCreateRental)
-                                    <a href="{{ route('rentals.create') }}" class="btn btn-success">
-                                        <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
-                                    </a>
-                                @else
-                                    <button type="button" class="btn btn-success disabled" title="{{ __('general.max_rental_ads') }}">
-                                        <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
-                                    </button>
+                                    @if($canCreateRental)
+                                        <a href="{{ route('rentals.create') }}" class="btn btn-success">
+                                            <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn btn-success disabled" title="{{ __('general.max_rental_ads') }}">
+                                            <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
+                                        </button>
+                                    @endif
                                 @endif
                             </div>
-                              @if(!$canCreateNormal || !$canCreateRental)
+                              @if((Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk') && (!$canCreateNormal || !$canCreateRental))
                                 <div class="alert alert-warning mt-4">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.

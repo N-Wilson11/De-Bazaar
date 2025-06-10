@@ -82,9 +82,11 @@ class AdvertisementController extends Controller
         $maxNormalAds = 4;
         $maxRentalAds = 4;
         
-        // Controleer of de gebruiker onder de limiet zit
-        $canCreateNormal = $normalAdsCount < $maxNormalAds;
-        $canCreateRental = $rentalAdsCount < $maxRentalAds;
+        // Controleer of de gebruiker onder de limiet zit en of het juiste gebruikerstype heeft
+        $canCreateNormal = ($normalAdsCount < $maxNormalAds) && 
+                          ($user->user_type === 'particulier' || $user->user_type === 'zakelijk');
+        $canCreateRental = ($rentalAdsCount < $maxRentalAds) && 
+                          ($user->user_type === 'particulier' || $user->user_type === 'zakelijk');
         
         return view('advertisements.index', compact(
             'advertisements', 
@@ -101,6 +103,14 @@ class AdvertisementController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        
+        // Alleen particuliere en zakelijke gebruikers mogen advertenties plaatsen
+        if ($user->user_type !== 'particulier' && $user->user_type !== 'zakelijk') {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('Je hebt geen rechten om advertenties te plaatsen. Alleen particuliere en zakelijke gebruikers kunnen advertenties plaatsen.'));
+        }
+        
         $categories = $this->getCategories();
         $conditions = $this->getConditions();
         
@@ -112,6 +122,14 @@ class AdvertisementController extends Controller
      */
     public function createRental()
     {
+        $user = Auth::user();
+        
+        // Alleen particuliere en zakelijke gebruikers mogen advertenties plaatsen
+        if ($user->user_type !== 'particulier' && $user->user_type !== 'zakelijk') {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('Je hebt geen rechten om verhuuradvertenties te plaatsen. Alleen particuliere en zakelijke gebruikers kunnen advertenties plaatsen.'));
+        }
+        
         $categories = $this->getCategories();
         $conditions = $this->getConditions();
         
@@ -121,10 +139,16 @@ class AdvertisementController extends Controller
      */
     public function store(Request $request)
     {
-        // Controleer maximaal aantal normale advertenties (max 4)
+        // Controleer of gebruiker geautoriseerd is om advertenties te plaatsen
         $user = Auth::user();
         
-        // Alle gebruikers hebben dezelfde limiet van 4 advertenties
+        // Alleen particuliere en zakelijke gebruikers mogen advertenties plaatsen
+        if ($user->user_type !== 'particulier' && $user->user_type !== 'zakelijk') {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('Je hebt geen rechten om advertenties te plaatsen. Alleen particuliere en zakelijke gebruikers kunnen advertenties plaatsen.'));
+        }
+        
+        // Controleer maximaal aantal normale advertenties (max 4)
         $normalAdsCount = Advertisement::where('user_id', Auth::id())
             ->where('is_rental', false)
             ->count();
@@ -159,10 +183,16 @@ class AdvertisementController extends Controller
      * Store a rental advertisement
      */    public function storeRental(Request $request)
     {
-        // Controleer maximaal aantal verhuur advertenties (max 4)
+        // Controleer of gebruiker geautoriseerd is om advertenties te plaatsen
         $user = Auth::user();
         
-        // Alle gebruikers hebben dezelfde limiet van 4 verhuur advertenties
+        // Alleen particuliere en zakelijke gebruikers mogen advertenties plaatsen
+        if ($user->user_type !== 'particulier' && $user->user_type !== 'zakelijk') {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('Je hebt geen rechten om verhuuradvertenties te plaatsen. Alleen particuliere en zakelijke gebruikers kunnen advertenties plaatsen.'));
+        }
+        
+        // Controleer maximaal aantal verhuur advertenties (max 4)
         $rentalAdsCount = Advertisement::where('user_id', Auth::id())
             ->where('is_rental', true)
             ->count();
