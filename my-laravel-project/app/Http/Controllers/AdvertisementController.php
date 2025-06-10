@@ -23,6 +23,7 @@ class AdvertisementController extends Controller
      */
     public function index()
     {
+        // Haal alle advertenties op van de ingelogde gebruiker (zowel regulier als verhuur)
         $advertisements = Advertisement::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -211,15 +212,23 @@ class AdvertisementController extends Controller
         
         // Delete associated images
         if (!empty($advertisement->images)) {
-            foreach ($advertisement->images as $image) {
+            // Controleer of images een array is of converteer het naar een array
+            $images = is_array($advertisement->images) ? $advertisement->images : 
+                      (is_string($advertisement->images) && !empty($advertisement->images) ? [$advertisement->images] : []);
+            
+            foreach ($images as $image) {
                 Storage::disk('public')->delete($image);
             }
         }
         
         $advertisement->delete();
         
+        $successMessage = $advertisement->is_rental 
+            ? __('De verhuuradvertentie is succesvol verwijderd!') 
+            : __('De advertentie is succesvol verwijderd!');
+            
         return redirect()->route('advertisements.index')
-            ->with('success', __('De advertentie is succesvol verwijderd!'));
+            ->with('success', $successMessage);
     }
     
     /**
@@ -235,18 +244,7 @@ class AdvertisementController extends Controller
         return view('advertisements.rentals', compact('rentals'));
     }
     
-    /**
-     * Display user's rental advertisements
-     */
-    public function myRentals()
-    {
-        $rentals = Advertisement::where('user_id', Auth::id())
-            ->where('is_rental', true)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-            
-        return view('advertisements.my_rentals', compact('rentals'));
-    }
+    // myRentals methode is verwijderd - alle advertenties staan nu in de index
     
     /**
      * Handle rental calendar functionality

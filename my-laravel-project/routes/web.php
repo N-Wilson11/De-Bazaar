@@ -59,7 +59,6 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::delete('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
         
         // Speciale verhuur advertentie routes
-        Route::get('/my-rentals', [App\Http\Controllers\AdvertisementController::class, 'myRentals'])->name('rentals.my');
         Route::get('/rentals/create', [App\Http\Controllers\AdvertisementController::class, 'createRental'])->name('rentals.create');
         Route::post('/rentals', [App\Http\Controllers\AdvertisementController::class, 'storeRental'])->name('rentals.store');
         Route::get('/rentals/{advertisement}/calendar', [App\Http\Controllers\AdvertisementController::class, 'calendar'])->name('advertisements.calendar');

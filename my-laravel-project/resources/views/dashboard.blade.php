@@ -124,8 +124,8 @@
                 <div class="card-body">
                     <p>{{ __('Verhuur je spullen en verdien extra inkomsten.') }}</p>
                     <div class="d-grid gap-2">
-                        <a href="{{ route('rentals.my') }}" class="btn btn-outline-success">
-                            {{ __('general.my_rentals') }}
+                        <a href="{{ route('advertisements.index') }}" class="btn btn-outline-success">
+                            {{ __('Mijn advertenties') }}
                         </a>
                         <a href="{{ route('rentals.index') }}" class="btn btn-outline-info">
                             {{ __('Bekijk verhuuraanbod') }}

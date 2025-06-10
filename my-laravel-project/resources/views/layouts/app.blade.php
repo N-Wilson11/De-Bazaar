@@ -228,7 +228,6 @@
                                     <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('Nieuwe Advertentie') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('Alle Advertenties') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ route('rentals.my') }}">{{ __('Mijn Verhuuraanbod') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('Nieuw Verhuuraanbod') }}</a></li>
                                     <li><a class="dropdown-item" href="{{ route('rentals.index') }}">{{ __('Alle Verhuuradvertenties') }}</a></li>
                                 </ul>
