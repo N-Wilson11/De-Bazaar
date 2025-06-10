@@ -74,7 +74,7 @@
                                                 <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $normalAdsRemaining }}</strong></p>
                                             </div>
                                             <div>
-                                                <a href="{{ route('advertisements.create') }}" class="btn btn-primary {{ $normalAdsRemaining === 0 && $maxNormalAds !== __('general.unlimited') ? 'disabled' : '' }}">
+                                                <a href="{{ route('advertisements.create') }}" class="btn btn-primary {{ $normalAdsRemaining === 0 ? 'disabled' : '' }}">
                                                     <i class="bi bi-plus-circle me-1"></i>{{ __('general.new_advertisement') }}
                                                 </a>
                                             </div>
@@ -95,7 +95,7 @@
                                                 <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $rentalAdsRemaining }}</strong></p>
                                             </div>
                                             <div>
-                                                <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 && $maxRentalAds !== __('general.unlimited') ? 'disabled' : '' }}">
+                                                <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 ? 'disabled' : '' }}">
                                                     <i class="bi bi-calendar-plus me-1"></i>{{ __('Nieuwe verhuuradvertentie') }}
                                                 </a>
                                             </div>
@@ -111,7 +111,7 @@
                             <h5>{{ __('general.business_info') }}</h5>
                             <p>{{ __('general.business_features') }}</p>
                             <ul>
-                                <li>{{ __('general.unlimited_ads') }}</li>
+                                <li>{{ __('general.ad_limit_info') }}</li>
                                 <li>{{ __('general.stats') }}</li>
                                 <li>{{ __('general.priority_search') }}</li>
                             </ul>

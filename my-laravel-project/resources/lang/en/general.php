@@ -25,7 +25,7 @@ return [
     'english' => 'English',
     'business_info' => 'Business account information',
     'business_features' => 'As a business advertiser, you have access to additional features:',
-    'unlimited_ads' => 'Unlimited number of advertisements',
+    'unlimited_ads' => 'Maximum of 4 sale and 4 rental advertisements',
     'stats' => 'Statistics about your advertisements',
     'priority_search' => 'Priority in search results',
     'download_contract_info' => 'Download your contract to formalize the partnership.',

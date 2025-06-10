@@ -40,7 +40,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                      @if((!$canCreateNormal || !$canCreateRental) && Auth::user()->user_type !== 'zakelijk')
+                      @if(!$canCreateNormal || !$canCreateRental)
                         <div class="alert alert-info mb-4">
                             <h5><i class="bi bi-info-circle me-2"></i>{{ __('general.ad_limit_reached') }}</h5>
                             <p class="mb-0">
@@ -220,7 +220,7 @@
                                     </button>
                                 @endif
                             </div>
-                              @if((!$canCreateNormal || !$canCreateRental) && Auth::user()->user_type !== 'zakelijk')
+                              @if(!$canCreateNormal || !$canCreateRental)
                                 <div class="alert alert-warning mt-4">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.

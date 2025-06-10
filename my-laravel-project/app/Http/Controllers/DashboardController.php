@@ -25,18 +25,13 @@ class DashboardController extends Controller
         $rentalAdsCount = Advertisement::where('user_id', $user->id)
             ->where('is_rental', true)
             ->count();
-            
-        // Bepaal hoeveel advertenties nog beschikbaar zijn
+              // Bepaal hoeveel advertenties nog beschikbaar zijn
         $maxNormalAds = 4;
         $maxRentalAds = 4;
-          // Voor zakelijke gebruikers is er geen limiet
-        if ($user->user_type === 'zakelijk') {
-            $maxNormalAds = __('general.unlimited');
-            $maxRentalAds = __('general.unlimited');
-        }
         
-        $normalAdsRemaining = ($maxNormalAds === __('general.unlimited')) ? __('general.unlimited') : ($maxNormalAds - $normalAdsCount);
-        $rentalAdsRemaining = ($maxRentalAds === __('general.unlimited')) ? __('general.unlimited') : ($maxRentalAds - $rentalAdsCount);
+        // Alle gebruikers hebben dezelfde limiet (4 voor elke type advertentie)
+        $normalAdsRemaining = $maxNormalAds - $normalAdsCount;
+        $rentalAdsRemaining = $maxRentalAds - $rentalAdsCount;
         
         return view('dashboard', compact(
             'normalAdsCount', 

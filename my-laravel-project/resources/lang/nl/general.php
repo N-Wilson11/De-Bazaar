@@ -25,7 +25,7 @@ return [
     'english' => 'Engels',
     'business_info' => 'Zakelijke account informatie',
     'business_features' => 'Als zakelijke adverteerder heb je toegang tot extra functionaliteiten:',
-    'unlimited_ads' => 'Onbeperkt aantal advertenties plaatsen',
+    'unlimited_ads' => 'Maximum 4 verkoop- en 4 verhuuradvertenties',
     'stats' => 'Statistieken over je advertenties',
     'priority_search' => 'Prioriteit in zoekresultaten',
     'download_contract_info' => 'Download je contract om de samenwerking te formaliseren.',

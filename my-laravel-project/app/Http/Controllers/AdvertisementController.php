@@ -78,18 +78,13 @@ class AdvertisementController extends Controller
             ->where('is_rental', true)
             ->count();
             
-        // Bepaal de limieten (4 voor normale gebruikers, onbeperkt voor zakelijke gebruikers)
+        // Bepaal de limieten (4 advertenties per categorie voor alle gebruikers)
         $maxNormalAds = 4;
         $maxRentalAds = 4;
         
-        // Voor zakelijke gebruikers is er geen limiet
-        $canCreateNormal = true;
-        $canCreateRental = true;
-        
-        if ($user->user_type !== 'zakelijk') {
-            $canCreateNormal = $normalAdsCount < $maxNormalAds;
-            $canCreateRental = $rentalAdsCount < $maxRentalAds;
-        }
+        // Controleer of de gebruiker onder de limiet zit
+        $canCreateNormal = $normalAdsCount < $maxNormalAds;
+        $canCreateRental = $rentalAdsCount < $maxRentalAds;
         
         return view('advertisements.index', compact(
             'advertisements', 
@@ -129,16 +124,14 @@ class AdvertisementController extends Controller
         // Controleer maximaal aantal normale advertenties (max 4)
         $user = Auth::user();
         
-        // Zakelijke gebruikers hebben geen limiet
-        if ($user->user_type !== 'zakelijk') {
-            $normalAdsCount = Advertisement::where('user_id', Auth::id())
-                ->where('is_rental', false)
-                ->count();
-                
-            if ($normalAdsCount >= 4) {
-                return redirect()->route('advertisements.index')
-                    ->with('error', __('general.max_normal_ads') . '. ' . __('general.delete_to_add') . '.');
-            }
+        // Alle gebruikers hebben dezelfde limiet van 4 advertenties
+        $normalAdsCount = Advertisement::where('user_id', Auth::id())
+            ->where('is_rental', false)
+            ->count();
+            
+        if ($normalAdsCount >= 4) {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('general.max_normal_ads') . '. ' . __('general.delete_to_add') . '.');
         }
             
         $validated = $this->validateAdvertisement($request);
@@ -169,16 +162,14 @@ class AdvertisementController extends Controller
         // Controleer maximaal aantal verhuur advertenties (max 4)
         $user = Auth::user();
         
-        // Zakelijke gebruikers hebben geen limiet
-        if ($user->user_type !== 'zakelijk') {
-            $rentalAdsCount = Advertisement::where('user_id', Auth::id())
-                ->where('is_rental', true)
-                ->count();
-                
-            if ($rentalAdsCount >= 4) {
-                return redirect()->route('advertisements.index')
-                    ->with('error', __('general.max_rental_ads') . '. ' . __('general.delete_to_add') . '.');
-            }
+        // Alle gebruikers hebben dezelfde limiet van 4 verhuur advertenties
+        $rentalAdsCount = Advertisement::where('user_id', Auth::id())
+            ->where('is_rental', true)
+            ->count();
+            
+        if ($rentalAdsCount >= 4) {
+            return redirect()->route('advertisements.index')
+                ->with('error', __('general.max_rental_ads') . '. ' . __('general.delete_to_add') . '.');
         }
         
         $validated = $this->validateRentalAdvertisement($request);
