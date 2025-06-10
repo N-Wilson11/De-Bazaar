@@ -26,7 +26,7 @@ class AdvertisementController extends Controller
         // Haal alle advertenties op van de ingelogde gebruiker (zowel regulier als verhuur)
         $advertisements = Advertisement::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(6);
             
         return view('advertisements.index', compact('advertisements'));
     }
@@ -239,7 +239,7 @@ class AdvertisementController extends Controller
         $rentals = Advertisement::where('is_rental', true)
             ->where('status', 'active')
             ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->paginate(6);
             
         return view('advertisements.rentals', compact('rentals'));
     }
@@ -397,7 +397,7 @@ class AdvertisementController extends Controller
         }
         
         $advertisements = $query->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->paginate(6);
             
         return view('advertisements.browse', compact('advertisements'));
     }

@@ -45,6 +45,30 @@
             background-color: {{ $dbBackgroundColor }} !important;
         }
         
+        /* Paginering stijlen */
+        .pagination {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .page-link {
+            color: {{ $dbPrimaryColor }} !important;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+        }
+        
+        .page-item.active .page-link {
+            color: #fff !important;
+            background-color: {{ $dbPrimaryColor }} !important;
+            border-color: {{ $dbPrimaryColor }} !important;
+        }
+        
+        .page-item.disabled .page-link {
+            color: #6c757d !important;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+        
         /* Voor containers die direct in een main staan, laat de achtergrondkleur transparant */
         main > .container, main > .container-fluid {
             background-color: transparent !important;
