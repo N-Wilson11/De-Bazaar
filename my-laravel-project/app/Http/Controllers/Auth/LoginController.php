@@ -29,7 +29,7 @@ class LoginController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
             $request->session()->regenerate();
             
-            return redirect()->intended(route('advertisements.browse'));
+            return redirect()->intended(route('dashboard'));
         }
         
         throw ValidationException::withMessages([
