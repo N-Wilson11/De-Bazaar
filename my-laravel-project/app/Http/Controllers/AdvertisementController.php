@@ -50,9 +50,7 @@ class AdvertisementController extends Controller
         $conditions = $this->getConditions();
         
         return view('advertisements.create_rental', compact('categories', 'conditions'));
-    }
-
-    /**
+    }    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -64,6 +62,8 @@ class AdvertisementController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('advertisements', 'public');
+                // Fix path separators for Windows
+                $path = str_replace('\\', '/', $path);
                 $images[] = $path;
             }
         }
@@ -76,9 +76,7 @@ class AdvertisementController extends Controller
         
         return redirect()->route('advertisements.show', $advertisement)
             ->with('success', __('De advertentie is succesvol aangemaakt!'));
-    }
-
-    /**
+    }    /**
      * Store a rental advertisement
      */    public function storeRental(Request $request)
     {
@@ -89,6 +87,8 @@ class AdvertisementController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('advertisements', 'public');
+                // Fix path separators for Windows
+                $path = str_replace('\\', '/', $path);
                 $images[] = $path;
             }
         }
@@ -166,12 +166,13 @@ class AdvertisementController extends Controller
         } else {
             $validated = $this->validateAdvertisement($request);
         }
-        
-        // Handle image uploads
+          // Handle image uploads
         $images = $advertisement->images ?? [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('advertisements', 'public');
+                // Fix path separators for Windows
+                $path = str_replace('\\', '/', $path);
                 $images[] = $path;
             }
             $validated['images'] = $images;

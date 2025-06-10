@@ -82,25 +82,24 @@
                                                 @endif
                                             </td>
                                             <td>{{ $advertisement->created_at->format('d-m-Y') }}</td>
-                                            <td class="text-center">{{ $advertisement->views }}</td>
-                                            <td class="text-end">
+                                            <td class="text-center">{{ $advertisement->views }}</td>                                            <td class="text-end">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i>
+                                                    <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-sm btn-info" title="{{ __('Bekijken') }}">
+                                                        <i class="bi bi-eye"></i> <span class="d-none d-md-inline">{{ __('Bekijken') }}</span>
                                                     </a>
-                                                    <a href="{{ route('advertisements.edit', $advertisement) }}" class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-pencil"></i>
+                                                    <a href="{{ route('advertisements.edit', $advertisement) }}" class="btn btn-sm btn-primary" title="{{ __('Bewerken') }}">
+                                                        <i class="bi bi-pencil"></i> <span class="d-none d-md-inline">{{ __('Bewerken') }}</span>
                                                     </a>
                                                     @if($advertisement->isRental())
-                                                        <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-sm btn-warning">
-                                                            <i class="bi bi-calendar-event"></i>
+                                                        <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-sm btn-warning" title="{{ __('Kalender') }}">
+                                                            <i class="bi bi-calendar-event"></i> <span class="d-none d-md-inline">{{ __('Kalender') }}</span>
                                                         </a>
                                                     @endif
                                                     <form action="{{ route('advertisements.destroy', $advertisement) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Weet je zeker dat je deze advertentie wilt verwijderen?') }}')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger">
-                                                            <i class="bi bi-trash"></i>
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="{{ __('Verwijderen') }}">
+                                                            <i class="bi bi-trash"></i> <span class="d-none d-md-inline">{{ __('Verwijderen') }}</span>
                                                         </button>
                                                     </form>
                                                 </div>

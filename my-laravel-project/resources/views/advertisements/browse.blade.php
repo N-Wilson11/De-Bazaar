@@ -90,10 +90,9 @@
                 <div class="row">
                     @foreach($advertisements as $advertisement)
                         <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="position-relative">
+                            <div class="card h-100 shadow-sm">                                <div class="position-relative">
                                     @if(!empty($advertisement->images))
-                                        <img src="{{ Storage::url($advertisement->images[0]) }}" class="card-img-top" alt="{{ $advertisement->title }}" style="height: 180px; object-fit: cover;">
+                                        <img src="{{ $advertisement->getFirstImageUrl() }}" class="card-img-top" alt="{{ $advertisement->title }}" style="height: 180px; object-fit: cover;">
                                     @else
                                         <div class="bg-light text-center py-5" style="height: 180px;">
                                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>

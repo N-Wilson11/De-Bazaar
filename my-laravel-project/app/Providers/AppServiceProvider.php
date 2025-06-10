@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fix URL handling for asset storage in Windows environments
+        \Illuminate\Support\Facades\URL::forceScheme('http');
+        
         // Set the application locale from session
         if (Session::has('locale')) {
             $locale = Session::get('locale');

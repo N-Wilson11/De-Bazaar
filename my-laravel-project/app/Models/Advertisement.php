@@ -42,6 +42,60 @@ class Advertisement extends Model
         'rental_deposit_amount',
         'rental_pickup_location',
     ];
+    
+    /**
+     * Get image URL for the first image
+     */
+    public function getFirstImageUrl()
+    {
+        if (empty($this->images)) {
+            return null;
+        }
+        
+        $image = $this->images[0];
+        
+        // Handle both absolute and relative paths
+        if (filter_var($image, FILTER_VALIDATE_URL)) {
+            return $image;
+        }
+        
+        // Fix path separators for Windows
+        $image = str_replace('\\', '/', $image);
+        
+        // Add storage URL prefix if needed
+        if (strpos($image, '/storage/') !== 0) {
+            return asset('storage/' . $image);
+        }
+        
+        return asset($image);
+    }
+    
+    /**
+     * Get all image URLs
+     */
+    public function getAllImageUrls()
+    {
+        if (empty($this->images)) {
+            return [];
+        }
+        
+        return collect($this->images)->map(function($image) {
+            // Handle both absolute and relative paths
+            if (filter_var($image, FILTER_VALIDATE_URL)) {
+                return $image;
+            }
+            
+            // Fix path separators for Windows
+            $image = str_replace('\\', '/', $image);
+            
+            // Add storage URL prefix if needed
+            if (strpos($image, '/storage/') !== 0) {
+                return asset('storage/' . $image);
+            }
+            
+            return asset($image);
+        })->all();
+    }
 
     /**
      * The attributes that should be cast.

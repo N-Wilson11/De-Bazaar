@@ -233,9 +233,9 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>                        
-                        @php
+                        </div>                          @php
                             $images = is_array($advertisement->images) ? $advertisement->images : [];
+                            $imageUrls = $advertisement->getAllImageUrls();
                         @endphp
                         @if(count($images) > 0)
                             <div class="row mb-4">
@@ -245,7 +245,7 @@
                                         @foreach($images as $index => $image)
                                             <div class="col-md-3 mb-3">
                                                 <div class="card">
-                                                    <img src="{{ Storage::url($image) }}" class="card-img-top" alt="Afbeelding {{ $index + 1 }}">
+                                                    <img src="{{ $imageUrls[$index] ?? asset('images/no-image.png') }}" class="card-img-top" alt="Afbeelding {{ $index + 1 }}">
                                                     <div class="card-body text-center">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="checkbox" name="remove_images[]" id="remove_image_{{ $index }}" value="{{ $image }}">

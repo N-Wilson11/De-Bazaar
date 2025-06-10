@@ -80,10 +80,9 @@
                 <div class="row">
                     @foreach($rentals as $rental)
                         <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="position-relative">
+                            <div class="card h-100 shadow-sm">                                <div class="position-relative">
                                     @if(!empty($rental->images))
-                                        <img src="{{ Storage::url($rental->images[0]) }}" class="card-img-top" alt="{{ $rental->title }}" style="height: 180px; object-fit: cover;">
+                                        <img src="{{ $rental->getFirstImageUrl() }}" class="card-img-top" alt="{{ $rental->title }}" style="height: 180px; object-fit: cover;">
                                     @else
                                         <div class="bg-light text-center py-5" style="height: 180px;">
                                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
