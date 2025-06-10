@@ -21,14 +21,41 @@ class AdvertisementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Haal alle advertenties op van de ingelogde gebruiker (zowel regulier als verhuur)
-        $advertisements = Advertisement::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
+        // Start query voor de advertenties van de ingelogde gebruiker
+        $query = Advertisement::where('user_id', Auth::id());
+        
+        // Filter op type (verhuur of normaal)
+        if ($request->filled('type')) {
+            if ($request->type === 'rental') {
+                $query->where('is_rental', true);
+            } elseif ($request->type === 'normal') {
+                $query->where('is_rental', false);
+            }
+        }
+        
+        // Filter op categorie
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->where('category', $request->category);
+        }
+        
+        // Zoeken op titel
+        if ($request->filled('search')) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+        
+        // Haal de gefilterde advertenties op
+        $advertisements = $query->orderBy('created_at', 'desc')
             ->paginate(6);
-            
-        return view('advertisements.index', compact('advertisements'));
+        
+        // Behoud de zoekparameter bij paginering
+        $advertisements->appends($request->except('page'));
+        
+        // Haal de categorieën op voor het filterformulier    
+        $categories = $this->getCategories();
+        
+        return view('advertisements.index', compact('advertisements', 'categories'));
     }
 
     /**

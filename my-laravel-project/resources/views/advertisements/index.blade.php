@@ -17,9 +17,7 @@
                             <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
                         </a>
                     </div>
-                </div>
-
-                <div class="card-body">
+                </div>                <div class="card-body">
                     @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -31,6 +29,55 @@
                             {{ session('error') }}
                         </div>
                     @endif
+                      <!-- Filter sectie -->
+                    <div class="mb-4">
+                        <form action="{{ route('advertisements.index') }}" method="GET" class="row g-3 align-items-end">
+                            <!-- Zoekbalk -->
+                            <div class="col-md-12 mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" placeholder="{{ __('Zoek op titel...') }}" value="{{ request('search') }}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-search me-1"></i>{{ __('Zoeken') }}
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Overige filters -->
+                            <div class="col-md-4">
+                                <label for="type" class="form-label">{{ __('Type advertentie') }}</label>
+                                <select id="type" name="type" class="form-select">
+                                    <option value="">{{ __('Alle types') }}</option>
+                                    <option value="normal" {{ request('type') == 'normal' ? 'selected' : '' }}>{{ __('Verkoop advertenties') }}</option>
+                                    <option value="rental" {{ request('type') == 'rental' ? 'selected' : '' }}>{{ __('Verhuuradvertenties') }}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="category" class="form-label">{{ __('Categorie') }}</label>
+                                <select id="category" name="category" class="form-select">
+                                    <option value="all">{{ __('Alle categorieën') }}</option>
+                                    @foreach($categories as $key => $value)
+                                        <option value="{{ $key }}" {{ request('category') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-filter me-1"></i>{{ __('Filteren') }}
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Reset link -->
+                        @if(request('search') || request('type') || request('category'))
+                            <div class="text-end mt-2">
+                                <a href="{{ route('advertisements.index') }}" class="text-decoration-none">
+                                    <i class="bi bi-x-circle"></i> {{ __('Reset filters') }}
+                                </a>
+                            </div>
+                        @endif
+                    </div>
 
                     @if(count($advertisements) > 0)
                         <div class="table-responsive">
