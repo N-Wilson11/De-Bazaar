@@ -248,7 +248,7 @@
                                         <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('Mijn Advertenties') }}</a></li>
                                         <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('Nieuwe Advertentie') }}</a></li>
                                     @endif
-                                    <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('Alle Advertenties') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('Alle Verkoopadvertenties') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                                         <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('Nieuw Verhuuraanbod') }}</a></li>
