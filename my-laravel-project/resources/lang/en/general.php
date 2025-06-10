@@ -50,6 +50,18 @@ return [
     'advertisement_not_found' => 'Advertisement not found',
     'no_advertisements' => 'No advertisements found',
     
+    // Advertisement limit translations
+    'ad_limit_reached' => 'Advertisement limit reached',
+    'max_normal_ads' => 'Maximum 4 sale advertisements',
+    'max_rental_ads' => 'Maximum 4 rental advertisements',
+    'ad_limit_info' => 'You can have a maximum of 4 sale advertisements and 4 rental advertisements',
+    'delete_to_add' => 'To place a new advertisement when you have reached the limit, you must first delete an existing one',
+    'ad_statistics' => 'Advertisement statistics',
+    'current_ads' => 'Current advertisements',
+    'maximum' => 'Maximum',
+    'still_available' => 'Still available',
+    'unlimited' => 'Unlimited',
+    
     // Rental related translations
     'rentals' => 'Rental Offers',
     'my_rentals' => 'My Rental Offers',

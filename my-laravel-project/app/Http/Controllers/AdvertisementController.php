@@ -68,7 +68,37 @@ class AdvertisementController extends Controller
         // Haal de categorieën op voor het filterformulier    
         $categories = $this->getCategories();
         
-        return view('advertisements.index', compact('advertisements', 'categories'));
+        // Tel het aantal normale en verhuur advertenties voor de gebruiker
+        $user = Auth::user();
+        $normalAdsCount = Advertisement::where('user_id', $user->id)
+            ->where('is_rental', false)
+            ->count();
+            
+        $rentalAdsCount = Advertisement::where('user_id', $user->id)
+            ->where('is_rental', true)
+            ->count();
+            
+        // Bepaal de limieten (4 voor normale gebruikers, onbeperkt voor zakelijke gebruikers)
+        $maxNormalAds = 4;
+        $maxRentalAds = 4;
+        
+        // Voor zakelijke gebruikers is er geen limiet
+        $canCreateNormal = true;
+        $canCreateRental = true;
+        
+        if ($user->user_type !== 'zakelijk') {
+            $canCreateNormal = $normalAdsCount < $maxNormalAds;
+            $canCreateRental = $rentalAdsCount < $maxRentalAds;
+        }
+        
+        return view('advertisements.index', compact(
+            'advertisements', 
+            'categories',
+            'normalAdsCount',
+            'rentalAdsCount',
+            'canCreateNormal',
+            'canCreateRental'
+        ));
     }
 
     /**
@@ -96,6 +126,21 @@ class AdvertisementController extends Controller
      */
     public function store(Request $request)
     {
+        // Controleer maximaal aantal normale advertenties (max 4)
+        $user = Auth::user();
+        
+        // Zakelijke gebruikers hebben geen limiet
+        if ($user->user_type !== 'zakelijk') {
+            $normalAdsCount = Advertisement::where('user_id', Auth::id())
+                ->where('is_rental', false)
+                ->count();
+                
+            if ($normalAdsCount >= 4) {
+                return redirect()->route('advertisements.index')
+                    ->with('error', __('general.max_normal_ads') . '. ' . __('general.delete_to_add') . '.');
+            }
+        }
+            
         $validated = $this->validateAdvertisement($request);
         
         // Handle image uploads
@@ -121,6 +166,21 @@ class AdvertisementController extends Controller
      * Store a rental advertisement
      */    public function storeRental(Request $request)
     {
+        // Controleer maximaal aantal verhuur advertenties (max 4)
+        $user = Auth::user();
+        
+        // Zakelijke gebruikers hebben geen limiet
+        if ($user->user_type !== 'zakelijk') {
+            $rentalAdsCount = Advertisement::where('user_id', Auth::id())
+                ->where('is_rental', true)
+                ->count();
+                
+            if ($rentalAdsCount >= 4) {
+                return redirect()->route('advertisements.index')
+                    ->with('error', __('general.max_rental_ads') . '. ' . __('general.delete_to_add') . '.');
+            }
+        }
+        
         $validated = $this->validateRentalAdvertisement($request);
         
         // Handle image uploads

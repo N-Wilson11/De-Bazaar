@@ -58,6 +58,54 @@
                         </table>
                     </div>
                     
+                    <!-- Advertentie statistieken -->
+                    <div class="mt-4">
+                        <h4>{{ __('general.ad_statistics') }}</h4>
+                        <div class="row">
+                            <!-- Verkoopadvertenties -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ __('general.advertisements') }}</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <p class="mb-1">{{ __('general.current_ads') }}: <strong>{{ $normalAdsCount }}</strong></p>
+                                                <p class="mb-1">{{ __('general.maximum') }}: <strong>{{ $maxNormalAds }}</strong></p>
+                                                <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $normalAdsRemaining }}</strong></p>
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('advertisements.create') }}" class="btn btn-primary {{ $normalAdsRemaining === 0 && $maxNormalAds !== __('general.unlimited') ? 'disabled' : '' }}">
+                                                    <i class="bi bi-plus-circle me-1"></i>{{ __('general.new_advertisement') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Verhuuradvertenties -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ __('Verhuuradvertenties') }}</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <p class="mb-1">{{ __('general.current_ads') }}: <strong>{{ $rentalAdsCount }}</strong></p>
+                                                <p class="mb-1">{{ __('general.maximum') }}: <strong>{{ $maxRentalAds }}</strong></p>
+                                                <p class="mb-1">{{ __('general.still_available') }}: <strong>{{ $rentalAdsRemaining }}</strong></p>
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 && $maxRentalAds !== __('general.unlimited') ? 'disabled' : '' }}">
+                                                    <i class="bi bi-calendar-plus me-1"></i>{{ __('Nieuwe verhuuradvertentie') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     @if(Auth::user()->user_type === 'zakelijk')
                         <div class="mt-4 p-3 bg-light rounded">
                             <h5>{{ __('general.business_info') }}</h5>
@@ -74,7 +122,7 @@
                             <h5>{{ __('general.normal_user_info') }}</h5>
                             <p>{{ __('general.normal_user_features') }}</p>
                             <ul>
-                                <li>{{ __('general.basic_ads') }}</li>
+                                <li>{{ __('general.ad_limit_info') }}</li>
                                 <li>{{ __('general.standard_search') }}</li>
                             </ul>
                         </div>
@@ -83,54 +131,12 @@
                             <h5>{{ __('general.private_user_info') }}</h5>
                             <p>{{ __('general.private_user_features') }}</p>
                             <ul>
-                                <li>{{ __('general.limited_ads') }}</li>
-                                <li>{{ __('general.standard_search') }}</li>
+                                <li>{{ __('general.ad_limit_info') }}</li>
+                                <li>{{ __('Advertenties bekijken en zoeken') }}</li>
+                                <li>{{ __('Contact opnemen met verkopers en verhuurders') }}</li>
                             </ul>
                         </div>
                     @endif
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row mt-4">
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>{{ __('general.advertisements') }}</span>
-                    <a href="{{ route('advertisements.create') }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-circle"></i> {{ __('general.new_advertisement') }}
-                    </a>
-                </div>
-                <div class="card-body">
-                    <p>{{ __('Plaats je advertenties en bereik kopers op De Bazaar.') }}</p>
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('advertisements.index') }}" class="btn btn-outline-primary">
-                            {{ __('general.my_advertisements') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>{{ __('general.rentals') }}</span>
-                    <a href="{{ route('rentals.create') }}" class="btn btn-success btn-sm">
-                        <i class="bi bi-plus-circle"></i> {{ __('general.new_rental') }}
-                    </a>
-                </div>
-                <div class="card-body">
-                    <p>{{ __('Verhuur je spullen en verdien extra inkomsten.') }}</p>
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('advertisements.index') }}" class="btn btn-outline-success">
-                            {{ __('Mijn advertenties') }}
-                        </a>
-                        <a href="{{ route('rentals.index') }}" class="btn btn-outline-info">
-                            {{ __('Bekijk verhuuraanbod') }}
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>

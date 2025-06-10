@@ -50,6 +50,18 @@ return [
     'advertisement_not_found' => 'Advertentie niet gevonden',
     'no_advertisements' => 'Geen advertenties gevonden',
     
+    // Advertentie limiet vertalingen
+    'ad_limit_reached' => 'Advertentielimiet bereikt',
+    'max_normal_ads' => 'Maximaal 4 verkoopadvertenties',
+    'max_rental_ads' => 'Maximaal 4 verhuuradvertenties',
+    'ad_limit_info' => 'Je kunt maximaal 4 verkoopadvertenties en 4 verhuuradvertenties hebben',
+    'delete_to_add' => 'Om een nieuwe advertentie te plaatsen wanneer je de limiet hebt bereikt, moet je eerst een bestaande verwijderen',
+    'ad_statistics' => 'Advertentie statistieken',
+    'current_ads' => 'Huidige advertenties',
+    'maximum' => 'Maximum',
+    'still_available' => 'Nog beschikbaar',
+    'unlimited' => 'Onbeperkt',
+    
     // Verhuur gerelateerde vertalingen
     'rentals' => 'Verhuuraanbod',
     'my_rentals' => 'Mijn Verhuuraanbod',

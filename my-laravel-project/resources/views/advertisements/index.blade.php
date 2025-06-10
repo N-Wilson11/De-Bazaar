@@ -10,23 +10,48 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ __('Mijn Advertenties') }}</h5>
                     <div>
-                        <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
-                            <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
-                        </a>
-                        <a href="{{ route('rentals.create') }}" class="btn btn-sm btn-success">
-                            <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
-                        </a>
+                        @if($canCreateNormal)
+                            <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
+                                <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-sm btn-primary me-2 disabled" title="{{ __('general.max_normal_ads') }}">
+                                <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                            </button>
+                        @endif
+                        
+                        @if($canCreateRental)
+                            <a href="{{ route('rentals.create') }}" class="btn btn-sm btn-success">
+                                <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-sm btn-success disabled" title="{{ __('general.max_rental_ads') }}">
+                                <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                            </button>
+                        @endif
                     </div>
-                </div>                <div class="card-body">
+                </div><div class="card-body">
                     @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
-                    @endif
-
-                    @if (session('error'))
+                    @endif                    @if (session('error'))
                         <div class="alert alert-danger">
                             {{ session('error') }}
+                        </div>
+                    @endif
+                      @if((!$canCreateNormal || !$canCreateRental) && Auth::user()->user_type !== 'zakelijk')
+                        <div class="alert alert-info mb-4">
+                            <h5><i class="bi bi-info-circle me-2"></i>{{ __('general.ad_limit_reached') }}</h5>
+                            <p class="mb-0">
+                                @if(!$canCreateNormal)
+                                    <span class="d-block"><i class="bi bi-dash me-2"></i>{{ __('general.max_normal_ads') }}</span>
+                                @endif
+                                @if(!$canCreateRental)
+                                    <span class="d-block"><i class="bi bi-dash me-2"></i>{{ __('general.max_rental_ads') }}</span>
+                                @endif
+                                <span class="d-block mt-2">{{ __('general.delete_to_add') }}</span>
+                            </p>
                         </div>
                     @endif
                       <!-- Filter sectie -->
@@ -171,18 +196,36 @@
                         
                         <div class="d-flex justify-content-center mt-4">
                             {{ $advertisements->links() }}
-                        </div>
-                    @else
+                        </div>                    @else
                         <div class="text-center py-4">
                             <p class="mb-4">{{ __('Je hebt nog geen advertenties geplaatst.') }}</p>
                             <div class="d-flex justify-content-center gap-3">
-                                <a href="{{ route('advertisements.create') }}" class="btn btn-primary">
-                                    <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
-                                </a>
-                                <a href="{{ route('rentals.create') }}" class="btn btn-success">
-                                    <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
-                                </a>
+                                @if($canCreateNormal)
+                                    <a href="{{ route('advertisements.create') }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
+                                    </a>
+                                @else
+                                    <button type="button" class="btn btn-primary disabled" title="{{ __('general.max_normal_ads') }}">
+                                        <i class="bi bi-plus-circle me-2"></i>{{ __('Nieuwe Advertentie') }}
+                                    </button>
+                                @endif
+
+                                @if($canCreateRental)
+                                    <a href="{{ route('rentals.create') }}" class="btn btn-success">
+                                        <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
+                                    </a>
+                                @else
+                                    <button type="button" class="btn btn-success disabled" title="{{ __('general.max_rental_ads') }}">
+                                        <i class="bi bi-calendar-plus me-2"></i>{{ __('Nieuw Verhuuraanbod') }}
+                                    </button>
+                                @endif
                             </div>
+                              @if((!$canCreateNormal || !$canCreateRental) && Auth::user()->user_type !== 'zakelijk')
+                                <div class="alert alert-warning mt-4">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>

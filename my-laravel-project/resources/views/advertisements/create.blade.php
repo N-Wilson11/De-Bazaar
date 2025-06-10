@@ -9,9 +9,14 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">{{ __('Advertentie Plaatsen') }}</h5>
+                    <small class="text-muted">{{ __('Let op: je kunt maximaal 4 verkoopadvertenties hebben') }}</small>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body">                    <!-- Waarschuwing over limiet -->
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.
+                    </div>
                     <form method="POST" action="{{ route('advertisements.store') }}" enctype="multipart/form-data">
                         @csrf
 

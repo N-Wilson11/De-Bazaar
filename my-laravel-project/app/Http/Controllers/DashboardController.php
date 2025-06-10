@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Advertisement;
 
 class DashboardController extends Controller
 {
@@ -13,6 +15,36 @@ class DashboardController extends Controller
     
     public function index()
     {
-        return view('dashboard');
+        // Tel het aantal verkoop- en verhuuradvertenties voor de huidige gebruiker
+        $user = Auth::user();
+        
+        $normalAdsCount = Advertisement::where('user_id', $user->id)
+            ->where('is_rental', false)
+            ->count();
+            
+        $rentalAdsCount = Advertisement::where('user_id', $user->id)
+            ->where('is_rental', true)
+            ->count();
+            
+        // Bepaal hoeveel advertenties nog beschikbaar zijn
+        $maxNormalAds = 4;
+        $maxRentalAds = 4;
+          // Voor zakelijke gebruikers is er geen limiet
+        if ($user->user_type === 'zakelijk') {
+            $maxNormalAds = __('general.unlimited');
+            $maxRentalAds = __('general.unlimited');
+        }
+        
+        $normalAdsRemaining = ($maxNormalAds === __('general.unlimited')) ? __('general.unlimited') : ($maxNormalAds - $normalAdsCount);
+        $rentalAdsRemaining = ($maxRentalAds === __('general.unlimited')) ? __('general.unlimited') : ($maxRentalAds - $rentalAdsCount);
+        
+        return view('dashboard', compact(
+            'normalAdsCount', 
+            'rentalAdsCount', 
+            'maxNormalAds', 
+            'maxRentalAds', 
+            'normalAdsRemaining', 
+            'rentalAdsRemaining'
+        ));
     }
 }

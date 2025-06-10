@@ -9,10 +9,14 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5 class="mb-0">{{ __('Verhuuradvertentie Plaatsen') }}</h5>
-                    <small class="text-muted">{{ __('Bied je item aan voor verhuur') }}</small>
+                    <small class="text-muted">{{ __('Bied je item aan voor verhuur') }} - {{ __('Let op: je kunt maximaal 4 verhuuradvertenties hebben') }}</small>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body">                    <!-- Waarschuwing over limiet -->
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.
+                    </div>
                     <form method="POST" action="{{ route('rentals.store') }}" enctype="multipart/form-data">
                         @csrf
 
