@@ -13,12 +13,10 @@ use App\Http\Middleware\CompanyThemeMiddleware;
 // Apply both language and theme middleware to all routes
 Route::middleware(['language', CompanyThemeMiddleware::class])->group(function () {
     
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::get('/', [LoginController::class, 'showLoginForm'])->name('home');
 
     Route::get('/home', function () {
-        return view('home');
+        return redirect()->route('advertisements.browse');
     });
 
     // Public advertisement routes
