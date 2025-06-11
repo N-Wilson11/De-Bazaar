@@ -142,7 +142,7 @@
                                             </td>
                                             <td>
                                                 @if($advertisement->isRental())
-                                                    <span class="badge bg-info">{{ __('Verhuur') }}</span>
+                                                    <span class="badge bg-info">{{ __('general.rentals') }}</span>
                                                 @elseif($advertisement->type === 'auction')
                                                     <span class="badge bg-warning">{{ __('Veiling') }}</span>
                                                 @else

@@ -12,15 +12,14 @@
                     
                     <div class="d-flex mb-3 gap-2 flex-wrap">
                         @if($advertisement->isRental())
-                            <span class="badge bg-info text-dark">{{ __('Verhuur') }}</span>
+                            <span class="badge bg-info text-dark">{{ __('general.rentals') }}</span>
                         @elseif($advertisement->type === 'auction')
                             <span class="badge bg-warning text-dark">{{ __('Veiling') }}</span>
                         @else
                             <span class="badge bg-secondary">{{ __('Verkoop') }}</span>
                         @endif
-                        
-                        <span class="badge bg-light text-dark border">{{ __('Categorie') }}: {{ ucfirst($advertisement->category) }}</span>
-                        <span class="badge bg-light text-dark border">{{ __('Conditie') }}: {{ ucfirst($advertisement->condition) }}</span>
+                          <span class="badge bg-light text-dark border">{{ __('general.category') }}: {{ ucfirst($advertisement->category) }}</span>
+                        <span class="badge bg-light text-dark border">{{ __('general.condition') }}: {{ ucfirst($advertisement->condition) }}</span>
                     </div>                    @php
                         $images = is_array($advertisement->images) ? $advertisement->images : [];
                         $imageUrls = $advertisement->getAllImageUrls();
@@ -143,7 +142,7 @@
                 <div class="card-body">
                     @if($advertisement->isRental())
                         <div class="mb-3 d-flex align-items-center">
-                            <span class="badge bg-info text-dark me-2 px-3 py-2">{{ __('Verhuur') }}</span>
+                            <span class="badge bg-info text-dark me-2 px-3 py-2">{{ __('general.rentals') }}</span>
                             <span class="h4 mb-0">€ {{ number_format($advertisement->rental_price_day ?? 0, 2, ',', '.') }}/dag</span>
                         </div>
                         <p class="text-muted">{{ __('Vervangingswaarde') }}: € {{ number_format($advertisement->price, 2, ',', '.') }}</p>
@@ -239,15 +238,14 @@
                                         </button>
                                     </form>
                                 @endif
-                            @endif
-                              @auth
+                            @endif                              @auth
                                 <form action="{{ route('favorites.toggle', $advertisement) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-outline-danger w-100">
                                         @if($advertisement->isFavoritedBy(Auth::user()))
-                                            <i class="bi bi-heart-fill me-1"></i>{{ __('Verwijderen uit favorieten') }}
+                                            <i class="bi bi-heart-fill me-1"></i>{{ __('general.remove_from_favorites') }}
                                         @else
-                                            <i class="bi bi-heart me-1"></i>{{ __('Toevoegen aan favorieten') }}
+                                            <i class="bi bi-heart me-1"></i>{{ __('general.add_to_favorites') }}
                                         @endif
                                     </button>
                                 </form>

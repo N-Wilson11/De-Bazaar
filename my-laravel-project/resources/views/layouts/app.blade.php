@@ -230,36 +230,36 @@
                     <!-- Left side navigation items -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/') }}">{{ __('Home') }}</a>
+                            <a class="nav-link" href="{{ url('/') }}">{{ __('general.home') }}</a>
                         </li>
                         
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('Dashboard') }}</a>
+                                <a class="nav-link" href="{{ url('/dashboard') }}">{{ __('general.dashboard') }}</a>
                             </li>
                             
                             <!-- Advertentie menu items -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="advertentiesDropdown" role="button" data-bs-toggle="dropdown">
-                                    {{ __('Advertenties') }}
+                                    {{ __('general.advertisements') }}
                                 </a>
                                 <ul class="dropdown-menu">
                                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
-                                        <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('Mijn Advertenties') }}</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('Nieuwe Advertentie') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('advertisements.index') }}">{{ __('general.my_advertisements') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('advertisements.create') }}">{{ __('general.new_advertisement') }}</a></li>
                                     @endif
-                                    <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('Alle Verkoopadvertenties') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('advertisements.browse') }}">{{ __('general.all_sale_advertisements') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
-                                        <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('Nieuw Verhuuraanbod') }}</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('rentals.create') }}">{{ __('general.new_rental') }}</a></li>
                                     @endif
-                                    <li><a class="dropdown-item" href="{{ route('rentals.index') }}">{{ __('Alle Verhuuradvertenties') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('rentals.index') }}">{{ __('general.all_rental_advertisements') }}</a></li>
                                 </ul>
                             </li>
                             
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('favorites.index') }}">
-                                    <i class="bi bi-heart me-1"></i>{{ __('Favorieten') }}
+                                    <i class="bi bi-heart me-1"></i>{{ __('general.favorites') }}
                                 </a>
                             </li>
                         @endauth
@@ -287,7 +287,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('cart.index') }}">
                                     <i class="bi bi-cart3"></i>
-                                    {{ __('Winkelwagen') }}
+                                    {{ __('general.cart') }}
                                     @php
                                         $cartItemCount = Auth::user()->activeCart ? Auth::user()->activeCart->items->count() : 0;
                                     @endphp
@@ -301,7 +301,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('orders.index') }}">
                                     <i class="bi bi-receipt"></i>
-                                    {{ __('Bestellingen') }}
+                                    {{ __('general.my_orders') }}
                                 </a>
                             </li>
                         @endauth
@@ -320,10 +320,10 @@
                         <!-- Auth Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('general.login') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                <a class="nav-link" href="{{ route('register') }}">{{ __('general.register') }}</a>
                             </li>
                         @else
                             <li class="nav-item dropdown">
@@ -333,12 +333,12 @@
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('orders.index') }}">
-                                            <i class="bi bi-receipt me-2"></i>{{ __('Mijn Bestellingen') }}
+                                            <i class="bi bi-receipt me-2"></i>{{ __('general.my_orders') }}
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('cart.index') }}">
-                                            <i class="bi bi-cart3 me-2"></i>{{ __('Winkelwagen') }}
+                                            <i class="bi bi-cart3 me-2"></i>{{ __('general.cart') }}
                                             @php
                                                 $cartItemCount = Auth::user()->activeCart ? Auth::user()->activeCart->items->count() : 0;
                                             @endphp
@@ -351,7 +351,7 @@
                                     <li>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            <i class="bi bi-box-arrow-right me-2"></i>{{ __('Uitloggen') }}
+                                            <i class="bi bi-box-arrow-right me-2"></i>{{ __('general.logout') }}
                                         </a>
                                     </li>
                                 </ul>

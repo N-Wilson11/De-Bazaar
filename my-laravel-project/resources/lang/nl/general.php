@@ -42,6 +42,8 @@ return [
     
     // Advertentie gerelateerde vertalingen
     'advertisements' => 'Advertenties',
+    'all_sale_advertisements' => 'Alle Verkoopadvertenties',
+    'all_rental_advertisements' => 'Alle Verhuuradvertenties',
     'my_advertisements' => 'Mijn Advertenties',
     'new_advertisement' => 'Nieuwe Advertentie',
     'advertisement_details' => 'Advertentie details',
@@ -107,6 +109,19 @@ return [
     'delete' => 'Verwijderen',
     'confirm_delete' => 'Weet je zeker dat je dit wilt verwijderen?',
     'required_fields' => 'Velden met * zijn verplicht',
+    
+    // Favorieten gerelateerde vertalingen
+    'favorites' => 'Favorieten',
+    'my_favorites' => 'Mijn Favorieten',
+    'add_to_favorites' => 'Toevoegen aan favorieten',
+    'remove_from_favorites' => 'Verwijderen uit favorieten',
+    'no_favorites' => 'Geen favorieten',
+    'no_favorites_description' => 'Je hebt nog geen advertenties toegevoegd aan je favorieten.',
+    'browse_advertisements' => 'Advertenties bekijken',
+    'favorite_added' => 'Advertentie toegevoegd aan favorieten.',
+    'favorite_removed' => 'Advertentie verwijderd uit favorieten.',
+    'favorites_description' => 'Hieronder vind je alle advertenties die je hebt opgeslagen als favoriet.',
+    'unknown' => 'Onbekend',
     
     // Shopping Cart en Order gerelateerde teksten
     'cart' => 'Winkelwagen',

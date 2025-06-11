@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', __('Mijn Favorieten'))
+@section('title', __('general.my_favo                                <span class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ $advertisement->location ?: __('general.unknown') }}
+                                </small>es'))
 
 @section('content')
 <div class="container py-4">
@@ -8,7 +10,7 @@
         <div class="col-md-12 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h1 class="h3 mb-0">{{ __('Mijn Favorieten') }}</h1>
+                    <h1 class="h3 mb-0">{{ __('general.my_favorites') }}</h1>
                 </div>
                 <div class="card-body">
                     @if (session('success'))
@@ -23,7 +25,7 @@
                         </div>
                     @endif
 
-                    <p>{{ __('Hieronder vind je alle advertenties die je hebt opgeslagen als favoriet.') }}</p>
+                    <p>{{ __('general.favorites_description') }}</p>
                 </div>
             </div>
         </div>
@@ -43,8 +45,7 @@
                             <div class="position-absolute top-0 end-0 m-2">
                                 <form action="{{ route('favorites.destroy', $advertisement) }}" method="POST">
                                     @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ __('Verwijderen uit favorieten') }}">
+                                    @method('DELETE')                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ __('general.remove_from_favorites') }}">
                                         <i class="bi bi-heart-fill"></i>
                                     </button>
                                 </form>
@@ -52,7 +53,7 @@
                             
                             @if($advertisement->isRental())
                                 <div class="position-absolute top-0 start-0 m-2">
-                                    <span class="badge bg-info text-dark">{{ __('Verhuur') }}</span>
+                                    <span class="badge bg-info text-dark">{{ __('general.rentals') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -78,23 +79,21 @@
                                 </a>
                             </div>
                             
-                            <div class="d-grid gap-2 mt-3">
-                                <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-primary">
-                                    <i class="bi bi-eye me-1"></i>{{ __('Bekijken') }}
+                            <div class="d-grid gap-2 mt-3">                                <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-primary">
+                                    <i class="bi bi-eye me-1"></i>{{ __('general.view') }}
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
-        @else
-            <div class="col-md-12">
+        @else            <div class="col-md-12">
                 <div class="alert alert-info text-center py-5">
                     <i class="bi bi-heart h1 d-block mb-3"></i>
-                    <h4>{{ __('Geen favorieten') }}</h4>
-                    <p>{{ __('Je hebt nog geen advertenties toegevoegd aan je favorieten.') }}</p>
+                    <h4>{{ __('general.no_favorites') }}</h4>
+                    <p>{{ __('general.no_favorites_description') }}</p>
                     <a href="{{ route('advertisements.browse') }}" class="btn btn-primary mt-2">
-                        <i class="bi bi-search me-1"></i>{{ __('Advertenties bekijken') }}
+                        <i class="bi bi-search me-1"></i>{{ __('general.browse_advertisements') }}
                     </a>
                 </div>
             </div>

@@ -113,7 +113,7 @@ use Illuminate\Support\Facades\Auth;
                                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                                         </div>
                                     @endif
-                                    <span class="badge bg-info position-absolute top-0 start-0 m-2">{{ __('Verhuur') }}</span>
+                                    <span class="badge bg-info position-absolute top-0 start-0 m-2">{{ __('general.rentals') }}</span>
                                 </div>
                                 
                                 <div class="card-body d-flex flex-column">
@@ -140,18 +140,18 @@ use Illuminate\Support\Facades\Auth;
                                         <a href="{{ route('advertisers.show', $rental->user) }}" class="text-decoration-none">
                                             <small><i class="bi bi-person"></i> {{ $rental->user->name }}</small>
                                         </a>
-                                        
-                                        @auth
+                                          @auth
                                             <form action="{{ route('favorites.toggle', $rental) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="btn btn-sm {{ $rental->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}">
+                                                <button type="submit" class="btn btn-sm {{ $rental->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}"
+                                                    title="{{ $rental->isFavoritedBy(Auth::user()) ? __('general.remove_from_favorites') : __('general.add_to_favorites') }}">
                                                     <i class="bi {{ $rental->isFavoritedBy(Auth::user()) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                                 </button>
                                             </form>
                                         @endauth
                                     </div>
                                     
-                                    <a href="{{ route('advertisements.show', $rental) }}" class="btn btn-outline-primary mt-3">{{ __('Bekijken') }}</a>
+                                    <a href="{{ route('advertisements.show', $rental) }}" class="btn btn-outline-primary mt-3">{{ __('general.view') }}</a>
                                 </div>
                             </div>
                         </div>

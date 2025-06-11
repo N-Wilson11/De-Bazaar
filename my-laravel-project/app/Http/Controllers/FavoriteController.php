@@ -36,15 +36,14 @@ class FavoriteController extends Controller
     {
         $user = auth()->user();
         $isFavorite = $advertisement->isFavoritedBy($user);
-        
-        if ($isFavorite) {
+          if ($isFavorite) {
             // Remove from favorites
             $user->favoritedAdvertisements()->detach($advertisement->id);
-            $message = __('Advertentie verwijderd uit favorieten.');
+            $message = __('general.favorite_removed');
         } else {
             // Add to favorites
             $user->favoritedAdvertisements()->attach($advertisement->id);
-            $message = __('Advertentie toegevoegd aan favorieten.');
+            $message = __('general.favorite_added');
         }
         
         if (request()->ajax()) {
@@ -66,6 +65,6 @@ class FavoriteController extends Controller
         $user = auth()->user();
         $user->favoritedAdvertisements()->detach($advertisement->id);
         
-        return back()->with('success', __('Advertentie verwijderd uit favorieten.'));
+        return back()->with('success', __('general.favorite_removed'));
     }
 }

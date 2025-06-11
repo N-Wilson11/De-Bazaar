@@ -145,18 +145,18 @@
                                         <a href="{{ route('advertisers.show', $advertisement->user) }}" class="text-decoration-none">
                                             <small><i class="bi bi-person"></i> {{ $advertisement->user->name }}</small>
                                         </a>
-                                        
-                                        @auth
+                                          @auth
                                             <form action="{{ route('favorites.toggle', $advertisement) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="btn btn-sm {{ $advertisement->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}">
+                                                <button type="submit" class="btn btn-sm {{ $advertisement->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}" 
+                                                    title="{{ $advertisement->isFavoritedBy(Auth::user()) ? __('general.remove_from_favorites') : __('general.add_to_favorites') }}">
                                                     <i class="bi {{ $advertisement->isFavoritedBy(Auth::user()) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                                                 </button>
                                             </form>
                                         @endauth
                                     </div>
                                     
-                                    <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-outline-primary mt-3">{{ __('Bekijken') }}</a>
+                                    <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-outline-primary mt-3">{{ __('general.view') }}</a>
                                 </div>
                             </div>
                         </div>
