@@ -2,6 +2,10 @@
 
 @section('title', __('Verhuuraanbod'))
 
+@php
+use Illuminate\Support\Facades\Auth;
+@endphp
+
 @section('content')
 <div class="container py-4">
     <div class="row">
@@ -132,11 +136,19 @@
                                             {{ $rental->created_at->format('d-m-Y') }}
                                         </small>
                                     </div>
-                                    
-                                    <div class="mt-2">
+                                      <div class="d-flex justify-content-between align-items-center mt-2">
                                         <a href="{{ route('advertisers.show', $rental->user) }}" class="text-decoration-none">
                                             <small><i class="bi bi-person"></i> {{ $rental->user->name }}</small>
                                         </a>
+                                        
+                                        @auth
+                                            <form action="{{ route('favorites.toggle', $rental) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm {{ $rental->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}">
+                                                    <i class="bi {{ $rental->isFavoritedBy(Auth::user()) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                                </button>
+                                            </form>
+                                        @endauth
                                     </div>
                                     
                                     <a href="{{ route('advertisements.show', $rental) }}" class="btn btn-outline-primary mt-3">{{ __('Bekijken') }}</a>

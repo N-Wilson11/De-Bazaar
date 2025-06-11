@@ -256,8 +256,8 @@
                             @if($advertisement->purchase_status === 'sold')
                                 <button class="btn btn-secondary w-100 mt-2" disabled>
                                     <i class="bi bi-bag-check me-1"></i>{{ __('Verkocht') }}
-                                </button>
-                            @elseif($advertisement->purchase_status === 'reserved')                                <button class="btn btn-warning w-100 mt-2" disabled>
+                                </button>                            @elseif($advertisement->purchase_status === 'reserved')
+                                <button class="btn btn-warning w-100 mt-2" disabled>
                                     <i class="bi bi-hourglass-split me-1"></i>{{ __('Gereserveerd') }}
                                 </button>
                             @elseif(Auth::check() && $advertisement->user_id === Auth::id())
