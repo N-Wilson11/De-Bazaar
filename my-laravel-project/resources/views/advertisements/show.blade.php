@@ -186,14 +186,35 @@
                                 </button>
                             </form>
                         </div>
-                    @else
-                        <div class="mb-3">
+                    @else                        <div class="mb-3">
                             <h6>{{ __('Aangeboden door') }}</h6>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-person-circle fs-4 me-2"></i>
                                 <div>
-                                    <div>{{ $advertisement->user->name }}</div>
-                                    <small class="text-muted">{{ __('Lid sinds') }} {{ $advertisement->user->created_at->format('M Y') }}</small>
+                                    <a href="{{ route('advertisers.show', $advertisement->user) }}" class="text-decoration-none">
+                                        <div>{{ $advertisement->user->name }}</div>
+                                        <div class="d-flex align-items-center mt-1">
+                                            @php
+                                                $avgRating = $advertisement->user->getAverageRatingAttribute();
+                                                $reviewCount = $advertisement->user->getReviewCountAttribute();
+                                            @endphp
+                                            @if($avgRating)
+                                                <div class="me-2">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= round($avgRating))
+                                                            <i class="bi bi-star-fill text-warning small"></i>
+                                                        @else
+                                                            <i class="bi bi-star text-muted small"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <small>({{ number_format($avgRating, 1) }} - {{ $reviewCount }} {{ __('general.reviews') }})</small>
+                                            @else
+                                                <small class="text-muted">{{ __('general.no_reviews') }}</small>
+                                            @endif
+                                        </div>
+                                        <small class="text-muted">{{ __('Lid sinds') }} {{ $advertisement->user->created_at->format('M Y') }}</small>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +223,11 @@
                             <a href="mailto:{{ $advertisement->user->email }}?subject={{ urlencode('Interesse in: ' . $advertisement->title) }}" class="btn btn-primary">
                                 <i class="bi bi-envelope me-1"></i>{{ __('Contact opnemen') }}
                             </a>
-                              @if($advertisement->isRental())
+                              <a href="{{ route('advertisers.show', $advertisement->user) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-person-badge me-1"></i>{{ __('general.view_seller_profile') }}
+                            </a>
+                            
+                            @if($advertisement->isRental())
                                 <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-info">
                                     <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
                                 </a>

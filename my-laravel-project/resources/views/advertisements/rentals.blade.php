@@ -123,8 +123,7 @@
                                     <p class="card-text flex-grow-1" style="height: 50px; overflow: hidden;">
                                         {{ Str::limit($rental->description, 100) }}
                                     </p>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                      <div class="d-flex justify-content-between align-items-center mt-2">
                                         <small class="text-muted">
                                             <i class="bi bi-geo-alt"></i> {{ $rental->location ?: __('Onbekend') }}
                                         </small>
@@ -132,6 +131,12 @@
                                         <small class="text-muted">
                                             {{ $rental->created_at->format('d-m-Y') }}
                                         </small>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <a href="{{ route('advertisers.show', $rental->user) }}" class="text-decoration-none">
+                                            <small><i class="bi bi-person"></i> {{ $rental->user->name }}</small>
+                                        </a>
                                     </div>
                                     
                                     <a href="{{ route('advertisements.show', $rental) }}" class="btn btn-outline-primary mt-3">{{ __('Bekijken') }}</a>

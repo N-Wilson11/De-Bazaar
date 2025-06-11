@@ -79,13 +79,19 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/orders/{order}/confirmation', [App\Http\Controllers\OrderController::class, 'confirmation'])->name('orders.confirmation');
         Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
         
-        // Review routes
+        // Advertisement Review routes
         Route::get('/advertisements/{advertisement}/reviews', [App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/advertisements/{advertisement}/reviews/create', [App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
         Route::post('/advertisements/{advertisement}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/reviews/{review}/edit', [App\Http\Controllers\ReviewController::class, 'edit'])->name('reviews.edit');
         Route::put('/reviews/{review}', [App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
         Route::delete('/reviews/{review}', [App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+        
+        // Advertiser Profile and Review routes
+        Route::get('/advertisers/{user}', [App\Http\Controllers\AdvertiserController::class, 'show'])->name('advertisers.show');
+        Route::get('/advertisers/{user}/reviews', [App\Http\Controllers\AdvertiserReviewController::class, 'index'])->name('advertiser.reviews.index');
+        Route::get('/advertisers/{user}/reviews/create', [App\Http\Controllers\AdvertiserReviewController::class, 'create'])->name('advertiser.reviews.create');
+        Route::post('/advertisers/{user}/reviews', [App\Http\Controllers\AdvertiserReviewController::class, 'store'])->name('advertiser.reviews.store');
         
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {

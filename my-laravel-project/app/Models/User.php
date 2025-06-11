@@ -151,4 +151,40 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+    
+    /**
+     * Get all reviews received by this user (as advertiser).
+     */
+    public function reviewsReceived(): HasMany
+    {
+        return $this->hasMany(Review::class, 'reviewer_id');
+    }
+    
+    /**
+     * Get all reviews about this user as an advertiser.
+     */
+    public function advertiserReviews(): HasMany
+    {
+        return $this->reviewsReceived()->where('review_type', 'advertiser');
+    }
+    
+    /**
+     * Calculate the average rating as an advertiser.
+     */
+    public function getAverageRatingAttribute(): ?float
+    {
+        $reviews = $this->advertiserReviews;
+        if ($reviews->isEmpty()) {
+            return null;
+        }
+        return round($reviews->avg('rating'), 1);
+    }
+    
+    /**
+     * Get the total number of reviews received as an advertiser.
+     */
+    public function getReviewCountAttribute(): int
+    {
+        return $this->advertiserReviews()->count();
+    }
 }

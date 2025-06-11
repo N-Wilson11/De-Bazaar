@@ -92,7 +92,16 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $item->seller ? $item->seller->name : __('Onbekend') }}</td>
+                                        <td>
+                                            @if($item->seller)
+                                                <a href="{{ route('advertisers.show', $item->seller) }}" class="text-decoration-none">
+                                                    {{ $item->seller->name }}
+                                                    <i class="bi bi-person-vcard text-primary small ms-1"></i>
+                                                </a>
+                                            @else
+                                                {{ __('Onbekend') }}
+                                            @endif
+                                        </td>
                                         <td>€ {{ number_format($item->price, 2, ',', '.') }}</td>
                                         <td>{{ $item->quantity }}</td>
                                         <td>€ {{ number_format($item->price * $item->quantity, 2, ',', '.') }}</td>
@@ -137,6 +146,38 @@
                                 <i class="bi bi-x-circle me-1"></i>{{ __('Bestelling annuleren') }}
                             </button>
                         </form>
+                    </div>
+                </div>
+            @endif
+            
+            @if($order->status === 'completed')
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">{{ __('Beoordelingen') }}</h5>
+                        
+                        <div class="mb-4">
+                            <p>{{ __('Je kunt nu de verkopers van deze producten beoordelen:') }}</p>
+                            <ul class="list-group">
+                                @php
+                                    $sellers = $order->items->map(function($item) {
+                                        return $item->seller;
+                                    })->unique('id');
+                                @endphp
+                                
+                                @foreach($sellers as $seller)
+                                    @if($seller)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ $seller->name }}</strong>
+                                            </div>
+                                            <a href="{{ route('advertiser.reviews.create', $seller) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-star me-1"></i>{{ __('general.review_advertiser') }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
             @endif

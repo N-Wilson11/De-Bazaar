@@ -170,4 +170,20 @@ return [
     'star' => 'ster',
     'average_rating' => 'Gemiddelde beoordeling',
     'based_on_reviews' => 'Gebaseerd op :count beoordelingen',
+    
+    // Adverteerder review vertalingen
+    'advertiser_profile' => 'Profiel van adverteerder',
+    'advertiser_reviews' => 'Beoordelingen van adverteerder',
+    'review_advertiser' => 'Beoordeel deze adverteerder',
+    'cannot_review_this_advertiser' => 'Je kunt deze adverteerder niet beoordelen',
+    'already_reviewed_advertiser' => 'Je hebt deze adverteerder al beoordeeld',
+    'review_title' => 'Titel',
+    'customer_service' => 'Klantenservice',
+    'review_experience' => 'Hoe was je ervaring?',
+    'other_ads_by' => 'Andere advertenties van',
+    'contact_advertiser' => 'Contact opnemen met adverteerder',
+    'advertiser_since' => 'Adverteerder sinds',
+    'view_all_reviews' => 'Bekijk alle beoordelingen',
+    'view_seller_profile' => 'Bekijk verkoperprofiel',
+    
 ];
