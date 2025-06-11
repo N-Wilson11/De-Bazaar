@@ -256,6 +256,12 @@
                                     <li><a class="dropdown-item" href="{{ route('rentals.index') }}">{{ __('Alle Verhuuradvertenties') }}</a></li>
                                 </ul>
                             </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cart.index') }}">
+                                    <i class="bi bi-cart me-1"></i>{{ __('Winkelwagen') }}
+                                </a>
+                            </li>
                         @endauth
                         
                         <!-- Admin Menu Items -->
@@ -276,6 +282,30 @@
                     
                     <!-- Right side navigation items -->
                     <ul class="navbar-nav ms-auto">
+                        @auth
+                            <!-- Shopping Cart Link -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cart.index') }}">
+                                    <i class="bi bi-cart3"></i>
+                                    {{ __('Winkelwagen') }}
+                                    @php
+                                        $cartItemCount = Auth::user()->activeCart ? Auth::user()->activeCart->items->count() : 0;
+                                    @endphp
+                                    @if($cartItemCount > 0)
+                                        <span class="badge rounded-pill bg-danger">{{ $cartItemCount }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                            
+                            <!-- Orders Link -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('orders.index') }}">
+                                    <i class="bi bi-receipt"></i>
+                                    {{ __('Bestellingen') }}
+                                </a>
+                            </li>
+                        @endauth
+                        
                         <!-- Language Switcher -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
@@ -302,9 +332,26 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
+                                        <a class="dropdown-item" href="{{ route('orders.index') }}">
+                                            <i class="bi bi-receipt me-2"></i>{{ __('Mijn Bestellingen') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('cart.index') }}">
+                                            <i class="bi bi-cart3 me-2"></i>{{ __('Winkelwagen') }}
+                                            @php
+                                                $cartItemCount = Auth::user()->activeCart ? Auth::user()->activeCart->items->count() : 0;
+                                            @endphp
+                                            @if($cartItemCount > 0)
+                                                <span class="badge rounded-pill bg-danger">{{ $cartItemCount }}</span>
+                                            @endif
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
+                                            <i class="bi bi-box-arrow-right me-2"></i>{{ __('Uitloggen') }}
                                         </a>
                                     </li>
                                 </ul>

@@ -24,6 +24,7 @@ class Advertisement extends Model
         'category',
         'type',
         'status',
+        'purchase_status',
         'images',
         'location',
         'is_highlighted',
@@ -119,6 +120,13 @@ class Advertisement extends Model
     ];
 
     /**
+     * The purchase status constants
+     */
+    const PURCHASE_STATUS_AVAILABLE = 'available';
+    const PURCHASE_STATUS_SOLD = 'sold';
+    const PURCHASE_STATUS_RESERVED = 'reserved';
+
+    /**
      * Get the user that owns the advertisement.
      */
     public function user(): BelongsTo
@@ -132,6 +140,16 @@ class Advertisement extends Model
     public function isRental(): bool
     {
         return $this->is_rental === true;
+    }
+    
+    /**
+     * Check if the advertisement is available for purchase.
+     */
+    public function isAvailableForPurchase(): bool
+    {
+        return $this->purchase_status === self::PURCHASE_STATUS_AVAILABLE && 
+               $this->status === 'active' &&
+               !$this->isRental();
     }
 
     /**

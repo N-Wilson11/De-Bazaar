@@ -119,4 +119,28 @@ class User extends Authenticatable
     {
         return $this->hasMany(Advertisement::class)->where('is_rental', true);
     }
+    
+    /**
+     * Get the active cart for the user.
+     */
+    public function activeCart()
+    {
+        return $this->hasOne(Cart::class)->where('status', 'active')->latest();
+    }
+    
+    /**
+     * Get all carts for the user.
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+    
+    /** 
+     * Get all orders for the user.
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }

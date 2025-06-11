@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UserTypesSeeder::class,
             CompanyThemeSeeder::class,
             AdvertisementSeeder::class,
+            PurchasableAdvertisementsSeeder::class,
         ]);
     }
 }

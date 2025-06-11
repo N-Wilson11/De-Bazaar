@@ -242,7 +242,15 @@ class AdvertisementController extends Controller
         // Increment view count
         $advertisement->increment('views');
         
-        return view('advertisements.show', compact('advertisement'));
+        // Check if the advertisement is available for purchase
+        $canBePurchased = $advertisement->isAvailableForPurchase();
+        
+        // Users shouldn't be able to purchase their own advertisements
+        if (Auth::check() && $advertisement->user_id === Auth::id()) {
+            $canBePurchased = false;
+        }
+        
+        return view('advertisements.show', compact('advertisement', 'canBePurchased'));
     }
 
     /**

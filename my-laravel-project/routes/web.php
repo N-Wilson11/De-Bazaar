@@ -64,6 +64,21 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/rentals/{advertisement}/calendar', [App\Http\Controllers\AdvertisementController::class, 'calendar'])->name('advertisements.calendar');
         Route::post('/rentals/{advertisement}/availability', [App\Http\Controllers\AdvertisementController::class, 'updateAvailability'])->name('advertisements.update-availability');
         
+        // Cart routes
+        Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+        Route::post('/cart/add/{advertisement}', [App\Http\Controllers\CartController::class, 'addItem'])->name('cart.add');
+        Route::post('/cart/update/{cartItem}', [App\Http\Controllers\CartController::class, 'updateQuantity'])->name('cart.update');
+        Route::delete('/cart/remove/{cartItem}', [App\Http\Controllers\CartController::class, 'removeItem'])->name('cart.remove');
+        Route::delete('/cart/clear', [App\Http\Controllers\CartController::class, 'clearCart'])->name('cart.clear');
+        Route::get('/cart/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('cart.checkout');
+        
+        // Order routes
+        Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
+        Route::post('/orders', [App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/{order}/confirmation', [App\Http\Controllers\OrderController::class, 'confirmation'])->name('orders.confirmation');
+        Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
+        
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {
             Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');
