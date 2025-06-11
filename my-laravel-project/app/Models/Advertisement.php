@@ -5,17 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Advertisement extends Model
 {
     use HasFactory;
+    
+    // Purchase status constants
+    const PURCHASE_STATUS_AVAILABLE = 'available';
+    const PURCHASE_STATUS_SOLD = 'sold';
+    const PURCHASE_STATUS_RESERVED = 'reserved';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */
-    protected $fillable = [
+     */    protected $fillable = [
         'user_id',
         'title',
         'description',
@@ -42,6 +47,9 @@ class Advertisement extends Model
         'rental_requires_deposit',
         'rental_deposit_amount',
         'rental_pickup_location',
+        // Review velden
+        'average_rating',
+        'review_count',
     ];
     
     /**
@@ -119,16 +127,6 @@ class Advertisement extends Model
         'rental_booked_dates' => 'array',
     ];
 
-    /**
-     * The purchase status constants
-     */
-    const PURCHASE_STATUS_AVAILABLE = 'available';
-    const PURCHASE_STATUS_SOLD = 'sold';
-    const PURCHASE_STATUS_RESERVED = 'reserved';
-
-    /**
-     * Get the user that owns the advertisement.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -222,9 +220,50 @@ class Advertisement extends Model
         // Dagprijs berekenen
         if ($this->rental_price_day) {
             return $days * $this->rental_price_day;
-        }
-
-        // Terugvallen op de normale prijs als er geen huurprijzen zijn ingesteld
+        }        // Terugvallen op de normale prijs als er geen huurprijzen zijn ingesteld
         return $days * $this->price;
+    }
+
+    /**
+     * Get the reviews for this advertisement.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Check if this advertisement can be reviewed by the given user.
+     * Users can only review rental advertisements they have rented.
+     * 
+     * @param User $user
+     * @return bool
+     */
+    public function canBeReviewedBy(User $user): bool
+    {
+        if (!$this->isRental() || !$user) {
+            return false;
+        }
+        
+        // In een echte implementatie zou je hier controleren of de gebruiker dit item daadwerkelijk heeft gehuurd
+        // Dit is een vereenvoudigde implementatie; je kunt dit later uitbreiden met een check tegen huurgeschiedenis
+        
+        // Controleer of de gebruiker niet de eigenaar is (je kunt je eigen advertenties niet beoordelen)
+        return $this->user_id !== $user->id;
+    }
+    
+    /**
+     * Check if the user has already reviewed this advertisement
+     * 
+     * @param User $user
+     * @return bool
+     */
+    public function hasBeenReviewedBy(User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        
+        return $this->reviews()->where('user_id', $user->id)->exists();
     }
 }

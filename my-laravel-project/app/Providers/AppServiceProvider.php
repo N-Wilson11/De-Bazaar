@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use App\Models\CompanyTheme;
+use App\Models\Review;
+use App\Observers\ReviewObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         
         // Gebruik Bootstrap 5 voor paginering
         \Illuminate\Pagination\Paginator::useBootstrap();
+        
+        // Registreer observers
+        Review::observe(ReviewObserver::class);
         
         // Set the application locale from session
         if (Session::has('locale')) {

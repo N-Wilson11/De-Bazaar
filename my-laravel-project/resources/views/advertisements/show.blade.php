@@ -207,8 +207,7 @@
                                     <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
                                 </a>
                             @else
-                                @if(isset($canBePurchased) && $canBePurchased)
-                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST">
+                                @if(isset($canBePurchased) && $canBePurchased)                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="bi bi-cart-plus me-1"></i>{{ __('In winkelwagen') }}
@@ -218,6 +217,10 @@
                                     <button class="btn btn-secondary w-100" disabled>
                                         <i class="bi bi-bag-check me-1"></i>{{ __('Verkocht') }}
                                     </button>
+                                @elseif($advertisement->purchase_status === 'reserved')
+                                    <button class="btn btn-warning w-100" disabled>
+                                        <i class="bi bi-hourglass-split me-1"></i>{{ __('Gereserveerd') }}
+                                    </button>
                                 @elseif(Auth::check() && $advertisement->user_id === Auth::id())
                                     <button class="btn btn-outline-secondary w-100" disabled>
                                         <i class="bi bi-exclamation-circle me-1"></i>{{ __('general.cannot_buy_own_ad') }}
@@ -226,18 +229,13 @@
                                     <button class="btn btn-outline-secondary w-100" disabled>
                                         <i class="bi bi-x-circle me-1"></i>{{ __('general.not_available_for_purchase') }}
                                     </button>
-                                @elseif($advertisement->purchase_status === 'reserved')
-                                    <button class="btn btn-warning w-100" disabled>
-                                        <i class="bi bi-hourglass-split me-1"></i>{{ __('Gereserveerd') }}
-                                    </button>
                                 @endif
                             @endif
                         </div>
                     @endif
                 </div>
             </div>
-            
-            <div class="card shadow-sm">
+              <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">{{ __('Veilig handelen') }}</h5>
                     <ul class="list-unstyled">
@@ -248,6 +246,99 @@
                     </ul>
                 </div>
             </div>
+            
+            @if($advertisement->isRental())
+                <!-- Beoordelingssectie voor verhuuradvertenties -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ __('general.reviews') }}</h5>
+                        @auth
+                            @if($advertisement->canBeReviewedBy(Auth::user()) && !$advertisement->hasBeenReviewedBy(Auth::user()))
+                                <a href="{{ route('reviews.create', $advertisement) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-star me-1"></i>{{ __('general.write_review') }}
+                                </a>
+                            @endif
+                        @endauth
+                    </div>
+                    <div class="card-body">
+                        @if($advertisement->reviews->count() > 0)
+                            <div class="rating-summary mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="h2 mb-0 me-2">{{ number_format($advertisement->average_rating, 1) }}</div>
+                                    <div>
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($advertisement->average_rating))
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            @else
+                                                <i class="bi bi-star text-muted"></i>
+                                            @endif
+                                        @endfor
+                                        <div class="text-muted small">
+                                            {{ __('general.based_on_reviews', ['count' => $advertisement->review_count]) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="reviews-list">
+                                @foreach($advertisement->reviews()->with('user')->latest()->take(3)->get() as $review)
+                                    <div class="review-item border-bottom pb-3 mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="review-header mb-2">
+                                                <strong>{{ $review->user->name }}</strong>
+                                                <div class="small text-muted">
+                                                    {{ $review->created_at->format('d-m-Y') }}
+                                                </div>
+                                            </div>
+                                            <div class="rating">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $review->rating)
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    @else
+                                                        <i class="bi bi-star text-muted"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <div class="review-content">
+                                            {{ $review->comment }}
+                                        </div>
+                                        @auth
+                                            @if($review->user_id === Auth::id())
+                                                <div class="mt-2">
+                                                    <a href="{{ route('reviews.edit', $review) }}" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="bi bi-pencil me-1"></i>{{ __('general.edit') }}
+                                                    </a>
+                                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('general.confirm_delete') }}')">
+                                                            <i class="bi bi-trash me-1"></i>{{ __('general.delete') }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @endif
+                                        @endauth
+                                    </div>
+                                @endforeach
+                            </div>
+                            
+                            @if($advertisement->reviews->count() > 3)
+                                <div class="text-center mt-3">
+                                    <a href="{{ route('reviews.index', $advertisement) }}" class="btn btn-outline-primary">
+                                        {{ __('Alle beoordelingen bekijken') }} ({{ $advertisement->reviews->count() }})
+                                    </a>
+                                </div>
+                            @endif
+                        @else
+                            <div class="text-center py-4">
+                                <i class="bi bi-star h1 d-block mb-3 text-muted"></i>
+                                <p class="text-muted">{{ __('general.no_reviews') }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
     

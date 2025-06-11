@@ -143,4 +143,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    
+    /**
+     * Get all reviews written by the user.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
 }

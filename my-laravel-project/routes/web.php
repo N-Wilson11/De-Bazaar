@@ -79,6 +79,14 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/orders/{order}/confirmation', [App\Http\Controllers\OrderController::class, 'confirmation'])->name('orders.confirmation');
         Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
         
+        // Review routes
+        Route::get('/advertisements/{advertisement}/reviews', [App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/advertisements/{advertisement}/reviews/create', [App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
+        Route::post('/advertisements/{advertisement}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/reviews/{review}/edit', [App\Http\Controllers\ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::put('/reviews/{review}', [App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/reviews/{review}', [App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+        
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {
             Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');
