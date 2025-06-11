@@ -111,14 +111,12 @@ class ReviewController extends Controller
         
         return redirect()->route('advertisements.show', $review->advertisement_id)
             ->with('success', __('general.review_updated'));
-    }
-
-    /**
+    }    /**
      * Delete a review.
      */
     public function destroy(Review $review)
     {
-        if ($review->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
+        if ($review->user_id !== Auth::id() && Auth::user()->user_type !== 'admin') {
             return redirect()->route('advertisements.show', $review->advertisement_id)
                 ->with('error', __('general.cannot_delete_review'));
         }
