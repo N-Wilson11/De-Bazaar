@@ -226,35 +226,48 @@
                               <a href="{{ route('advertisers.show', $advertisement->user) }}" class="btn btn-outline-primary">
                                 <i class="bi bi-person-badge me-1"></i>{{ __('general.view_seller_profile') }}
                             </a>
-                            
-                            @if($advertisement->isRental())
+                              @if($advertisement->isRental())
                                 <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-info">
                                     <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
                                 </a>
                             @else
-                                @if(isset($canBePurchased) && $canBePurchased)                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST">
+                                @if(isset($canBePurchased) && $canBePurchased)
+                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">
                                         @csrf
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="bi bi-cart-plus me-1"></i>{{ __('In winkelwagen') }}
                                         </button>
                                     </form>
-                                @elseif($advertisement->purchase_status === 'sold')
-                                    <button class="btn btn-secondary w-100" disabled>
-                                        <i class="bi bi-bag-check me-1"></i>{{ __('Verkocht') }}
-                                    </button>
-                                @elseif($advertisement->purchase_status === 'reserved')
-                                    <button class="btn btn-warning w-100" disabled>
-                                        <i class="bi bi-hourglass-split me-1"></i>{{ __('Gereserveerd') }}
-                                    </button>
-                                @elseif(Auth::check() && $advertisement->user_id === Auth::id())
-                                    <button class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="bi bi-exclamation-circle me-1"></i>{{ __('general.cannot_buy_own_ad') }}
-                                    </button>
-                                @else
-                                    <button class="btn btn-outline-secondary w-100" disabled>
-                                        <i class="bi bi-x-circle me-1"></i>{{ __('general.not_available_for_purchase') }}
-                                    </button>
                                 @endif
+                            @endif
+                              @auth
+                                <form action="{{ route('favorites.toggle', $advertisement) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-outline-danger w-100">
+                                        @if($advertisement->isFavoritedBy(Auth::user()))
+                                            <i class="bi bi-heart-fill me-1"></i>{{ __('Verwijderen uit favorieten') }}
+                                        @else
+                                            <i class="bi bi-heart me-1"></i>{{ __('Toevoegen aan favorieten') }}
+                                        @endif
+                                    </button>
+                                </form>
+                            @endauth
+                            
+                            @if($advertisement->purchase_status === 'sold')
+                                <button class="btn btn-secondary w-100 mt-2" disabled>
+                                    <i class="bi bi-bag-check me-1"></i>{{ __('Verkocht') }}
+                                </button>
+                            @elseif($advertisement->purchase_status === 'reserved')                                <button class="btn btn-warning w-100 mt-2" disabled>
+                                    <i class="bi bi-hourglass-split me-1"></i>{{ __('Gereserveerd') }}
+                                </button>
+                            @elseif(Auth::check() && $advertisement->user_id === Auth::id())
+                                <button class="btn btn-outline-secondary w-100 mt-2" disabled>
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ __('general.cannot_buy_own_ad') }}
+                                </button>
+                            @else
+                                <button class="btn btn-outline-secondary w-100 mt-2" disabled>
+                                    <i class="bi bi-x-circle me-1"></i>{{ __('general.not_available_for_purchase') }}
+                                </button>
                             @endif
                         </div>
                     @endif

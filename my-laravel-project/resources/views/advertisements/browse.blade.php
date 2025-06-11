@@ -128,8 +128,7 @@
                                     <div class="mb-2">
                                         <span class="h5">€ {{ number_format($advertisement->price, 2, ',', '.') }}</span>
                                     </div>
-                                    
-                                    <p class="card-text flex-grow-1" style="height: 50px; overflow: hidden;">
+                                      <p class="card-text flex-grow-1" style="height: 50px; overflow: hidden;">
                                         {{ Str::limit($advertisement->description, 100) }}
                                     </p>
                                       <div class="d-flex justify-content-between align-items-center mt-2">
@@ -142,10 +141,19 @@
                                         </small>
                                     </div>
                                     
-                                    <div class="mt-2">
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
                                         <a href="{{ route('advertisers.show', $advertisement->user) }}" class="text-decoration-none">
                                             <small><i class="bi bi-person"></i> {{ $advertisement->user->name }}</small>
                                         </a>
+                                        
+                                        @auth
+                                            <form action="{{ route('favorites.toggle', $advertisement) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm {{ $advertisement->isFavoritedBy(Auth::user()) ? 'btn-danger' : 'btn-outline-danger' }}">
+                                                    <i class="bi {{ $advertisement->isFavoritedBy(Auth::user()) ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                                </button>
+                                            </form>
+                                        @endauth
                                     </div>
                                     
                                     <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-outline-primary mt-3">{{ __('Bekijken') }}</a>

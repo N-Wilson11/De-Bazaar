@@ -266,4 +266,28 @@ class Advertisement extends Model
         
         return $this->reviews()->where('user_id', $user->id)->exists();
     }
+    
+    /**
+     * Get the users who favorited this advertisement.
+     */
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+                    ->withTimestamps();
+    }
+    
+    /**
+     * Check if this advertisement is favorited by the given user.
+     * 
+     * @param User|null $user
+     * @return bool
+     */
+    public function isFavoritedBy(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        
+        return $this->favoritedBy()->where('user_id', $user->id)->exists();
+    }
 }

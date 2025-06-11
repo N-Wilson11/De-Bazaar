@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Advertisement;
+use Illuminate\Http\Request;
+
+class FavoriteController extends Controller
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Display a listing of the user's favorites.
+     */
+    public function index()
+    {
+        $favorites = auth()->user()->favoritedAdvertisements()
+            ->with('user')
+            ->latest()
+            ->paginate(12);
+
+        return view('favorites.index', compact('favorites'));
+    }
+
+    /**
+     * Toggle favorite status for an advertisement.
+     */
+    public function toggle(Advertisement $advertisement)
+    {
+        $user = auth()->user();
+        $isFavorite = $advertisement->isFavoritedBy($user);
+        
+        if ($isFavorite) {
+            // Remove from favorites
+            $user->favoritedAdvertisements()->detach($advertisement->id);
+            $message = __('Advertentie verwijderd uit favorieten.');
+        } else {
+            // Add to favorites
+            $user->favoritedAdvertisements()->attach($advertisement->id);
+            $message = __('Advertentie toegevoegd aan favorieten.');
+        }
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'isFavorite' => !$isFavorite,
+                'message' => $message
+            ]);
+        }
+        
+        return back()->with('success', $message);
+    }
+    
+    /**
+     * Remove an advertisement from favorites.
+     */
+    public function destroy(Advertisement $advertisement)
+    {
+        $user = auth()->user();
+        $user->favoritedAdvertisements()->detach($advertisement->id);
+        
+        return back()->with('success', __('Advertentie verwijderd uit favorieten.'));
+    }
+}

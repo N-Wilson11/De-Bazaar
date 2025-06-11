@@ -262,6 +262,12 @@
                                     <i class="bi bi-cart me-1"></i>{{ __('Winkelwagen') }}
                                 </a>
                             </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('favorites.index') }}">
+                                    <i class="bi bi-heart me-1"></i>{{ __('Favorieten') }}
+                                </a>
+                            </li>
                         @endauth
                         
                         <!-- Admin Menu Items -->

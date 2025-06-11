@@ -169,6 +169,23 @@ class User extends Authenticatable
     }
     
     /**
+     * Get the favorites for the user.
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+    
+    /**
+     * Get the favorited advertisements for the user.
+     */
+    public function favoritedAdvertisements()
+    {
+        return $this->belongsToMany(Advertisement::class, 'favorites')
+                    ->withTimestamps();
+    }
+    
+    /**
      * Calculate the average rating as an advertiser.
      */
     public function getAverageRatingAttribute(): ?float

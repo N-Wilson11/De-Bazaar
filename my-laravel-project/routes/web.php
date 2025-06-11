@@ -93,6 +93,11 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/advertisers/{user}/reviews/create', [App\Http\Controllers\AdvertiserReviewController::class, 'create'])->name('advertiser.reviews.create');
         Route::post('/advertisers/{user}/reviews', [App\Http\Controllers\AdvertiserReviewController::class, 'store'])->name('advertiser.reviews.store');
         
+        // Favorite routes
+        Route::get('/favorites', [App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
+        Route::post('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+        Route::delete('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'destroy'])->name('favorites.destroy');
+        
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {
             Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');
