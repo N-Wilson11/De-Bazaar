@@ -8,6 +8,7 @@ use App\Models\Advertisement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends Controller
 {
@@ -187,6 +188,79 @@ class OrderController extends Controller
             DB::rollBack();
             
             return redirect()->route('orders.show', $order)
+                ->with('error', __('Er is een fout opgetreden: ') . $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the sales for the authenticated seller.
+     */
+    public function mySales()
+    {
+        $user = Auth::user();
+        
+        // Get all order items where the current user is the seller
+        $orderItems = OrderItem::where('seller_id', $user->id)
+            ->with(['order', 'advertisement'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        return view('orders.my-sales', compact('orderItems'));
+    }
+
+    /**
+     * Display details of a specific sale item.
+     */
+    public function showSaleItem(OrderItem $orderItem)
+    {
+        $user = Auth::user();
+        
+        // Check if the order item belongs to the seller
+        if ($orderItem->seller_id !== $user->id) {
+            return redirect()->route('orders.my-sales')
+                ->with('error', __('general.no_access_to_this_sale'));
+        }
+        
+        return view('orders.sale-item', compact('orderItem'));
+    }
+
+    /**
+     * Mark an order item as completed by the seller.
+     */
+    public function completeSaleItem(Request $request, OrderItem $orderItem)
+    {
+        $user = Auth::user();
+        
+        // Check if the order item belongs to the seller
+        if ($orderItem->seller_id !== $user->id) {
+            return redirect()->route('orders.my-sales')
+                ->with('error', __('general.no_access_to_this_sale'));
+        }
+        
+        // Get the parent order
+        $order = $orderItem->order;
+        
+        // Start database transaction
+        DB::beginTransaction();
+        
+        try {
+            // Update order status to completed if not already
+            if ($order->status !== Order::STATUS_COMPLETED) {
+                $order->status = Order::STATUS_COMPLETED;
+                $order->save();
+            }
+            
+            // Commit transaction
+            DB::commit();
+            
+            return redirect()->route('orders.show-sale-item', $orderItem)
+                ->with('success', __('general.order_completed_successfully'));
+                
+        } catch (\Exception $e) {
+            // Rollback transaction
+            DB::rollBack();
+            
+            return redirect()->route('orders.show-sale-item', $orderItem)
                 ->with('error', __('Er is een fout opgetreden: ') . $e->getMessage());
         }
     }

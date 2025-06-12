@@ -304,6 +304,16 @@
                                     {{ __('general.my_orders') }}
                                 </a>
                             </li>
+                            
+                            <!-- Seller Sales Link - Only visible to users with advertisements -->
+                            @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('orders.my-sales') }}">
+                                    <i class="bi bi-graph-up"></i>
+                                    {{ __('general.my_sales') }}
+                                </a>
+                            </li>
+                            @endif
                         @endauth
                         
                         <!-- Language Switcher -->
@@ -336,6 +346,13 @@
                                             <i class="bi bi-receipt me-2"></i>{{ __('general.my_orders') }}
                                         </a>
                                     </li>
+                                    @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('orders.my-sales') }}">
+                                            <i class="bi bi-graph-up me-2"></i>{{ __('general.my_sales') }}
+                                        </a>
+                                    </li>
+                                    @endif
                                     <li>
                                         <a class="dropdown-item" href="{{ route('cart.index') }}">
                                             <i class="bi bi-cart3 me-2"></i>{{ __('general.cart') }}

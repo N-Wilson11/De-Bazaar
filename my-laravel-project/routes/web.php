@@ -98,6 +98,11 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::post('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
         Route::delete('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'destroy'])->name('favorites.destroy');
         
+        // Seller Order Management routes
+        Route::get('/my-sales', [App\Http\Controllers\OrderController::class, 'mySales'])->name('orders.my-sales');
+        Route::get('/my-sales/{orderItem}', [App\Http\Controllers\OrderController::class, 'showSaleItem'])->name('orders.show-sale-item');
+        Route::post('/my-sales/{orderItem}/complete', [App\Http\Controllers\OrderController::class, 'completeSaleItem'])->name('orders.complete-sale-item');
+        
         // Contract management routes - alleen toegankelijk voor platformeigenaren (admin)
         Route::middleware('admin')->group(function () {
             Route::get('/contracts', [ContractsController::class, 'index'])->name('contracts.index');
