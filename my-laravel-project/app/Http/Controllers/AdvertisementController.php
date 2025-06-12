@@ -413,7 +413,7 @@ class AdvertisementController extends Controller
         // Check if the ad is a rental
         if (!$advertisement->isRental()) {
             return redirect()->route('advertisements.show', $advertisement)
-                ->with('error', __('Deze advertentie is geen verhuuradvertentie.'));
+                ->with('error', __('general.not_a_rental_advertisement'));
         }
         
         return view('advertisements.calendar', compact('advertisement'));

@@ -89,10 +89,9 @@
             @endif
         </div>
     </div>
-    
-    <div class="mt-3">
+      <div class="mt-3">
         <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-1"></i>{{ __('Terug naar advertentie') }}
+            <i class="bi bi-arrow-left me-1"></i>{{ __('general.back_to_advertisement') }}
         </a>
     </div>
 </div>

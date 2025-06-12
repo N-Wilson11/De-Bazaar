@@ -262,4 +262,28 @@ return [
     'view_all_reviews' => 'Bekijk alle beoordelingen',
     'view_seller_profile' => 'Bekijk verkoperprofiel',
     
+    // Dashboard pagina
+    'latest_advertisements' => 'Laatste advertenties',
+    'view_all_sale_advertisements' => 'Bekijk alle verkoopadvertenties',
+    'view_all_rental_advertisements' => 'Bekijk alle verhuuradvertenties',
+    'no_orders_found' => 'Geen bestellingen gevonden',
+    'no_orders_description' => 'Je hebt nog geen bestellingen geplaatst.',
+    'view_advertisements' => 'Bekijk advertenties',
+    'orders_overview' => 'Hier zie je een overzicht van al je bestellingen.',
+    'back_to_advertisement' => 'Terug naar advertentie',
+    'not_a_rental_advertisement' => 'Deze advertentie is geen verhuuradvertentie.',
+    
+    // Contracten
+    'manage_contracts' => 'Contracten beheren',
+    'upload_contract' => 'Contract uploaden',
+    'contract_number' => 'Contractnummer',
+    'user' => 'Gebruiker',
+    'date' => 'Datum',
+    'actions' => 'Acties',
+    'contract_pending' => 'In afwachting',
+    'contract_approved' => 'Goedgekeurd',
+    'contract_rejected' => 'Afgekeurd',
+    'download' => 'Downloaden',
+    'confirm_delete_contract' => 'Weet je zeker dat je dit contract wilt verwijderen?',
+    'no_contracts_found' => 'Geen contracten gevonden.',
 ];

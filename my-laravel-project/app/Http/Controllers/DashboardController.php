@@ -40,13 +40,29 @@ class DashboardController extends Controller
             $rentalAdsRemaining = $maxRentalAds - $rentalAdsCount;
         }
         
+        // Haal de meest recente verkoopadvertenties op
+        $latestSaleAds = Advertisement::where('is_rental', false)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+            
+        // Haal de meest recente verhuuradvertenties op
+        $latestRentalAds = Advertisement::where('is_rental', true)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+        
         return view('dashboard', compact(
             'normalAdsCount', 
             'rentalAdsCount', 
             'maxNormalAds', 
             'maxRentalAds', 
             'normalAdsRemaining', 
-            'rentalAdsRemaining'
+            'rentalAdsRemaining',
+            'latestSaleAds',
+            'latestRentalAds'
         ));
     }
 }

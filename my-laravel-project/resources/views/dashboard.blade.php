@@ -90,7 +90,7 @@
                             <div class="col-md-6 mb-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ __('Verhuuradvertenties') }}</h5>
+                                        <h5 class="card-title">{{ __('general.rental_advertisements') }}</h5>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <p class="mb-1">{{ __('general.current_ads') }}: <strong>{{ $rentalAdsCount }}</strong></p>
@@ -100,7 +100,7 @@
                                             <div>
                                                 @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                                                     <a href="{{ route('rentals.create') }}" class="btn btn-success {{ $rentalAdsRemaining === 0 ? 'disabled' : '' }}">
-                                                        <i class="bi bi-calendar-plus me-1"></i>{{ __('Nieuwe verhuuradvertentie') }}
+                                                        <i class="bi bi-calendar-plus me-1"></i>{{ __('general.new_rental') }}
                                                     </a>
                                                 @endif
                                             </div>
@@ -128,8 +128,8 @@
                             <h5>{{ __('general.normal_user_info') }}</h5>
                             <p>{{ __('general.normal_user_features') }}</p>
                             <ul>
-                                <li>{{ __('Advertenties bekijken en zoeken') }}</li>
-                                <li>{{ __('Contact opnemen met verkopers en verhuurders') }}</li>
+                                <li>{{ __('general.browse_advertisements') }}</li>
+                                <li>{{ __('general.contact_advertiser') }}</li>
                                 <li>{{ __('general.standard_search') }}</li>
                             </ul>
                         </div>
@@ -139,11 +139,106 @@
                             <p>{{ __('general.private_user_features') }}</p>
                             <ul>
                                 <li>{{ __('general.ad_limit_info') }}</li>
-                                <li>{{ __('Advertenties bekijken en zoeken') }}</li>
-                                <li>{{ __('Contact opnemen met verkopers en verhuurders') }}</li>
+                                <li>{{ __('general.browse_advertisements') }}</li>
+                                <li>{{ __('general.contact_advertiser') }}</li>
                             </ul>
                         </div>
                     @endif
+                    
+                    <!-- Laatste advertenties sectie -->
+                    <div class="mt-5">
+                        <h4>{{ __('general.latest_advertisements') }}</h4>
+                        
+                        <!-- Laatste verkoopadvertenties -->
+                        <div class="mb-4">
+                            <h5 class="mb-3">{{ __('general.sale_advertisements') }}</h5>
+                            <div class="row">
+                                @if($latestSaleAds->count() > 0)
+                                    @foreach($latestSaleAds as $advertisement)
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card h-100 shadow-sm">
+                                                <div class="position-relative">
+                                                    @php 
+                                                        $imageUrl = $advertisement->getFirstImageUrl() ?? asset('images/no-image.png');
+                                                    @endphp
+                                                    <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $advertisement->title }}" style="height: 150px; object-fit: cover;">
+                                                    <div class="position-absolute top-0 start-0 m-2">
+                                                        <span class="badge bg-primary">{{ __('general.for_sale') }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <h5 class="card-title text-truncate">{{ $advertisement->title }}</h5>
+                                                    <p class="card-text text-primary fw-bold">€ {{ number_format($advertisement->price, 2, ',', '.') }}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-calendar"></i> {{ $advertisement->created_at->format('d-m-Y') }}
+                                                        </small>
+                                                        <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-sm btn-outline-primary">
+                                                            {{ __('general.view') }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="col-12">
+                                        <p>{{ __('general.no_advertisements') }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="text-end">
+                                <a href="{{ route('advertisements.browse') }}" class="btn btn-outline-primary">
+                                    {{ __('general.view_all_sale_advertisements') }} <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Laatste verhuuradvertenties -->
+                        <div>
+                            <h5 class="mb-3">{{ __('general.rental_advertisements') }}</h5>
+                            <div class="row">
+                                @if($latestRentalAds->count() > 0)
+                                    @foreach($latestRentalAds as $advertisement)
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card h-100 shadow-sm">
+                                                <div class="position-relative">
+                                                    @php 
+                                                        $imageUrl = $advertisement->getFirstImageUrl() ?? asset('images/no-image.png');
+                                                    @endphp
+                                                    <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $advertisement->title }}" style="height: 150px; object-fit: cover;">
+                                                    <div class="position-absolute top-0 start-0 m-2">
+                                                        <span class="badge bg-info text-dark">{{ __('general.rentals') }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body d-flex flex-column">
+                                                    <h5 class="card-title text-truncate">{{ $advertisement->title }}</h5>
+                                                    <p class="card-text text-primary fw-bold">€ {{ number_format($advertisement->price, 2, ',', '.') }} / {{ __('general.day') }}</p>
+                                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-calendar"></i> {{ $advertisement->created_at->format('d-m-Y') }}
+                                                        </small>
+                                                        <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-sm btn-outline-primary">
+                                                            {{ __('general.view') }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="col-12">
+                                        <p>{{ __('general.no_rentals') }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="text-end">
+                                <a href="{{ route('rentals.index') }}" class="btn btn-outline-primary">
+                                    {{ __('general.view_all_rental_advertisements') }} <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

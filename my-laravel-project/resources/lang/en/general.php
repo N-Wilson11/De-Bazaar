@@ -261,4 +261,29 @@ return [
     'advertiser_since' => 'Advertiser since',
     'view_all_reviews' => 'View all reviews',
     'view_seller_profile' => 'View seller profile',
+    
+    // Dashboard page
+    'latest_advertisements' => 'Latest advertisements',
+    'view_all_sale_advertisements' => 'View all sale advertisements',
+    'view_all_rental_advertisements' => 'View all rental advertisements',
+    'no_orders_found' => 'No orders found',
+    'no_orders_description' => 'You have not placed any orders yet.',
+    'view_advertisements' => 'View advertisements',
+    'orders_overview' => 'Here you can see an overview of all your orders.',
+    'back_to_advertisement' => 'Back to advertisement',
+    'not_a_rental_advertisement' => 'This advertisement is not a rental advertisement.',
+    
+    // Contracts
+    'manage_contracts' => 'Manage Contracts',
+    'upload_contract' => 'Upload Contract',
+    'contract_number' => 'Contract Number',
+    'user' => 'User',
+    'date' => 'Date',
+    'actions' => 'Actions',
+    'contract_pending' => 'Pending',
+    'contract_approved' => 'Approved',
+    'contract_rejected' => 'Rejected',
+    'download' => 'Download',
+    'confirm_delete_contract' => 'Are you sure you want to delete this contract?',
+    'no_contracts_found' => 'No contracts found.',
 ];

@@ -48,10 +48,9 @@
                                     </button>
                                 </form>
                             </div>
-                            
-                            @if($advertisement->isRental())
+                              @if($advertisement->isRental())
                                 <div class="position-absolute top-0 start-0 m-2">
-                                    <span class="badge bg-info text-dark">{{ __('Verhuur') }}</span>
+                                    <span class="badge bg-info text-dark">{{ __('general.rentals') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -61,9 +60,8 @@
                             <p class="card-text flex-grow-1" style="height: 50px; overflow: hidden;">
                                 {{ Str::limit($advertisement->description, 100) }}
                             </p>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-geo-alt"></i> {{ $advertisement->location ?: __('Onbekend') }}
+                            <div class="d-flex justify-content-between align-items-center mt-2">                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ $advertisement->location ?: __('general.unknown') }}
                                 </small>
                                 
                                 <small class="text-muted">
@@ -77,9 +75,8 @@
                                 </a>
                             </div>
                             
-                            <div class="d-grid gap-2 mt-3">
-                                <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-primary">
-                                    <i class="bi bi-eye me-1"></i>{{ __('Bekijken') }}
+                            <div class="d-grid gap-2 mt-3">                                <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-primary">
+                                    <i class="bi bi-eye me-1"></i>{{ __('general.view') }}
                                 </a>
                             </div>
                         </div>
@@ -89,11 +86,10 @@
         @else
             <div class="col-md-12">
                 <div class="alert alert-info text-center py-5">
-                    <i class="bi bi-heart h1 d-block mb-3"></i>
-                    <h4>{{ __('Geen favorieten') }}</h4>
-                    <p>{{ __('Je hebt nog geen advertenties toegevoegd aan je favorieten.') }}</p>
+                    <i class="bi bi-heart h1 d-block mb-3"></i>                    <h4>{{ __('general.no_favorites') }}</h4>
+                    <p>{{ __('general.no_favorites_description') }}</p>
                     <a href="{{ route('advertisements.browse') }}" class="btn btn-primary mt-2">
-                        <i class="bi bi-search me-1"></i>{{ __('Advertenties bekijken') }}
+                        <i class="bi bi-search me-1"></i>{{ __('general.browse_advertisements') }}
                     </a>
                 </div>
             </div>
