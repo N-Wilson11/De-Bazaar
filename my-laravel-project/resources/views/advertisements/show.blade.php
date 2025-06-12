@@ -2,6 +2,31 @@
 
 @section('title', $advertisement->title)
 
+@section('styles')
+<style>
+    /* QR Code responsive styles */
+    @media (max-width: 767px) {
+        .qrcode-container img {
+            max-width: 150px !important;
+        }
+        
+        .social-share-btn {
+            width: 100%;
+        }
+    }
+    
+    /* Ensure proper popover content styling */
+    .popover {
+        max-width: 250px;
+    }
+    
+    .popover-body {
+        padding: 15px;
+        text-align: center;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="container py-4">
     <div class="row">
@@ -155,38 +180,34 @@
                         {{ $advertisement->location ?: __('Niet gespecificeerd') }}
                     </div>
                     
-                    <div class="mb-3">
-                        <strong><i class="bi bi-clock-history me-1"></i>{{ __('Geplaatst') }}:</strong> 
+                    <div class="mb-3">                        <strong><i class="bi bi-clock-history me-1"></i>{{ __('general.posted_on') }}:</strong> 
                         {{ $advertisement->created_at->format('d-m-Y') }}
                     </div>
                     
-                    <div class="mb-3">
-                        <strong><i class="bi bi-eye me-1"></i>{{ __('Bekeken') }}:</strong> 
-                        {{ $advertisement->views }} {{ __('keer') }}
+                    <div class="mb-3">                        <strong><i class="bi bi-eye me-1"></i>{{ __('general.views') }}:</strong> 
+                        {{ $advertisement->views }} {{ __('general.viewed') }}
                     </div>
                     
                     @if($advertisement->user_id === Auth::id())
-                        <div class="d-grid gap-2 mt-4">
-                            <a href="{{ route('advertisements.edit', $advertisement) }}" class="btn btn-outline-primary">
-                                <i class="bi bi-pencil me-1"></i>{{ __('Bewerken') }}
+                        <div class="d-grid gap-2 mt-4">                            <a href="{{ route('advertisements.edit', $advertisement) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil me-1"></i>{{ __('general.edit') }}
                             </a>
                             
                             @if($advertisement->isRental())
                                 <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-outline-info">
-                                    <i class="bi bi-calendar-event me-1"></i>{{ __('Beheer beschikbaarheid') }}
+                                    <i class="bi bi-calendar-event me-1"></i>{{ __('general.manage_availability') }}
                                 </a>
                             @endif
                             
                             <form action="{{ route('advertisements.destroy', $advertisement) }}" method="POST">
                                 @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('{{ __('Weet je zeker dat je deze advertentie wilt verwijderen?') }}')">
-                                    <i class="bi bi-trash me-1"></i>{{ __('Verwijderen') }}
+                                @method('DELETE')                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('{{ __('general.confirm_delete') }}')">
+                                    <i class="bi bi-trash me-1"></i>{{ __('general.delete') }}
                                 </button>
                             </form>
                         </div>
                     @else                        <div class="mb-3">
-                            <h6>{{ __('Aangeboden door') }}</h6>
+                            <h6>{{ __('general.offered_by') }}</h6>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-person-circle fs-4 me-2"></i>
                                 <div>
@@ -280,6 +301,20 @@
                         <li><i class="bi bi-check-circle-fill text-success me-2"></i>{{ __('Ontmoet op een veilige plek') }}</li>
                         <li><i class="bi bi-check-circle-fill text-success me-2"></i>{{ __('Controleer reviews van de verkoper') }}</li>
                     </ul>
+                </div>
+            </div>            <!-- QR Code Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ __('general.share_this_advertisement') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="qrcode-container mx-auto">
+                            <!-- Use directly generated data URI to avoid storage issues -->
+                            <img src="{{ $advertisement->generateQrCode(200) }}" alt="QR Code" class="img-fluid" style="max-width: 100%; height: auto;">
+                        </div>
+                        <p class="text-muted small mt-2">{{ __('general.scan_qr_to_share') }}</p>
+                    </div>
                 </div>
             </div>
             
@@ -378,9 +413,8 @@
         </div>
     </div>
     
-    <div class="mt-3">
-        <a href="{{ url()->previous() === route('advertisements.show', $advertisement) ? route('advertisements.index') : url()->previous() }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left me-1"></i>{{ __('Terug') }}
+    <div class="mt-3">                        <a href="{{ url()->previous() === route('advertisements.show', $advertisement) ? route('advertisements.index') : url()->previous() }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{{ __('general.back') }}
         </a>
     </div>
 </div>

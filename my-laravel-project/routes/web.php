@@ -19,6 +19,9 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         return redirect()->route('advertisements.browse');
     });
 
+    // QR code routes (accessible to everyone)
+    Route::get('/qrcode/advertisement/{advertisement}', [App\Http\Controllers\QrCodeController::class, 'show'])->name('qrcode.advertisement');
+
     // Public advertisement routes
     Route::get('/browse', [App\Http\Controllers\AdvertisementController::class, 'browse'])->name('advertisements.browse');
     Route::get('/rentals', [App\Http\Controllers\AdvertisementController::class, 'rentals'])->name('rentals.index');

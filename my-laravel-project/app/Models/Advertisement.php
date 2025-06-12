@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\Result\ResultInterface;
 
 class Advertisement extends Model
 {
@@ -289,5 +296,43 @@ class Advertisement extends Model
         }
         
         return $this->favoritedBy()->where('user_id', $user->id)->exists();
+    }    /**
+     * Generate a QR code for this advertisement
+     *
+     * @param int $size
+     * @return string URL to QR code image or fallback
+     */    public function generateQrCode($size = 200): string
+    {
+        $url = route('advertisements.show', $this->id);
+        
+        try {
+            // Check if GD extension is available
+            if (!extension_loaded('gd')) {
+                // If GD is not available, use an external QR code service as fallback
+                return "https://api.qrserver.com/v1/create-qr-code/?size={$size}x{$size}&data=" . urlencode($url);
+            }
+            
+            // In version 6.0 of the Endroid QR Code library, we use the constructor parameters
+            $builder = new \Endroid\QrCode\Builder\Builder(
+                writer: new PngWriter(),
+                writerOptions: [],
+                validateResult: false,
+                data: $url,
+                encoding: new Encoding('UTF-8'),
+                errorCorrectionLevel: ErrorCorrectionLevel::Medium,
+                size: $size,
+                margin: 10,
+                roundBlockSizeMode: RoundBlockSizeMode::Margin,
+                foregroundColor: new Color(0, 0, 0),
+                backgroundColor: new Color(255, 255, 255)
+            );
+            
+            $result = $builder->build();
+            
+            return $result->getDataUri();
+        } catch (\Exception $e) {
+            // Use external QR code service as fallback in case of any error
+            return "https://api.qrserver.com/v1/create-qr-code/?size={$size}x{$size}&data=" . urlencode($url);
+        }
     }
 }
