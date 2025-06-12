@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Mijn Advertenties'))
+@section('title', __('general.my_advertisements'))
 
 @section('content')
 <div class="container py-4">
@@ -8,26 +8,26 @@
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ __('Mijn Advertenties') }}</h5>
+                    <h5 class="mb-0">{{ __('general.my_advertisements') }}</h5>
                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                         <div>
                             @if($canCreateNormal)
                                 <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
-                                    <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                                    <i class="bi bi-plus-circle"></i> {{ __('general.new_advertisement') }}
                                 </a>
                             @else
                                 <button type="button" class="btn btn-sm btn-primary me-2 disabled" title="{{ __('general.max_normal_ads') }}">
-                                    <i class="bi bi-plus-circle"></i> {{ __('Nieuwe Advertentie') }}
+                                    <i class="bi bi-plus-circle"></i> {{ __('general.new_advertisement') }}
                                 </button>
                             @endif
                             
                             @if($canCreateRental)
                                 <a href="{{ route('rentals.create') }}" class="btn btn-sm btn-success">
-                                    <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                                    <i class="bi bi-calendar-plus"></i> {{ __('general.new_rental') }}
                                 </a>
                             @else
                                 <button type="button" class="btn btn-sm btn-success disabled" title="{{ __('general.max_rental_ads') }}">
-                                    <i class="bi bi-calendar-plus"></i> {{ __('Nieuw Verhuuraanbod') }}
+                                    <i class="bi bi-calendar-plus"></i> {{ __('general.new_rental') }}
                                 </button>
                             @endif
                         </div>
@@ -71,17 +71,17 @@
                             
                             <!-- Overige filters -->
                             <div class="col-md-4">
-                                <label for="type" class="form-label">{{ __('Type advertentie') }}</label>
+                                <label for="type" class="form-label">{{ __('general.advertisement_type') }}</label>
                                 <select id="type" name="type" class="form-select">
-                                    <option value="">{{ __('Alle types') }}</option>
-                                    <option value="normal" {{ request('type') == 'normal' ? 'selected' : '' }}>{{ __('Verkoop advertenties') }}</option>
-                                    <option value="rental" {{ request('type') == 'rental' ? 'selected' : '' }}>{{ __('Verhuuradvertenties') }}</option>
+                                    <option value="">{{ __('general.all_types') }}</option>
+                                    <option value="normal" {{ request('type') == 'normal' ? 'selected' : '' }}>{{ __('general.sale_advertisements') }}</option>
+                                    <option value="rental" {{ request('type') == 'rental' ? 'selected' : '' }}>{{ __('general.rental_advertisements') }}</option>
                                 </select>
                             </div>
                             
-                            <div class="col-md-4">                                <label for="category" class="form-label">{{ __('Categorie') }}</label>
+                            <div class="col-md-4">                                <label for="category" class="form-label">{{ __('general.category') }}</label>
                                 <select id="category" name="category" class="form-select">
-                                    <option value="all">{{ __('Alle categorieën') }}</option>
+                                    <option value="all">{{ __('general.all_categories') }}</option>
                                     @foreach($categories as $key => $value)
                                         <option value="{{ $key }}" {{ request('category') == $key ? 'selected' : '' }}>{{ $value }}</option>
                                     @endforeach
@@ -89,15 +89,15 @@
                             </div>
                             
                             <div class="col-md-4">
-                                <label for="sort" class="form-label">{{ __('Sorteren') }}</label>
+                                <label for="sort" class="form-label">{{ __('general.sort_by') }}</label>
                                 <select id="sort" name="sort" class="form-select">
-                                    <option value="created_at|desc" {{ request('sort') == 'created_at|desc' ? 'selected' : '' }}>{{ __('Datum: nieuwste eerst') }}</option>
-                                    <option value="created_at|asc" {{ request('sort') == 'created_at|asc' ? 'selected' : '' }}>{{ __('Datum: oudste eerst') }}</option>
-                                    <option value="title|asc" {{ request('sort') == 'title|asc' ? 'selected' : '' }}>{{ __('Titel: A-Z') }}</option>
-                                    <option value="title|desc" {{ request('sort') == 'title|desc' ? 'selected' : '' }}>{{ __('Titel: Z-A') }}</option>
-                                    <option value="price|asc" {{ request('sort') == 'price|asc' ? 'selected' : '' }}>{{ __('Prijs: laag - hoog') }}</option>
-                                    <option value="price|desc" {{ request('sort') == 'price|desc' ? 'selected' : '' }}>{{ __('Prijs: hoog - laag') }}</option>
-                                    <option value="views|desc" {{ request('sort') == 'views|desc' ? 'selected' : '' }}>{{ __('Populariteit') }}</option>
+                                    <option value="created_at|desc" {{ request('sort') == 'created_at|desc' ? 'selected' : '' }}>{{ __('general.date_newest_first') }}</option>
+                                    <option value="created_at|asc" {{ request('sort') == 'created_at|asc' ? 'selected' : '' }}>{{ __('general.date_oldest_first') }}</option>
+                                    <option value="title|asc" {{ request('sort') == 'title|asc' ? 'selected' : '' }}>{{ __('general.title_asc') }}</option>
+                                    <option value="title|desc" {{ request('sort') == 'title|desc' ? 'selected' : '' }}>{{ __('general.title_desc') }}</option>
+                                    <option value="price|asc" {{ request('sort') == 'price|asc' ? 'selected' : '' }}>{{ __('general.price_low_high') }}</option>
+                                    <option value="price|desc" {{ request('sort') == 'price|desc' ? 'selected' : '' }}>{{ __('general.price_high_low') }}</option>
+                                    <option value="views|desc" {{ request('sort') == 'views|desc' ? 'selected' : '' }}>{{ __('general.popularity') }}</option>
                                 </select>
                             </div>
                             
