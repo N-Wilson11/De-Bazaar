@@ -94,9 +94,7 @@
                 </div>
             </div>
         @endif
-    </div>
-
-    <div class="d-flex justify-content-center mt-3">
+    </div>    <div class="d-flex justify-content-center mt-3">
         {{ $favorites->links() }}
     </div>
 </div>

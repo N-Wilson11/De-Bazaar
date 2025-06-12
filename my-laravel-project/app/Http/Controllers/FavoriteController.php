@@ -14,17 +14,18 @@ class FavoriteController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }
-
-    /**
+    }    /**
      * Display a listing of the user's favorites.
      */
-    public function index()
+    public function index(Request $request)
     {
         $favorites = auth()->user()->favoritedAdvertisements()
             ->with('user')
             ->latest()
-            ->paginate(12);
+            ->paginate(6);
+            
+        // Behoud zoekopdracht-parameters bij paginering
+        $favorites->appends($request->except('page'));
 
         return view('favorites.index', compact('favorites'));
     }
