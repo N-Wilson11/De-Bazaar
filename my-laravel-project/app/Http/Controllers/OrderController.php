@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Advertisement;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,9 +27,18 @@ class OrderController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $orders = $user->orders()->orderBy('created_at', 'desc')->paginate(10);
         
-       return view('orders.index', compact('orders'));
+        // Make sure we have a valid user instance
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om bestellingen te bekijken.'));
+        }
+        
+        // Use the fresh() method to ensure we have an up-to-date user model
+        $user = User::find($user->id);
+        $orders = $user->orders()->orderBy('created_at', 'desc')->paginate(5);
+        
+        return view('orders.index', compact('orders'));
     }
     
     /**
@@ -38,11 +48,20 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om bestellingen te bekijken.'));
+        }
+        
         // Check if the order belongs to the user
         if ($order->user_id !== $user->id) {
             return redirect()->route('orders.index')
                 ->with('error', __('Je hebt geen toegang tot deze bestelling.'));
         }
+        
+        // Load relationships to avoid N+1 queries
+        $order->load(['items.advertisement', 'items.seller']);
         
         return view('orders.show', compact('order'));
     }
@@ -53,6 +72,15 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om een bestelling te plaatsen.'));
+        }
+        
+        // Make sure we have the latest user data
+        $user = User::findOrFail($user->id);
         $cart = $user->activeCart;
         
         if (!$cart || $cart->items->isEmpty()) {
@@ -133,11 +161,20 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om orderbevestigingen te bekijken.'));
+        }
+        
         // Check if the order belongs to the user
         if ($order->user_id !== $user->id) {
             return redirect()->route('orders.index')
                 ->with('error', __('Je hebt geen toegang tot deze bestelling.'));
         }
+        
+        // Load relationships to ensure all data is available
+        $order->load(['items.advertisement', 'items.seller']);
         
         return view('orders.confirmation', compact('order'));
     }
@@ -148,6 +185,15 @@ class OrderController extends Controller
     public function cancel(Order $order)
     {
         $user = Auth::user();
+        
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om bestellingen te annuleren.'));
+        }
+        
+        // Make sure we have the latest user data
+        $user = User::findOrFail($user->id);
         
         // Check if the order belongs to the user
         if ($order->user_id !== $user->id) {
@@ -199,9 +245,18 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om je verkopen te bekijken.'));
+        }
+        
+        // Make sure we have the latest user data
+        $user = User::findOrFail($user->id);
+        
         // Get all order items where the current user is the seller
         $orderItems = OrderItem::where('seller_id', $user->id)
-            ->with(['order', 'advertisement'])
+            ->with(['order.user', 'advertisement'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
@@ -215,11 +270,23 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om verkoopdetails te bekijken.'));
+        }
+        
+        // Make sure we have the latest user data
+        $user = User::findOrFail($user->id);
+        
         // Check if the order item belongs to the seller
         if ($orderItem->seller_id !== $user->id) {
             return redirect()->route('orders.my-sales')
                 ->with('error', __('general.no_access_to_this_sale'));
         }
+        
+        // Load relationships to ensure all data is available
+        $orderItem->load(['order.user', 'advertisement']);
         
         return view('orders.sale-item', compact('orderItem'));
     }
@@ -230,6 +297,15 @@ class OrderController extends Controller
     public function completeSaleItem(Request $request, OrderItem $orderItem)
     {
         $user = Auth::user();
+        
+        // Ensure we have a valid user
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', __('Je moet ingelogd zijn om een verkoop te voltooien.'));
+        }
+        
+        // Make sure we have the latest user data
+        $user = User::findOrFail($user->id);
         
         // Check if the order item belongs to the seller
         if ($orderItem->seller_id !== $user->id) {
