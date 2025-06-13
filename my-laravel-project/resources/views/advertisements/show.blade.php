@@ -3,13 +3,7 @@
 @section('title', $advertisement->title)
 
 @section('styles')
-<style>
-    /* QR Code responsive styles */
-    @media (max-width: 767px) {
-        .qrcode-container img {
-            max-width: 150px !important;
-        }
-        
+<style>    @media (max-width: 767px) {
         .social-share-btn {
             width: 100%;
         }
@@ -301,22 +295,7 @@
                         <li><i class="bi bi-check-circle-fill text-success me-2"></i>{{ __('Ontmoet op een veilige plek') }}</li>
                         <li><i class="bi bi-check-circle-fill text-success me-2"></i>{{ __('Controleer reviews van de verkoper') }}</li>
                     </ul>
-                </div>
-            </div>            <!-- QR Code Section -->
-            <div class="card shadow-sm mt-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ __('general.share_this_advertisement') }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="text-center">
-                        <div class="qrcode-container mx-auto">
-                            <!-- Use directly generated data URI to avoid storage issues -->
-                            <img src="{{ $advertisement->generateQrCode(200) }}" alt="QR Code" class="img-fluid" style="max-width: 100%; height: auto;">
-                        </div>
-                        <p class="text-muted small mt-2">{{ __('general.scan_qr_to_share') }}</p>
-                    </div>
-                </div>
-            </div>
+                </div>            </div>
             
             @if($advertisement->isRental())
                 <!-- Beoordelingssectie voor verhuuradvertenties -->

@@ -105,15 +105,7 @@ use Illuminate\Support\Facades\Auth;
                                         <div class="bg-light text-center py-5" style="height: 180px;">
                                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                                         </div>
-                                    @endif
-                                    <span class="badge bg-info position-absolute top-0 start-0 m-2">{{ __('general.rentals') }}</span>                                    <!-- QR Code Icon -->
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        <a href="#" class="btn btn-sm btn-light" data-bs-toggle="popover" data-bs-trigger="focus" title="{{ __('general.share_this_advertisement') }}" 
-                                        data-bs-content="<div class='text-center'><img src='{{ $rental->generateQrCode(100) }}' alt='QR Code' class='img-fluid mb-2'></div>" 
-                                        data-bs-html="true">
-                                            <i class="bi bi-qr-code"></i>
-                                        </a>
-                                    </div>
+                                    @endif                                    <span class="badge bg-info position-absolute top-0 start-0 m-2">{{ __('general.rentals') }}</span>
                                 </div>
                                 
                                 <div class="card-body d-flex flex-column">
