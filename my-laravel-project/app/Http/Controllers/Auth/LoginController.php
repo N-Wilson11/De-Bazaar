@@ -9,6 +9,8 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+    protected $redirectTo = '/';
+    
     public function __construct()
     {
         // Middleware will be applied at the route level
@@ -29,6 +31,19 @@ class LoginController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
             $request->session()->regenerate();
             
+            $user = Auth::user();
+            
+            // Als zakelijke gebruiker, check voor landingpage
+            if ($user->user_type === 'zakelijk' && $user->company) {
+                $company = $user->company;
+                
+                // Als de company een landing_url heeft, redirect naar die pagina
+                if ($company->landing_url) {
+                    return redirect()->route('company.landing', $company->landing_url);
+                }
+            }
+            
+            // Anders naar dashboard
             return redirect()->intended(route('dashboard'));
         }
         
@@ -44,6 +59,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

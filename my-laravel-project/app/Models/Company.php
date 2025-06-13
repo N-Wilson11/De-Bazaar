@@ -28,6 +28,8 @@ class Company extends Model
         'country',
         'description',
         'website',
+        'landing_url',
+        'landing_content',
         'is_active',
     ];
 

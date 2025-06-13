@@ -277,6 +277,16 @@
                                     </ul>
                                 </li>
                             @endif
+                            
+                            <!-- Business User Landing Page -->
+                            @if(auth()->user()->user_type === 'zakelijk')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('landing.settings') }}">
+                                        <i class="bi bi-signpost"></i>
+                                        {{ __('Landing Page') }}
+                                    </a>
+                                </li>
+                            @endif
                         @endauth
                     </ul>
                     
@@ -311,6 +321,16 @@
                                 <a class="nav-link" href="{{ route('orders.my-sales') }}">
                                     <i class="bi bi-graph-up"></i>
                                     {{ __('general.my_sales') }}
+                                </a>
+                            </li>
+                            @endif
+                            
+                            <!-- Landing Page Settings - Only visible to business users -->
+                            @if(Auth::user()->user_type === 'zakelijk')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('landing.settings') }}">
+                                    <i class="bi bi-shop"></i>
+                                    {{ __('Landing Pagina') }}
                                 </a>
                             </li>
                             @endif
@@ -350,6 +370,13 @@
                                     <li>
                                         <a class="dropdown-item" href="{{ route('orders.my-sales') }}">
                                             <i class="bi bi-graph-up me-2"></i>{{ __('general.my_sales') }}
+                                        </a>
+                                    </li>
+                                    @endif
+                                    @if(Auth::user()->user_type === 'zakelijk')
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('landing.settings') }}">
+                                            <i class="bi bi-signpost me-2"></i>{{ __('Landing Pagina') }}
                                         </a>
                                     </li>
                                     @endif

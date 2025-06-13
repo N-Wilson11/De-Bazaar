@@ -13,10 +13,10 @@ use App\Http\Middleware\CompanyThemeMiddleware;
 // Apply both language and theme middleware to all routes
 Route::middleware(['language', CompanyThemeMiddleware::class])->group(function () {
     
-    Route::get('/', [LoginController::class, 'showLoginForm'])->name('home');
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::get('/home', function () {
-        return redirect()->route('advertisements.browse');
+        return redirect()->route('home');
     });
 
     // QR code routes (accessible to everyone)
@@ -32,6 +32,9 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
     // Company theme switch routes (accessible to everyone)
     Route::get('/company/{companyId}', [ThemeController::class, 'switchCompany'])->name('company.switch');
     Route::post('/company/{companyId}', [ThemeController::class, 'switchCompany']);
+    
+    // Company landing page routes (accessible to everyone)
+    Route::get('/c/{landingUrl}', [App\Http\Controllers\CompanyLandingController::class, 'show'])->name('company.landing');
 
     // Authenticatie Routes
     Route::middleware('guest')->group(function () {
@@ -122,6 +125,12 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
             Route::get('/theme/logo', [ThemeController::class, 'changeLogo'])->name('theme.change-logo');
             Route::post('/theme/logo/update', [ThemeController::class, 'updateLogo'])->name('theme.update-logo');
             Route::post('/theme/logo/remove', [ThemeController::class, 'removeLogo'])->name('theme.remove-logo');
+        });
+        
+        // Landing page settings routes - toegankelijk voor zakelijke gebruikers
+        Route::middleware(\App\Http\Middleware\Business::class)->group(function () {
+            Route::get('/landing/settings', [App\Http\Controllers\CompanyLandingController::class, 'settings'])->name('landing.settings');
+            Route::post('/landing/update', [App\Http\Controllers\CompanyLandingController::class, 'update'])->name('landing.update');
         });
     });
     
