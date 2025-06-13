@@ -34,7 +34,7 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
     Route::post('/company/{companyId}', [ThemeController::class, 'switchCompany']);
     
     // Company landing page routes (accessible to everyone)
-    Route::get('/c/{landingUrl}', [App\Http\Controllers\CompanyLandingController::class, 'show'])->name('company.landing');
+    Route::get('/bedrijf/{landingUrl}', [App\Http\Controllers\CompanyLandingController::class, 'show'])->name('company.landing');
 
     // Authenticatie Routes
     Route::middleware('guest')->group(function () {

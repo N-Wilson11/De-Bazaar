@@ -30,10 +30,10 @@
             <div class="card shadow-sm">
                 <div class="card-body">                    <form action="{{ route('landing.update') }}" method="POST">
                         @csrf
-                        
-                        <div class="mb-4">
-                            <label for="landing_url" class="form-label">{{ __('Custom URL') }} *</label>                            <div class="input-group">
-                                <span class="input-group-text">{{ url('/c/') }}</span>
+                          <div class="mb-4">
+                            <label for="landing_url" class="form-label">{{ __('Custom URL') }} *</label>                            <p class="text-muted mb-2"><small>Het voorvoegsel "/bedrijf/" wordt automatisch toegevoegd aan je URL.</small></p>
+                            <div class="input-group">
+                                <span class="input-group-text">{{ url('/bedrijf/') }}</span>
                                 <input type="text" name="landing_url" id="landing_url" 
                                     class="form-control @error('landing_url') is-invalid @enderror"
                                     value="{{ old('landing_url', $company->landing_url) }}" 
