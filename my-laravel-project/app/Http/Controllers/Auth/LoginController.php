@@ -55,9 +55,12 @@ class LoginController extends Controller
             return redirect()->intended(route('dashboard'));
         }
         
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
+        // Vriendelijke foutmelding in plaats van exception
+        return redirect()->back()
+            ->withInput($request->only('email', 'remember'))
+            ->withErrors([
+                'email' => __('auth.failed'),
+            ]);
     }
     
     public function logout(Request $request)
