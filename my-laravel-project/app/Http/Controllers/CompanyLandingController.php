@@ -114,15 +114,12 @@ class CompanyLandingController extends Controller
         }
         
         $company = $user->company;
-        
-        // Validate the request
+          // Validate the request
         $request->validate([
             'landing_url' => 'required|alpha_dash|unique:companies,landing_url,' . $company->id,
-            'landing_content' => 'nullable|string',
         ]);        
-        // Update the company
+        // Update the company URL
         $company->landing_url = $request->landing_url;
-        $company->landing_content = $request->landing_content;
         $company->save();
         
         return redirect()->route('landing.settings')
