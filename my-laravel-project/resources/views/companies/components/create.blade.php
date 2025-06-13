@@ -62,6 +62,14 @@
                         </div>
                         @break
 
+                    @case('title')
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Titel (H1 formaat)</label>
+                            <input type="text" class="form-control" id="content" name="content" required value="{{ old('content') }}">
+                            <div class="form-text">De titel wordt groot weergegeven als H1 kop op je landingspagina.</div>
+                        </div>
+                        @break
+                        
                     @case('text')
                         <div class="mb-3">
                             <label for="content" class="form-label">Tekst inhoud</label>

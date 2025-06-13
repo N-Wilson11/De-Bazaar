@@ -49,7 +49,8 @@ class PageComponent extends Model
     public static function getComponentTypes(): array
     {
         return [
-            'text' => 'Titel / Tekstblok',
+            'title' => 'Titel',
+            'text' => 'Tekstblok',
             'featured_ads' => 'Uitgelichte advertenties',
             'image' => 'Afbeelding',
         ];

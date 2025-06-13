@@ -2,12 +2,34 @@
 
 @section('title', $company->name)
 
+@section('styles')
+<style>
+.title-component h1 {
+    font-size: 2.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.text-component {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+</style>
+@endsection
+
 @section('content')
 <div class="container py-4">
     @if(isset($components) && $components->count() > 0)
         <!-- Component-based landing page - Only show components -->
         @foreach($components as $component)
             <div class="component mb-5" id="component-{{ $component->id }}">                @switch($component->type)
+                    
+                    @case('title')
+                        <div class="title-component">
+                            <h1 class="display-3 fw-bold mb-4">{!! $component->content !!}</h1>
+                        </div>
+                        @break
                         
                     @case('text')
                         <div class="text-component">

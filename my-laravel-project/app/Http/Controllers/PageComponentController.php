@@ -91,6 +91,10 @@ class PageComponentController extends Controller
         ];
         
         switch ($request->type) {
+            case 'title':
+                $rules['content'] = 'required|string|max:255';
+                break;
+                
             case 'text':
                 $rules['content'] = 'required|string';
                 break;
@@ -115,7 +119,7 @@ class PageComponentController extends Controller
         $component->sort_order = $validatedData['sort_order'] ?? $company->pageComponents()->count();
         $component->is_active = $request->has('is_active');
           // Handle content based on type
-        if ($request->type === 'text') {
+        if ($request->type === 'text' || $request->type === 'title') {
             $component->content = $validatedData['content'];
         }
         
@@ -187,6 +191,10 @@ class PageComponentController extends Controller
                 $rules['settings.button_text'] = 'nullable|string';
                 $rules['settings.button_url'] = 'nullable|string';
                 break;
+                
+            case 'title':
+                $rules['content'] = 'required|string|max:255';
+                break;
             
             case 'text':
                 $rules['content'] = 'required|string';
@@ -214,7 +222,7 @@ class PageComponentController extends Controller
         $component->sort_order = $validatedData['sort_order'] ?? $component->sort_order;
         $component->is_active = $request->has('is_active');
           // Handle content based on type
-        if ($component->type === 'text') {
+        if ($component->type === 'text' || $component->type === 'title') {
             $component->content = $validatedData['content'];
         }
         

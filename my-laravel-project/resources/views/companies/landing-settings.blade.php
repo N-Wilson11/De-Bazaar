@@ -144,6 +144,11 @@
                                                     </div>
                                                     @break
                                                     
+                                                @case('title')
+                                                    <div class="fw-bold" style="font-size: 1.2rem;">{{ strip_tags($component->content) }}</div>
+                                                    <div class="small text-muted mt-1">Titel component (H1 formaat)</div>
+                                                    @break
+                                                    
                                                 @case('text')
                                                     <div class="small">{{ Str::limit(strip_tags($component->content), 200) }}</div>
                                                     @break
