@@ -6,6 +6,7 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class RentalReturnController extends Controller
@@ -72,11 +73,24 @@ class RentalReturnController extends Controller
      *
      * @param OrderItem $orderItem
      * @return \Illuminate\View\View
-     */
-    public function showReturnDetails(OrderItem $orderItem)
-    {        // Controleer of de gebruiker de verkoper is
-        if (Auth::id() != $orderItem->seller_id) {
-            abort(403, 'Onbevoegde toegang.');
+     */    public function showReturnDetails(OrderItem $orderItem)
+    {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'U moet ingelogd zijn om deze pagina te bekijken.');
+        }
+          // Debug info
+        Log::info('User trying to view return details', [
+            'user_id' => Auth::id(),
+            'orderItem_id' => $orderItem->id,
+            'seller_id' => $orderItem->seller_id,
+            'order_user_id' => $orderItem->order ? $orderItem->order->user_id : 'no_order'
+        ]);
+        
+        // Controleer of de gebruiker de verkoper of de koper is
+        if (Auth::id() != $orderItem->seller_id && 
+            ($orderItem->order === null || Auth::id() != $orderItem->order->user_id)) {
+            return abort(403, 'U heeft geen toegang tot deze pagina. Alleen de verkoper of koper kan deze details bekijken.');
         }
 
         // Controleer of het item is teruggebracht
