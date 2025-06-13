@@ -9,7 +9,23 @@
         }
     }
     
-    /* Ensure proper popover content styling */
+    /* Ensure proper popover con                            @if($advertisement->isRental())
+                                <a href="{{ route('rentals.rent', $advertisement) }}" class="btn btn-success">
+                                    <i class="bi bi-calendar-check me-1"></i>{{ __('Nu huren') }}
+                                </a>
+                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-outline-info mt-2">
+                                    <i class="bi bi-calendar me-1"></i>{{ __('Beschikbaarheid bekijken') }}
+                                </a>
+                            @else
+                                @if(isset($canBePurchased) && $canBePurchased)
+                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-cart-plus me-1"></i>{{ __('In winkelwagen') }}
+                                        </button>
+                                    </form>
+                                @endif
+                            @endif/
     .popover {
         max-width: 250px;
     }
@@ -145,11 +161,15 @@
                                 <p>{{ $advertisement->rental_pickup_location }}</p>
                             </div>
                         @endif
-                        
-                        <div class="mt-3 mb-4">
-                            <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-primary">
-                                <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
-                            </a>
+                          <div class="mt-3 mb-4">
+                            <div class="d-grid gap-2">
+                                <a href="{{ route('rentals.rent', $advertisement) }}" class="btn btn-primary">
+                                    <i class="bi bi-calendar-plus me-1"></i>{{ __('Nu huren') }}
+                                </a>
+                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-calendar me-1"></i>{{ __('Beschikbaarheid bekijken') }}
+                                </a>
+                            </div>
                         </div>
                     @endif
                 </div>
@@ -241,9 +261,18 @@
                                 <i class="bi bi-person-badge me-1"></i>{{ __('general.view_seller_profile') }}
                             </a>
                               @if($advertisement->isRental())
-                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-info">
+                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-info mb-2">
                                     <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
                                 </a>
+                                
+                                @if(isset($canBePurchased) && $canBePurchased)
+                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-cart-plus me-1"></i>{{ __('Koop dit product') }}
+                                        </button>
+                                    </form>
+                                @endif
                             @else
                                 @if(isset($canBePurchased) && $canBePurchased)
                                     <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">

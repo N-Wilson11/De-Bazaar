@@ -118,15 +118,14 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>
-                                {{ __('Om dit item te huren, neem contact op met de verhuurder.') }}
+                              <div class="d-grid gap-2">
+                                <a href="{{ route('rentals.rent', $advertisement) }}" class="btn btn-primary">
+                                    <i class="bi bi-calendar-plus me-1"></i>{{ __('Dit product huren') }}
+                                </a>
+                                <a href="mailto:{{ $advertisement->user->email }}?subject={{ urlencode('Interesse in huren: ' . $advertisement->title) }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-envelope me-1"></i>{{ __('Contact opnemen met verhuurder') }}
+                                </a>
                             </div>
-                            
-                            <a href="mailto:{{ $advertisement->user->email }}?subject={{ urlencode('Interesse in huren: ' . $advertisement->title) }}" class="btn btn-primary">
-                                <i class="bi bi-envelope me-1"></i>{{ __('Contact opnemen met verhuurder') }}
-                            </a>
                         </div>
                     @endif
                     

@@ -70,6 +70,10 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/rentals/{advertisement}/calendar', [App\Http\Controllers\AdvertisementController::class, 'calendar'])->name('advertisements.calendar');
         Route::post('/rentals/{advertisement}/availability', [App\Http\Controllers\AdvertisementController::class, 'updateAvailability'])->name('advertisements.update-availability');
         
+        // Product huur routes
+        Route::get('/rentals/{advertisement}/rent', [App\Http\Controllers\RentalController::class, 'showRentForm'])->name('rentals.rent');
+        Route::post('/rentals/{advertisement}/process', [App\Http\Controllers\RentalController::class, 'processRental'])->name('rentals.process');
+        
         // Cart routes
         Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
         Route::post('/cart/add/{advertisement}', [App\Http\Controllers\CartController::class, 'addItem'])->name('cart.add');

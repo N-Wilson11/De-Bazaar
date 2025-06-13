@@ -43,7 +43,8 @@ class CartController extends Controller
     public function addItem(Request $request, Advertisement $advertisement)
     {
         $user = Auth::user();
-          // Check if advertisement is available for purchase
+        
+        // Check if advertisement is available for purchase
         if (!$advertisement->isAvailableForPurchase()) {
             return redirect()->back()->with('error', __('Deze advertentie is niet beschikbaar voor aankoop.'));
         }
@@ -68,14 +69,7 @@ class CartController extends Controller
             ->first();
             
         if ($existingItem) {
-            // Regular advertisements can only have quantity of 1
-            if (!$advertisement->isRental()) {
-                return redirect()->back()->with('info', __('Deze advertentie staat al in je winkelwagen.'));
-            }
-            
-            // For rentals, we could increase booking days if needed
-            $existingItem->quantity = $existingItem->quantity + 1;
-            $existingItem->save();
+            return redirect()->back()->with('info', __('Deze advertentie staat al in je winkelwagen.'));
         } else {
             // Add new item to cart
             $cartItem = new CartItem();

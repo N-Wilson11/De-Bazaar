@@ -153,8 +153,7 @@ class Advertisement extends Model
     public function isAvailableForPurchase(): bool
     {
         return $this->purchase_status === self::PURCHASE_STATUS_AVAILABLE && 
-               $this->status === 'active' &&
-               !$this->isRental();
+               $this->status === 'active';
     }
 
     /**
