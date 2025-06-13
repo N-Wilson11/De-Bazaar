@@ -11,8 +11,7 @@ class DashboardController extends Controller
     public function __construct()
     {
         // Middleware will be applied at the route level
-    }
-      public function index()
+    }    public function index()
     {
         // Tel het aantal verkoop- en verhuuradvertenties voor de huidige gebruiker
         $user = Auth::user();
@@ -24,6 +23,14 @@ class DashboardController extends Controller
         $maxRentalAds = 4;
         $normalAdsRemaining = 0;
         $rentalAdsRemaining = 0;
+        
+        // Haal teruggebrachte huurproducten op voor de huidige verkoper
+        $returnedRentals = \App\Models\OrderItem::where('seller_id', $user->id)
+            ->where('is_rental', true)
+            ->where('is_returned', true)
+            ->orderBy('returned_at', 'desc')
+            ->take(5)
+            ->get();
         
         // Tel alleen advertenties en bereken limieten voor particuliere en zakelijke gebruikers
         if($user->user_type === 'particulier' || $user->user_type === 'zakelijk') {
@@ -53,8 +60,7 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(3)
             ->get();
-        
-        return view('dashboard', compact(
+          return view('dashboard', compact(
             'normalAdsCount', 
             'rentalAdsCount', 
             'maxNormalAds', 
@@ -62,7 +68,8 @@ class DashboardController extends Controller
             'normalAdsRemaining', 
             'rentalAdsRemaining',
             'latestSaleAds',
-            'latestRentalAds'
+            'latestRentalAds',
+            'returnedRentals'
         ));
     }
 }

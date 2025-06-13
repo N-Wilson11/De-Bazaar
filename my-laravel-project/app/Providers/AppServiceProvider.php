@@ -36,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         // Registreer observers
         Review::observe(ReviewObserver::class);
         
+        // Registreer policies
+        \Illuminate\Support\Facades\Gate::define('return-orderItem', function ($user, $orderItem) {
+            return $user->id === $orderItem->order->user_id;
+        });
+        
         // Set the application locale from session
         if (Session::has('locale')) {
             $locale = Session::get('locale');

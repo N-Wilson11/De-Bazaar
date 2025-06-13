@@ -90,6 +90,18 @@
                                                         </div>
                                                     @endif
                                                 </div>
+                                                
+                                                @if($item->is_rental)
+                                                    <div class="mt-1">
+                                                        <span class="badge bg-info">{{ __('Huurtermijn') }}: {{ \Carbon\Carbon::parse($item->rental_start_date)->format('d-m-Y') }} - {{ \Carbon\Carbon::parse($item->rental_end_date)->format('d-m-Y') }}</span>
+                                                        
+                                                        @if($item->is_returned)
+                                                            <span class="badge bg-success ms-1">{{ __('Teruggebracht') }}</span>
+                                                        @elseif(\Carbon\Carbon::now()->gt($item->rental_end_date))
+                                                            <span class="badge bg-danger ms-1">{{ __('Inleveren verlopen') }}</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             </div>
                                         </td>
                                         <td>
@@ -104,7 +116,21 @@
                                         </td>
                                         <td>€ {{ number_format($item->price, 2, ',', '.') }}</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>€ {{ number_format($item->price * $item->quantity, 2, ',', '.') }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>€ {{ number_format($item->price * $item->quantity, 2, ',', '.') }}</span>
+                                                
+                                                @if($item->is_rental && !$item->is_returned && \Carbon\Carbon::now()->lte(\Carbon\Carbon::parse($item->rental_end_date)->addDays(7)))
+                                                    <a href="{{ route('rentals.return', $item) }}" class="btn btn-sm btn-primary ms-2">
+                                                        <i class="bi bi-box-arrow-in-left me-1"></i>{{ __('Terugbrengen') }}
+                                                    </a>
+                                                @elseif($item->is_rental && $item->is_returned)
+                                                    <a href="{{ route('rentals.return-details', $item) }}" class="btn btn-sm btn-outline-secondary ms-2">
+                                                        <i class="bi bi-eye me-1"></i>{{ __('Details') }}
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

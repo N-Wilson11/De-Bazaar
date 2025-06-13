@@ -74,6 +74,11 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::get('/rentals/{advertisement}/rent', [App\Http\Controllers\RentalController::class, 'showRentForm'])->name('rentals.rent');
         Route::post('/rentals/{advertisement}/process', [App\Http\Controllers\RentalController::class, 'processRental'])->name('rentals.process');
         
+        // Product terugbreng routes
+        Route::get('/rentals/return/{orderItem}', [App\Http\Controllers\RentalReturnController::class, 'showReturnForm'])->name('rentals.return');
+        Route::post('/rentals/return/{orderItem}/process', [App\Http\Controllers\RentalReturnController::class, 'processReturn'])->name('rentals.process-return');
+        Route::get('/rentals/return/{orderItem}/details', [App\Http\Controllers\RentalReturnController::class, 'showReturnDetails'])->name('rentals.return-details');
+        
         // Cart routes
         Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
         Route::post('/cart/add/{advertisement}', [App\Http\Controllers\CartController::class, 'addItem'])->name('cart.add');

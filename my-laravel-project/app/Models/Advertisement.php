@@ -88,8 +88,7 @@ class Advertisement extends Model
     
     /**
      * Get all image URLs
-     */
-    public function getAllImageUrls()
+     */    public function getAllImageUrls()
     {
         if (empty($this->images)) {
             return [];
@@ -145,6 +144,21 @@ class Advertisement extends Model
     public function isRental(): bool
     {
         return $this->is_rental === true;
+    }
+      /**
+     * Counts the number of images safely
+     */
+    public function countImages(): int
+    {
+        if (empty($this->images)) {
+            return 0;
+        }
+        
+        if (is_object($this->images) && method_exists($this->images, 'count')) {
+            return $this->images->count();
+        }
+        
+        return count($this->images);
     }
     
     /**

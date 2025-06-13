@@ -12,8 +12,7 @@ class OrderItem extends Model
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */
-    protected $fillable = [
+     */    protected $fillable = [
         'order_id',
         'advertisement_id',
         'quantity',
@@ -23,6 +22,10 @@ class OrderItem extends Model
         'is_rental',
         'rental_start_date',
         'rental_end_date',
+        'is_returned',
+        'returned_at',
+        'return_photo',
+        'return_notes',
     ];
 
     /**
