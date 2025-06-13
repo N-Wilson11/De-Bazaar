@@ -67,6 +67,23 @@
                                 @enderror
                             </div>
 
+                            <div id="company_selection" class="mb-3" style="display: none;">
+                                <label for="company_id" class="form-label">{{ __('Selecteer een bedrijf') }}</label>
+                                <select id="company_id" name="company_id" class="form-select @error('company_id') is-invalid @enderror">
+                                    <option value="">{{ __('-- Selecteer een bedrijf --') }}</option>
+                                    @foreach(\App\Models\Company::where('is_active', true)->get() as $company)
+                                        <option value="{{ $company->id }}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                                            {{ $company->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('company_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                             <div class="mb-3">
                                 <label for="password" class="form-label">{{ __('general.password') }}</label>
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -99,5 +116,31 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Functie om bedrijfsselectie te tonen/verbergen op basis van gebruikerstype
+        function toggleCompanySelection() {
+            const userType = document.querySelector('input[name="user_type"]:checked').value;
+            const companySelection = document.getElementById('company_selection');
+            
+            if (userType === 'normaal') {
+                companySelection.style.display = 'block';
+            } else {
+                companySelection.style.display = 'none';
+                // Reset de waarde wanneer niet zichtbaar
+                document.getElementById('company_id').value = '';
+            }
+        }
+
+        // Event listeners voor radio buttons
+        document.querySelectorAll('input[name="user_type"]').forEach(radio => {
+            radio.addEventListener('change', toggleCompanySelection);
+        });
+
+        // Initiële controle bij het laden van de pagina
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleCompanySelection();
+        });
+    </script>
 </body>
 </html>

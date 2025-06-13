@@ -35,23 +35,36 @@ class RegisterController extends Controller
         
         return redirect('/dashboard');
     }
-    
-    protected function validator(array $data)
-    {        return Validator::make($data, [
+      protected function validator(array $data)
+    {
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'user_type' => ['required', 'string', 'in:particulier,zakelijk,normaal'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+        
+        // Valideer company_id alleen als het gebruikerstype 'normaal' is
+        if (isset($data['user_type']) && $data['user_type'] === 'normaal') {
+            $rules['company_id'] = ['required', 'exists:companies,id'];
+        }
+        
+        return Validator::make($data, $rules);
     }
-    
-    protected function create(array $data)
+      protected function create(array $data)
     {
-        return User::create([
+        $userData = [
             'name' => $data['name'],
             'email' => $data['email'],
             'user_type' => $data['user_type'],
             'password' => Hash::make($data['password']),
-        ]);
+        ];
+        
+        // Voeg company_id toe als het gebruikerstype 'normaal' is
+        if ($data['user_type'] === 'normaal' && isset($data['company_id'])) {
+            $userData['company_id'] = $data['company_id'];
+        }
+        
+        return User::create($userData);
     }
 }
