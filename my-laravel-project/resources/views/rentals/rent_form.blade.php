@@ -117,19 +117,18 @@
                                 </div>
                                 
                                 <div class="card">
-                                    <div class="card-body">
-                                        <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
+                                    <div class="card-body">                                        <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
                                         <div class="d-flex flex-column gap-3">
                                             <div class="d-flex align-items-center">
-                                                <div class="calendar-color-sample me-3 bg-success"></div>
+                                                <span class="legend-color bg-success me-2"></span>
                                                 <span><strong>{{ __('Beschikbaar') }}</strong> - {{ __('Deze data zijn beschikbaar voor verhuur') }}</span>
                                             </div>
                                             <div class="d-flex align-items-center">
-                                                <div class="calendar-color-sample me-3 bg-danger"></div>
+                                                <span class="legend-color bg-danger me-2"></span>
                                                 <span><strong>{{ __('Gereserveerd') }}</strong> - {{ __('Deze data zijn al geboekt') }}</span>
                                             </div>
                                             <div class="d-flex align-items-center">
-                                                <div class="calendar-color-sample me-3 bg-secondary"></div>
+                                                <span class="legend-color bg-secondary me-2"></span>
                                                 <span><strong>{{ __('Niet beschikbaar') }}</strong> - {{ __('Deze data zijn niet aangeboden voor verhuur') }}</span>
                                             </div>
                                         </div>
@@ -209,14 +208,21 @@
 <!-- Include Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<style>
-    .calendar-color-sample {
+<style>    .calendar-color-sample {
         width: 25px;
         height: 25px;
         border-radius: 4px;
         display: inline-block;
         border: 1px solid #ddd;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.2);
     }
     
     .price-badge {
@@ -252,10 +258,10 @@
         border-color: #0069d9 !important;
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5) !important;
     }
-    
-    .flatpickr-day.flatpickr-disabled {
+      .flatpickr-day.flatpickr-disabled {
         color: #aaa !important;
         cursor: not-allowed !important;
+        background-color: #f8f9fa !important;
     }
     
     .flatpickr-day.today {
@@ -283,12 +289,25 @@
                 dateFormat: "Y-m-d",
                 minDate: "today"
             });
-            
-            // Eenvoudige inline kalender
+              // Inline kalender met beschikbaarheidsmarkering
             flatpickr("#rental-calendar", {
                 inline: true,
                 dateFormat: "Y-m-d",
-                minDate: "today"
+                minDate: "today",
+                disable: bookedDates,
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                    
+                    if (bookedDates.includes(dateStr)) {
+                        dayElem.className += " booked";
+                        dayElem.title = "{{ __('Gereserveerd') }}";
+                    } else if (availableDates.includes(dateStr)) {
+                        dayElem.className += " available";
+                        dayElem.title = "{{ __('Beschikbaar voor verhuur') }}";
+                    } else {
+                        dayElem.title = "{{ __('Niet aangeboden voor verhuur') }}";
+                    }
+                }
             });
             
             document.getElementById('recalculate-btn').addEventListener('click', function() {

@@ -73,19 +73,18 @@
                                 <input type="hidden" id="available_dates" name="available_dates" value="{{ implode(',', $availability) }}">
                                 
                                 <div id="availability-calendar" class="mb-3"></div>
-                                  <div class="card p-3 mb-3">
-                                    <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
+                                  <div class="card p-3 mb-3">                                    <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
                                     <div class="d-flex flex-column gap-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="calendar-color-sample me-3 bg-success"></div>
+                                            <span class="legend-color bg-success me-2"></span>
                                             <span><strong>{{ __('Beschikbaar') }}</strong> - {{ __('Deze data zijn beschikbaar voor verhuur') }}</span>
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <div class="calendar-color-sample me-3 bg-danger"></div>
+                                            <span class="legend-color bg-danger me-2"></span>
                                             <span><strong>{{ __('Gereserveerd') }}</strong> - {{ __('Deze data zijn al geboekt') }}</span>
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <div class="calendar-color-sample me-3 bg-secondary"></div>
+                                            <span class="legend-color bg-secondary me-2"></span>
                                             <span><strong>{{ __('Niet beschikbaar') }}</strong> - {{ __('Deze data zijn niet geselecteerd voor verhuur') }}</span>
                                         </div>
                                     </div>
@@ -101,19 +100,18 @@
                             <h5 class="mb-3">{{ __('Beschikbaarheid') }}</h5>                            <p>{{ __('Bekijk wanneer dit item beschikbaar is om te huren.') }}</p>
                             
                             <div id="availability-calendar" class="mb-3"></div>
-                              <div class="card p-3 mb-3">
-                                <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
+                              <div class="card p-3 mb-3">                                <h6 class="mb-3 fw-bold">{{ __('Legenda') }}</h6>
                                 <div class="d-flex flex-column gap-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="calendar-color-sample me-3 bg-success"></div>
+                                        <span class="legend-color bg-success me-2"></span>
                                         <span><strong>{{ __('Beschikbaar') }}</strong> - {{ __('Deze data zijn beschikbaar voor verhuur') }}</span>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <div class="calendar-color-sample me-3 bg-danger"></div>
+                                        <span class="legend-color bg-danger me-2"></span>
                                         <span><strong>{{ __('Gereserveerd') }}</strong> - {{ __('Deze data zijn al geboekt') }}</span>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <div class="calendar-color-sample me-3 bg-secondary"></div>
+                                        <span class="legend-color bg-secondary me-2"></span>
                                         <span><strong>{{ __('Niet beschikbaar') }}</strong> - {{ __('Deze data zijn niet aangeboden voor verhuur') }}</span>
                                     </div>
                                 </div>
@@ -148,14 +146,21 @@
 <!-- Include Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<style>
-    .calendar-color-sample {
+<style>    .calendar-color-sample {
         width: 25px;
         height: 25px;
         border-radius: 4px;
         display: inline-block;
         border: 1px solid #ddd;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.2);
     }
     
     /* Flatpickr custom styles - met !important attributen om zeker te zijn dat ze toegepast worden */
@@ -197,8 +202,7 @@
         border-color: #0069d9 !important;
         color: white !important;
     }
-    
-    /* CSS voor de legenda kleurvakjes */
+      /* CSS voor de legenda kleurvakjes - matcht met de flatpickr kalender kleuren */
     .bg-success {
         background-color: #28a745 !important;
     }
@@ -206,9 +210,10 @@
     .bg-danger {
         background-color: #dc3545 !important;
     }
-    
-    .bg-secondary {
-        background-color: #6c757d !important;
+      .bg-secondary {
+        background-color: #f8f9fa !important;
+        border: 1px solid #aaa !important;
+        color: #aaa !important;
     }
 </style>
 
