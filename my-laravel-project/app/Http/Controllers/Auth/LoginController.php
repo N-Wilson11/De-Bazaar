@@ -33,6 +33,14 @@ class LoginController extends Controller
             
             $user = Auth::user();
             
+            // Check if user belongs to a company with a landing page
+            if ($user->company_id) {
+                $company = \App\Models\Company::find($user->company_id);
+                if ($company && $company->landing_url) {
+                    return redirect()->route('company.landing', $company->landing_url);
+                }
+            }
+            
             // Als zakelijke gebruiker, check voor landingpage
             if ($user->user_type === 'zakelijk' && $user->company) {
                 $company = $user->company;
