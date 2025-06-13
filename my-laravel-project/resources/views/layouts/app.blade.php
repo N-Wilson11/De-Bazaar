@@ -278,15 +278,7 @@
                                 </li>
                             @endif
                             
-                            <!-- Business User Landing Page -->
-                            @if(auth()->user()->user_type === 'zakelijk')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('landing.settings') }}">
-                                        <i class="bi bi-signpost"></i>
-                                        {{ __('Landing Page') }}
-                                    </a>
-                                </li>
-                            @endif
+
                         @endauth
                     </ul>
                     
@@ -325,15 +317,7 @@
                             </li>
                             @endif
                             
-                            <!-- Landing Page Settings - Only visible to business users -->
-                            @if(Auth::user()->user_type === 'zakelijk')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('landing.settings') }}">
-                                    <i class="bi bi-shop"></i>
-                                    {{ __('Landing Pagina') }}
-                                </a>
-                            </li>
-                            @endif
+
                         @endauth
                         
                         <!-- Language Switcher -->
@@ -373,13 +357,7 @@
                                         </a>
                                     </li>
                                     @endif
-                                    @if(Auth::user()->user_type === 'zakelijk')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('landing.settings') }}">
-                                            <i class="bi bi-signpost me-2"></i>{{ __('Landing Pagina') }}
-                                        </a>
-                                    </li>
-                                    @endif
+
                                     <li>
                                         <a class="dropdown-item" href="{{ route('cart.index') }}">
                                             <i class="bi bi-cart3 me-2"></i>{{ __('general.cart') }}
