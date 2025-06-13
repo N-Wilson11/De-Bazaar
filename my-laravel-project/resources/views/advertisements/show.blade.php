@@ -252,27 +252,16 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="d-grid gap-2 mt-4">
-                            <a href="mailto:{{ $advertisement->user->email }}?subject={{ urlencode('Interesse in: ' . $advertisement->title) }}" class="btn btn-primary">
-                                <i class="bi bi-envelope me-1"></i>{{ __('Contact opnemen') }}
-                            </a>
-                              <a href="{{ route('advertisers.show', $advertisement->user) }}" class="btn btn-outline-primary">
+                          <div class="d-grid gap-2 mt-4">
+                            <a href="{{ route('advertisers.show', $advertisement->user) }}" class="btn btn-outline-primary">
                                 <i class="bi bi-person-badge me-1"></i>{{ __('general.view_seller_profile') }}
-                            </a>
-                              @if($advertisement->isRental())
-                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-info mb-2">
-                                    <i class="bi bi-calendar-check me-1"></i>{{ __('Beschikbaarheid bekijken') }}
+                            </a>@if($advertisement->isRental())
+                                <a href="{{ route('rentals.rent', $advertisement) }}" class="btn btn-info mb-2">
+                                    <i class="bi bi-calendar-check me-1"></i>{{ __('Nu huren') }}
                                 </a>
-                                
-                                @if(isset($canBePurchased) && $canBePurchased)
-                                    <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="bi bi-cart-plus me-1"></i>{{ __('Koop dit product') }}
-                                        </button>
-                                    </form>
-                                @endif
+                                <a href="{{ route('advertisements.calendar', $advertisement) }}" class="btn btn-outline-info mb-2">
+                                    <i class="bi bi-calendar me-1"></i>{{ __('Beschikbaarheid bekijken') }}
+                                </a>
                             @else
                                 @if(isset($canBePurchased) && $canBePurchased)
                                     <form action="{{ route('cart.add', $advertisement) }}" method="POST" class="mb-2">
@@ -280,9 +269,10 @@
                                         <button type="submit" class="btn btn-success w-100">
                                             <i class="bi bi-cart-plus me-1"></i>{{ __('In winkelwagen') }}
                                         </button>
-                                    </form>
-                                @endif
-                            @endif                              @auth
+                                    </form>                                @endif
+                            @endif
+                            
+                            @auth
                                 <form action="{{ route('favorites.toggle', $advertisement) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-outline-danger w-100">
@@ -305,12 +295,7 @@
                             @elseif(Auth::check() && $advertisement->user_id === Auth::id())
                                 <button class="btn btn-outline-secondary w-100 mt-2" disabled>
                                     <i class="bi bi-exclamation-circle me-1"></i>{{ __('general.cannot_buy_own_ad') }}
-                                </button>
-                            @else
-                                <button class="btn btn-outline-secondary w-100 mt-2" disabled>
-                                    <i class="bi bi-x-circle me-1"></i>{{ __('general.not_available_for_purchase') }}
-                                </button>
-                            @endif
+                                </button>                            @endif
                         </div>
                     @endif
                 </div>

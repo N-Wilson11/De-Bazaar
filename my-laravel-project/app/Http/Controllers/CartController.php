@@ -36,13 +36,17 @@ class CartController extends Controller
         
         return view('cart.index', compact('cart'));
     }
-    
-    /**
+      /**
      * Add an item to the cart.
      */
     public function addItem(Request $request, Advertisement $advertisement)
     {
         $user = Auth::user();
+        
+        // Verhuurproducten kunnen niet gekocht worden
+        if ($advertisement->isRental()) {
+            return redirect()->back()->with('error', __('Dit is een verhuurproduct en kan niet gekocht worden.'));
+        }
         
         // Check if advertisement is available for purchase
         if (!$advertisement->isAvailableForPurchase()) {
