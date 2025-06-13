@@ -215,48 +215,6 @@
                                 @endforelse
                             </div>                </div>
             </div>
-                <div class="card shadow-sm mt-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">{{ __('QR Code for Your Landing Page') }}</h5>
-                    <p>{{ __('Use this QR code to share your landing page.') }}</p>
-                    
-                    @if($company->landing_url)
-                        <div class="row align-items-center">
-                            <div class="col-md-4 text-center">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode(route('company.landing', $company->landing_url)) }}" 
-                                    alt="QR Code" class="img-fluid mb-3">
-                                
-                                <a href="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={{ urlencode(route('company.landing', $company->landing_url)) }}&download=1" 
-                                    class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-download me-1"></i>{{ __('Download QR Code') }}
-                                </a>
-                            </div>
-                            
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label class="form-label">{{ __('Landing Page URL') }}</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" value="{{ route('company.landing', $company->landing_url) }}" readonly>
-                                        <button class="btn btn-outline-secondary copy-btn" type="button" data-clipboard-text="{{ route('company.landing', $company->landing_url) }}">
-                                            <i class="bi bi-clipboard"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <p class="mb-0">
-                                    <i class="bi bi-info-circle me-1 text-primary"></i>
-                                    {{ __('Share this link or QR code with your customers to direct them to your company landing page.') }}
-                                </p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>
-                            {{ __('Save your landing page settings first to generate a QR code.') }}
-                        </div>
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -281,21 +239,9 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize clipboard.js
-    var clipboard = new ClipboardJS('.copy-btn');
-    
-    clipboard.on('success', function(e) {
-        e.trigger.innerHTML = '<i class="bi bi-check"></i>';
-        setTimeout(function() {
-            e.trigger.innerHTML = '<i class="bi bi-clipboard"></i>';
-        }, 2000);
-        e.clearSelection();
-    });
-    
     // Sortable voor componenten
     const componentList = document.getElementById('component-list');
     
