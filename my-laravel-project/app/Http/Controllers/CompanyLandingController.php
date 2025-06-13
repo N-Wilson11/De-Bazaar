@@ -16,8 +16,7 @@ class CompanyLandingController extends Controller
      *
      * @param  string  $landingUrl
      * @return \Illuminate\Http\Response
-     */
-    public function show($landingUrl)
+     */    public function show($landingUrl)
     {
         // Find the company by landing URL
         $company = Company::where('landing_url', $landingUrl)->first();
@@ -32,7 +31,15 @@ class CompanyLandingController extends Controller
         // Get the company theme
         $theme = $company->theme;
         
-        // Load advertisements from the company users
+        // Load active page components
+        $components = $company->activePageComponents;
+        
+        // Als er geen componenten zijn, dan gebruiken we de standaard weergave
+        if ($components->isEmpty() && $company->landing_content) {
+            return view('companies.landing', compact('company', 'theme'));
+        }
+        
+        // Load advertisements from the company users (voor componenten die advertenties nodig hebben)
         $advertisements = \App\Models\Advertisement::whereHas('user', function ($query) use ($company) {
             $query->where('company_id', $company->id);
         })
@@ -41,7 +48,8 @@ class CompanyLandingController extends Controller
         ->orderBy('created_at', 'desc')
         ->take(8)
         ->get();
-          // Load rental advertisements
+        
+        // Load rental advertisements
         $rentalAds = \App\Models\Advertisement::whereHas('user', function ($query) use ($company) {
             $query->where('company_id', $company->id);
         })
@@ -51,10 +59,7 @@ class CompanyLandingController extends Controller
         ->take(4)
         ->get();
         
-        // Get the company theme
-        $theme = $company->theme;
-        
-        return view('companies.landing', compact('company', 'theme', 'advertisements', 'rentalAds'));
+        return view('companies.landing', compact('company', 'theme', 'advertisements', 'rentalAds', 'components'));
     }
       /**
      * Display the landing page settings for the authenticated company.
@@ -108,7 +113,10 @@ class CompanyLandingController extends Controller
                 ->with('error', __('There was a problem creating your company profile. Please contact support.'));
         }
         
-        return view('companies.landing-settings', compact('company'));
+        // Laad de pageComponents voor de component tab
+        $pageComponents = $company->pageComponents;
+        
+        return view('companies.landing-settings', compact('company', 'pageComponents'));
     }
       /**
      * Update the landing page settings.

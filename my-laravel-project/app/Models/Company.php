@@ -65,4 +65,22 @@ class Company extends Model
     {
         return $this->hasManyThrough(Contract::class, User::class);
     }
+
+    /**
+     * Get the page components for the company landing page.
+     */
+    public function pageComponents(): HasMany
+    {
+        return $this->hasMany(PageComponent::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Get active page components.
+     */
+    public function activePageComponents(): HasMany
+    {
+        return $this->hasMany(PageComponent::class)
+            ->where('is_active', true)
+            ->orderBy('sort_order');
+    }
 }

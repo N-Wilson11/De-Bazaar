@@ -131,6 +131,15 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::middleware(\App\Http\Middleware\Business::class)->group(function () {
             Route::get('/landing/settings', [App\Http\Controllers\CompanyLandingController::class, 'settings'])->name('landing.settings');
             Route::post('/landing/update', [App\Http\Controllers\CompanyLandingController::class, 'update'])->name('landing.update');
+            
+            // Component management routes
+            Route::get('/components', [App\Http\Controllers\PageComponentController::class, 'index'])->name('components.index');
+            Route::get('/components/create/{type}', [App\Http\Controllers\PageComponentController::class, 'create'])->name('components.create');
+            Route::post('/components', [App\Http\Controllers\PageComponentController::class, 'store'])->name('components.store');
+            Route::get('/components/{component}/edit', [App\Http\Controllers\PageComponentController::class, 'edit'])->name('components.edit');
+            Route::put('/components/{component}', [App\Http\Controllers\PageComponentController::class, 'update'])->name('components.update');
+            Route::delete('/components/{component}', [App\Http\Controllers\PageComponentController::class, 'destroy'])->name('components.destroy');
+            Route::post('/components/order', [App\Http\Controllers\PageComponentController::class, 'updateOrder'])->name('components.order');
         });
     });
     

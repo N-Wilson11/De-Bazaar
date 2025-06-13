@@ -16,7 +16,7 @@
     $dbCompanyName = $dbTheme ? $dbTheme->name : config('app.name');
     $dbFooterText = $dbTheme && $dbTheme->footer_text ? $dbTheme->footer_text : '© ' . date('Y') . ' ' . $dbCompanyName . '. All rights reserved.';
 @endphp
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="background-color: {{ $dbBackgroundColor }} !important;">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="background-color: {{ $dbBackgroundColor }} !important; height: 100%;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,9 +114,36 @@
             color: {{ $dbTextColor }} !important;
             margin: 0 !important;
             padding: 0 !important;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 100vh !important;
+            overflow-x: hidden;
+            height: 100% !important;
+        }
+        
+        /* Zorg ervoor dat de footer altijd onderaan staat en de navigatie bovenaan */
+        header {
+            width: 100%;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000;
+            order: 0 !important; /* Zorgt ervoor dat header eerste komt */
+        }
+        
+        main {
+            flex: 1 !important;
+            position: relative;
+            z-index: 1;
+            order: 1 !important; /* Komt na de header */
+            overflow: auto;
+        }
+        
+        footer {
+            width: 100%;
+            position: relative;
+            z-index: 100;
+            order: 2 !important; /* Komt als laatste */
+            margin-top: auto;
         }
         
         /* Text kleur for normale tekst */
@@ -388,13 +415,15 @@
         </nav>
     </header>
 
-    <main class="container py-4">
-        @yield('content')
+    <main>
+        <div class="container py-4">
+            @yield('content')
+        </div>
     </main>
 
     <footer class="footer mt-auto py-3">
         <div class="container text-center" style="background-color: {{ $dbPrimaryColor }} !important; color: white !important;">
-            <p>{{ $dbFooterText }}</p>
+            <p class="mb-0">{{ $dbFooterText }}</p>
         </div>
     </footer>
 
@@ -423,6 +452,17 @@
             document.body.style.backgroundColor = bgColor;
             document.body.style.color = textColor;
             
+            // Fix voor navbar-positie - zorg dat de header altijd bovenaan blijft
+            document.querySelector('header').style.position = 'sticky';
+            document.querySelector('header').style.top = '0';
+            document.querySelector('header').style.zIndex = '1000';
+            document.querySelector('footer').style.position = 'relative';
+            document.querySelector('footer').style.bottom = '0';
+            
+            // Forceer de juiste volgorde
+            document.body.prepend(document.querySelector('header'));
+            document.body.appendChild(document.querySelector('footer'));
+            
             // Apply to all main containers except certain elements
             const applyBgColor = (selector) => {
                 document.querySelectorAll(selector).forEach(el => {
@@ -443,6 +483,50 @@
             
             console.log('Applied DB theme colors');
         });
+    </script>
+    
+    <!-- Zorg ervoor dat de navbar bovenaan staat en niet onderaan -->
+    <script>
+        // Direct korrigeren van de DOM structuur op pageload
+        window.onload = function() {
+            // Check huidige DOM structuur
+            const header = document.querySelector('header');
+            const footer = document.querySelector('footer');
+            const body = document.body;
+            
+            // Zorg ervoor dat header altijd het eerste element is
+            if (header && body.firstChild !== header) {
+                body.prepend(header);
+            }
+            
+            // Zorg ervoor dat footer altijd het laatste element is
+            if (footer && body.lastChild !== footer) {
+                body.appendChild(footer);
+            }
+            
+            // Forceer de juiste stijlen
+            header.style.position = 'sticky';
+            header.style.top = '0';
+            header.style.zIndex = '9999';
+            header.style.width = '100%';
+            header.style.order = '-1'; // Negatieve waarde zorgt dat het bovenaan komt
+            
+            // Forceer de juiste stijlen voor de main
+            const main = document.querySelector('main');
+            if (main) {
+                main.style.order = '0';
+                main.style.flex = '1';
+            }
+            
+            // Forceer de juiste stijlen voor de footer
+            if (footer) {
+                footer.style.order = '1';
+                footer.style.width = '100%';
+                footer.style.marginTop = 'auto';
+            }
+            
+            console.log('DOM structuur gecorrigeerd: header bovenaan, footer onderaan');
+        };
     </script>
     
     @stack('scripts')
