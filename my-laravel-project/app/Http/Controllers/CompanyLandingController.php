@@ -30,36 +30,11 @@ class CompanyLandingController extends Controller
         
         // Get the company theme
         $theme = $company->theme;
-        
-        // Load active page components
+          // Load active page components
         $components = $company->activePageComponents;
         
-        // Als er geen componenten zijn, dan gebruiken we de standaard weergave
-        if ($components->isEmpty() && $company->landing_content) {
-            return view('companies.landing', compact('company', 'theme'));
-        }
-        
-        // Load advertisements from the company users (voor componenten die advertenties nodig hebben)
-        $advertisements = \App\Models\Advertisement::whereHas('user', function ($query) use ($company) {
-            $query->where('company_id', $company->id);
-        })
-        ->where('status', 'active')
-        ->where('is_rental', false)
-        ->orderBy('created_at', 'desc')
-        ->take(8)
-        ->get();
-        
-        // Load rental advertisements
-        $rentalAds = \App\Models\Advertisement::whereHas('user', function ($query) use ($company) {
-            $query->where('company_id', $company->id);
-        })
-        ->where('status', 'active')
-        ->where('is_rental', true)
-        ->orderBy('created_at', 'desc')
-        ->take(4)
-        ->get();
-        
-        return view('companies.landing', compact('company', 'theme', 'advertisements', 'rentalAds', 'components'));
+        // Alleen de componenten worden weergegeven op de landingspagina
+        return view('companies.landing', compact('company', 'theme', 'components'));
     }
       /**
      * Display the landing page settings for the authenticated company.

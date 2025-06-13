@@ -83,8 +83,7 @@ class PageComponentController extends Controller
         }
         
         $company = $user->company;
-        
-        // Validate the request based on component type
+          // Validate the request based on component type
         $rules = [
             'type' => 'required|string',
             'is_active' => 'boolean',
@@ -92,13 +91,6 @@ class PageComponentController extends Controller
         ];
         
         switch ($request->type) {
-            case 'hero':
-                $rules['content'] = 'required|string';
-                $rules['image'] = 'nullable|image|max:2048';
-                $rules['settings.button_text'] = 'nullable|string';
-                $rules['settings.button_url'] = 'nullable|string';
-                break;
-            
             case 'text':
                 $rules['content'] = 'required|string';
                 break;
@@ -112,21 +104,6 @@ class PageComponentController extends Controller
                 $rules['settings.count'] = 'nullable|integer|min:1|max:8';
                 $rules['settings.category'] = 'nullable|string';
                 break;
-                
-            case 'product_grid':
-                $rules['settings.count'] = 'nullable|integer|min:1|max:12';
-                $rules['settings.is_rental'] = 'nullable|boolean';
-                break;
-                
-            case 'cta':
-                $rules['content'] = 'required|string';
-                $rules['settings.button_text'] = 'required|string';
-                $rules['settings.button_url'] = 'required|string';
-                break;
-                
-            case 'testimonials':
-                $rules['settings.count'] = 'nullable|integer|min:1|max:5';
-                break;
         }
         
         $validatedData = $request->validate($rules);
@@ -137,9 +114,8 @@ class PageComponentController extends Controller
         $component->type = $validatedData['type'];
         $component->sort_order = $validatedData['sort_order'] ?? $company->pageComponents()->count();
         $component->is_active = $request->has('is_active');
-        
-        // Handle content based on type
-        if (in_array($request->type, ['hero', 'text', 'cta'])) {
+          // Handle content based on type
+        if ($request->type === 'text') {
             $component->content = $validatedData['content'];
         }
         
@@ -230,16 +206,6 @@ class PageComponentController extends Controller
                 $rules['settings.count'] = 'nullable|integer|min:1|max:12';
                 $rules['settings.is_rental'] = 'nullable|boolean';
                 break;
-                
-            case 'cta':
-                $rules['content'] = 'required|string';
-                $rules['settings.button_text'] = 'required|string';
-                $rules['settings.button_url'] = 'required|string';
-                break;
-                
-            case 'testimonials':
-                $rules['settings.count'] = 'nullable|integer|min:1|max:5';
-                break;
         }
         
         $validatedData = $request->validate($rules);
@@ -247,9 +213,8 @@ class PageComponentController extends Controller
         // Update the component
         $component->sort_order = $validatedData['sort_order'] ?? $component->sort_order;
         $component->is_active = $request->has('is_active');
-        
-        // Handle content based on type
-        if (in_array($component->type, ['hero', 'text', 'cta'])) {
+          // Handle content based on type
+        if ($component->type === 'text') {
             $component->content = $validatedData['content'];
         }
         

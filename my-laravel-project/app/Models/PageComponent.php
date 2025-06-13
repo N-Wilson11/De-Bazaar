@@ -41,8 +41,7 @@ class PageComponent extends Model
     {
         return $this->belongsTo(Company::class);
     }
-    
-    /**
+      /**
      * Get available component types
      * 
      * @return array
@@ -50,13 +49,9 @@ class PageComponent extends Model
     public static function getComponentTypes(): array
     {
         return [
-            'hero' => 'Hero sectie',
+            'text' => 'Titel / Tekstblok',
             'featured_ads' => 'Uitgelichte advertenties',
-            'text' => 'Tekstblok',
             'image' => 'Afbeelding',
-            'product_grid' => 'Productoverzicht',
-            'cta' => 'Call-to-action knop',
-            'testimonials' => 'Beoordelingen',
         ];
     }
 }

@@ -156,10 +156,9 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
-                                <div class="alert alert-info">
+                                  <div class="alert alert-info">
                                     <strong>Tip:</strong> Sleep de componenten om de volgorde aan te passen.
-                                    Als u componenten gebruikt, wordt de HTML-inhoud genegeerd. U kunt kiezen welke methode u wilt gebruiken, maar niet beide tegelijk.
+                                    <p>Op uw landingspagina worden alleen de componenten getoond die u hierboven heeft toegevoegd. Als u geen componenten heeft toegevoegd, wordt een standaard pagina weergegeven.</p>
                                     <div class="mt-2">
                                         <a href="{{ route('company.landing', $company->landing_url) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
                                             <i class="bi bi-eye me-1"></i> Bekijk landingspagina
@@ -417,14 +416,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Verwijder bevestiging
+// Verwijder bevestiging met verbeterde logica
+let deleteModal;
+let currentComponentId;
+
 function confirmDelete(componentId, componentName) {
-    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    // Opslaan van component ID voor later gebruik
+    currentComponentId = componentId;
+    
+    // Component naam in de modal plaatsen
     document.getElementById('component-name').textContent = componentName;
+    
+    // Modal initialiseren indien nog niet gedaan
+    if (!deleteModal) {
+        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    }
+    
+    // Event listeners verwijderen en opnieuw toevoegen om duplicatie te voorkomen
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+    
+    // Event listener toevoegen aan de nieuwe knop
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-        document.getElementById('delete-form-' + componentId).submit();
+        // Formulier indienen en modal sluiten
+        document.getElementById('delete-form-' + currentComponentId).submit();
+        deleteModal.hide();
     });
-    modal.show();
+    
+    // Modal tonen
+    deleteModal.show();
 }
 </script>
 @endpush

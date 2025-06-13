@@ -67,15 +67,10 @@
                 <div>
                     <a href="{{ route('components.edit', $component) }}" class="btn btn-sm btn-outline-primary me-2">
                         <i class="bi bi-pencil"></i> Bewerken
-                    </a>
-                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                    </a>                    <button type="button" class="btn btn-sm btn-outline-danger" 
                         onclick="confirmDelete('{{ $component->id }}', '{{ $componentTypes[$component->type] ?? $component->type }}')">
                         <i class="bi bi-trash"></i>
                     </button>
-                    <form id="delete-form-{{ $component->id }}" action="{{ route('components.destroy', $component) }}" method="POST" class="d-none">
-                        @csrf
-                        @method('DELETE')
-                    </form>
                 </div>
             </div>
             <div class="card-body">
@@ -191,6 +186,11 @@
         </div>
     </div>
 </div>
+
+<form id="temp-delete-form" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection
 
 @section('scripts')
@@ -239,16 +239,43 @@
                 console.error('Fout bij het bijwerken van de volgorde:', error);
             });
         }
-    });
+    });    // Verwijder bevestiging met directe form submission
+    let deleteModal;
+    let currentComponentId;
     
-    // Verwijder bevestiging
     function confirmDelete(componentId, componentName) {
-        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        // Store the component ID for later use
+        currentComponentId = componentId;
+        
+        // Set component name in the modal
         document.getElementById('component-name').textContent = componentName;
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-            document.getElementById('delete-form-' + componentId).submit();
-        });
-        modal.show();
+        
+        // Initialize modal if not already done
+        if (!deleteModal) {
+            deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            
+            // Add event listener only once to the confirm button
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                executeDelete();
+            });
+        }
+        
+        // Show the modal
+        deleteModal.show();
+    }
+      function executeDelete() {
+        if (!currentComponentId) return;
+        
+        // Gebruik een enkele form om de verwijdering uit te voeren
+        const form = document.getElementById('temp-delete-form');
+        // Gebruik de volledige URL met route
+        form.action = '{{ url("/components") }}/' + currentComponentId;
+        form.submit();
+        
+        // Hide modal
+        if (deleteModal) {
+            deleteModal.hide();
+        }
     }
 </script>
 @endsection
