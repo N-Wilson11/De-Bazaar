@@ -158,6 +158,48 @@
                             </div>
                         @endif
 
+                        <div class="card mb-4 border-primary">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="mb-0 text-primary">{{ __('Biedingen') }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="is_accepting_bids" name="is_accepting_bids" value="1" {{ old('is_accepting_bids', $advertisement->is_accepting_bids) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_accepting_bids">{{ __('Biedingen accepteren') }}</label>
+                                </div>
+                                
+                                <div class="row mb-3" id="bid_settings" style="{{ old('is_accepting_bids', $advertisement->is_accepting_bids) ? '' : 'display: none;' }}">
+                                    <div class="col-md-6">
+                                        <label for="min_bid_amount" class="form-label fw-semibold">{{ __('Minimum bod bedrag') }} (€)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">€</span>
+                                            <input id="min_bid_amount" type="number" step="0.01" min="0" class="form-control @error('min_bid_amount') is-invalid @enderror" name="min_bid_amount" value="{{ old('min_bid_amount', $advertisement->min_bid_amount ?? $advertisement->price) }}">
+                                        </div>
+                                        <div class="form-text">{{ __('Laat leeg om de advertentieprijs als minimum bod te gebruiken.') }}</div>
+                                        @error('min_bid_amount')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <div class="d-flex">
+                                        <i class="bi bi-info-circle fs-5 me-2"></i>
+                                        <div>
+                                            <strong>{{ __('Over biedingen') }}</strong>
+                                            <ul class="mb-0 mt-1">
+                                                <li>{{ __('Gebruikers kunnen bieden op je advertentie.') }}</li>
+                                                <li>{{ __('Je kunt biedingen accepteren of afwijzen.') }}</li>
+                                                <li>{{ __('Als je een bod accepteert, wordt de advertentie automatisch gereserveerd.') }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="text-muted mb-3">
                             <small>{{ __('Velden met') }} <span class="text-danger">*</span> {{ __('zijn verplicht') }}</small>
                         </div>
@@ -177,3 +219,60 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isAcceptingBidsToggle = document.getElementById('is_accepting_bids');
+        const bidSettingsDiv = document.getElementById('bid_settings');
+        
+        isAcceptingBidsToggle.addEventListener('change', function() {
+            bidSettingsDiv.style.display = isAcceptingBidsToggle.checked ? 'block' : 'none';
+        });
+        
+        // Voorbeeld functionaliteit voor afbeelding verwijderen
+        const removeImgBtns = document.querySelectorAll('.remove-img-btn');
+        removeImgBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const imgPath = this.getAttribute('data-img-path');
+                document.getElementById('remove_images').value += imgPath + ',';
+                this.closest('.image-preview-container').remove();
+            });
+        });
+        
+        // Image preview voor nieuwe uploads
+        const imagesInput = document.getElementById('images');
+        const previewContainer = document.getElementById('image-preview');
+        
+        if (imagesInput) {
+            imagesInput.addEventListener('change', function() {
+                previewContainer.innerHTML = '';
+                
+                const files = this.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (!file.type.match('image.*')) {
+                        continue;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'col-md-3 mb-2';
+                        previewItem.innerHTML = `
+                            <div class="card">
+                                <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                                <div class="card-body p-2 text-center">
+                                    <small class="text-muted">Nieuwe foto</small>
+                                </div>
+                            </div>
+                        `;
+                        previewContainer.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>
+@endpush

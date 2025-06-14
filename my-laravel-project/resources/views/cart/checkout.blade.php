@@ -120,6 +120,22 @@
                                                 <div>
                                                     <div style="font-size: 0.9rem;">{{ Str::limit($item->advertisement->title, 30) }}</div>
                                                     <div class="small text-muted">{{ __('Aantal') }}: {{ $item->quantity }}</div>
+                                                    
+                                                    @php
+                                                        $hasAcceptedBid = $item->advertisement->bids()
+                                                            ->where('user_id', Auth::id())
+                                                            ->where('status', 'accepted')
+                                                            ->exists();
+                                                        
+                                                        $isReserved = $item->advertisement->purchase_status === 'reserved';
+                                                    @endphp
+                                                    
+                                                    @if($hasAcceptedBid && $isReserved)
+                                                        <div class="small text-success">
+                                                            <i class="bi bi-check-circle-fill"></i> 
+                                                            {{ __('Geaccepteerd bod') }}
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>

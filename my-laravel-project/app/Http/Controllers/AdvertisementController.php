@@ -265,7 +265,42 @@ class AdvertisementController extends Controller
             $canBePurchased = false;
         }
         
-        return view('advertisements.show', compact('advertisement', 'canBePurchased'));
+        // Get bidding information
+        $highestBid = null;
+        $userBid = null;
+        $canPlaceBid = false;
+        $activeBidsCount = 0;
+        
+        if (Auth::check() && $advertisement->isAcceptingBids()) {
+            $user = Auth::user();
+            
+            // Get the highest bid
+            $highestBid = $advertisement->bids()
+                ->where('status', 'pending')
+                ->orderBy('amount', 'desc')
+                ->first();
+                
+            // Get the user's bid
+            $userBid = $advertisement->bids()
+                ->where('user_id', $user->id)
+                ->first();
+                
+            // Check if the user can place a bid
+            $activeBidsCount = \App\Models\Bid::where('user_id', $user->id)
+                ->where('status', 'pending')
+                ->count();
+                
+            $canPlaceBid = !$userBid && $activeBidsCount < 4 && $advertisement->user_id !== $user->id;
+        }
+        
+        return view('advertisements.show', compact(
+            'advertisement', 
+            'canBePurchased',
+            'highestBid',
+            'userBid',
+            'canPlaceBid',
+            'activeBidsCount'
+        ));
     }
 
     /**
@@ -530,6 +565,9 @@ class AdvertisementController extends Controller
             'location' => 'nullable|string|max:100',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'sometimes|string|in:active,inactive',
+            // Bidding fields
+            'is_accepting_bids' => 'sometimes|boolean',
+            'min_bid_amount' => 'nullable|numeric|min:0',
         ]);
     }
     

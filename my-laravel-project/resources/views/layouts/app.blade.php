@@ -289,6 +289,13 @@
                                     <i class="bi bi-heart me-1"></i>{{ __('general.favorites') }}
                                 </a>
                             </li>
+                            
+                            <!-- Biedingen menu-item -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('bids.index') }}">
+                                    <i class="bi bi-cash-stack me-1"></i>{{ __('Mijn biedingen') }}
+                                </a>
+                            </li>
                         @endauth
                         
                         <!-- Admin Menu Items -->

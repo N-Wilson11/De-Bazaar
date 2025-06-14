@@ -58,6 +58,11 @@ class AppServiceProvider extends ServiceProvider
             return $user->id === $orderItem->order->user_id;
         });
         
+        // Advertisement beheer policy
+        \Illuminate\Support\Facades\Gate::define('manage', function ($user, $advertisement) {
+            return $user->id === $advertisement->user_id;
+        });
+        
         // Set the application locale from session
         if (Session::has('locale')) {
             $locale = Session::get('locale');

@@ -89,6 +89,36 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all bids placed by the user.
+     */
+    public function bids(): HasMany
+    {
+        return $this->hasMany(Bid::class);
+    }
+    
+    /**
+     * Get the count of active bids placed by the user.
+     * 
+     * @return int
+     */
+    public function getActiveBidsCountAttribute(): int
+    {
+        return $this->bids()
+            ->where('status', Bid::STATUS_PENDING)
+            ->count();
+    }
+    
+    /**
+     * Check if user has reached the maximum number of allowed bids (4).
+     * 
+     * @return bool
+     */
+    public function hasReachedMaxBids(): bool
+    {
+        return $this->active_bids_count >= 4;
+    }
+    
+    /**
      * Get the contracts associated with the user.
      */
     public function contracts(): HasMany

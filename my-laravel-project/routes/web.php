@@ -113,6 +113,15 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::post('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
         Route::delete('/favorites/{advertisement}', [App\Http\Controllers\FavoriteController::class, 'destroy'])->name('favorites.destroy');
         
+        // Bidding routes
+        Route::get('/bids', [App\Http\Controllers\BidController::class, 'index'])->name('bids.index');
+        Route::get('/advertisements/{advertisement}/bid', [App\Http\Controllers\BidController::class, 'create'])->name('bids.create');
+        Route::post('/advertisements/{advertisement}/bid', [App\Http\Controllers\BidController::class, 'store'])->name('bids.store');
+        Route::get('/advertisements/{advertisement}/bids', [App\Http\Controllers\BidController::class, 'showForAdvertisement'])->name('bids.for-advertisement');
+        Route::post('/bids/{bid}/accept', [App\Http\Controllers\BidController::class, 'accept'])->name('bids.accept');
+        Route::post('/bids/{bid}/reject', [App\Http\Controllers\BidController::class, 'reject'])->name('bids.reject');
+        Route::post('/bids/{bid}/cancel', [App\Http\Controllers\BidController::class, 'cancel'])->name('bids.cancel');
+        
         // Seller Order Management routes
         Route::get('/my-sales', [App\Http\Controllers\OrderController::class, 'mySales'])->name('orders.my-sales');
         Route::get('/my-sales/{orderItem}', [App\Http\Controllers\OrderController::class, 'showSaleItem'])->name('orders.show-sale-item');

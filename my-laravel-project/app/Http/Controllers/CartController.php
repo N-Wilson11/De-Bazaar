@@ -42,14 +42,19 @@ class CartController extends Controller
     public function addItem(Request $request, Advertisement $advertisement)
     {
         $user = Auth::user();
-        
-        // Verhuurproducten kunnen niet gekocht worden
+          // Verhuurproducten kunnen niet gekocht worden
         if ($advertisement->isRental()) {
             return redirect()->back()->with('error', __('Dit is een verhuurproduct en kan niet gekocht worden.'));
         }
         
-        // Check if advertisement is available for purchase
-        if (!$advertisement->isAvailableForPurchase()) {
+        // Check if user has an accepted bid on this advertisement
+        $hasAcceptedBid = $advertisement->bids()
+            ->where('user_id', $user->id)
+            ->where('status', 'accepted')
+            ->exists();
+            
+        // Check if advertisement is available for purchase or user has an accepted bid
+        if (!$advertisement->isAvailableForPurchase() && !$hasAcceptedBid) {
             return redirect()->back()->with('error', __('Deze advertentie is niet beschikbaar voor aankoop.'));
         }
         
@@ -159,11 +164,20 @@ class CartController extends Controller
                 ->with('error', __('Je winkelwagen is leeg.'));
         }
         
-        // Check if all items are still available
+        // Check if all items are still available or if the user has accepted bids
         $unavailableItems = [];
         foreach ($cart->items as $item) {
-            if (!$item->advertisement->isAvailableForPurchase()) {
-                $unavailableItems[] = $item->advertisement->title;
+            $advertisement = $item->advertisement;
+            
+            // Check if user has an accepted bid on this advertisement
+            $hasAcceptedBid = $advertisement->bids()
+                ->where('user_id', $user->id)
+                ->where('status', 'accepted')
+                ->exists();
+            
+            // Item is unavailable only if it's not available for purchase AND the user doesn't have an accepted bid
+            if (!$advertisement->isAvailableForPurchase() && !$hasAcceptedBid) {
+                $unavailableItems[] = $advertisement->title;
             }
         }
         

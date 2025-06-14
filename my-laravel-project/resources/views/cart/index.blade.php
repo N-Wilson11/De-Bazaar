@@ -68,6 +68,21 @@
                                                 <div class="small text-muted">
                                                     {{ __('Verkoper') }}: {{ $item->advertisement->user->name }}
                                                 </div>
+                                                @php
+                                                    $hasAcceptedBid = $item->advertisement->bids()
+                                                        ->where('user_id', Auth::id())
+                                                        ->where('status', 'accepted')
+                                                        ->exists();
+                                                
+                                                    $isReserved = $item->advertisement->purchase_status === 'reserved';
+                                                @endphp
+                                                
+                                                @if($hasAcceptedBid && $isReserved)
+                                                    <div class="small text-success mt-1">
+                                                        <i class="bi bi-check-circle-fill"></i> 
+                                                        {{ __('Je bod is geaccepteerd! Je kunt dit artikel afrekenen.') }}
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>€ {{ number_format($item->advertisement->price, 2, ',', '.') }}</td>
                                             <td>

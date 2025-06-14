@@ -58,6 +58,8 @@ class Advertisement extends Model
         // Review velden
         'average_rating',
         'review_count',
+        'is_accepting_bids',
+        'min_bid_amount',
     ];
     
     /**
@@ -425,5 +427,56 @@ class Advertisement extends Model
             // Use external QR code service as fallback in case of any error
             return "https://api.qrserver.com/v1/create-qr-code/?size={$size}x{$size}&data=" . urlencode($url);
         }
+    }
+    
+    /**
+     * Get all bids for this advertisement.
+     */
+    public function bids(): HasMany
+    {
+        return $this->hasMany(Bid::class);
+    }
+    
+    /**
+     * Get all active (pending) bids for this advertisement.
+     */
+    public function activeBids()
+    {
+        return $this->bids()->where('status', Bid::STATUS_PENDING)->orderBy('amount', 'desc');
+    }
+    
+    /**
+     * Get the highest bid for this advertisement.
+     * 
+     * @return Bid|null
+     */
+    public function highestBid()
+    {
+        return $this->activeBids()->first();
+    }
+    
+    /**
+     * Check if a specific user has already placed a bid on this advertisement.
+     * 
+     * @param User|null $user
+     * @return bool
+     */
+    public function hasBidFrom(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        
+        return $this->bids()->where('user_id', $user->id)->exists();
+    }
+    
+    /**
+     * Check if the advertisement is accepting bids.
+     * 
+     * @return bool
+     */
+    public function isAcceptingBids(): bool
+    {
+        return $this->is_accepting_bids && $this->purchase_status === self::PURCHASE_STATUS_AVAILABLE;
     }
 }

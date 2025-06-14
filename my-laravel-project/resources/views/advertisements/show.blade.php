@@ -174,6 +174,8 @@
                     @endif
                 </div>
             </div>
+            
+            @include('advertisements._bidding_section')
         </div>
         
         <div class="col-md-4">

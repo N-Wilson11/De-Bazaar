@@ -115,7 +115,14 @@ class OrderController extends Controller
                 // Check if advertisement is still available
                 $advertisement = $cartItem->advertisement;
                 
-                if (!$advertisement->isAvailableForPurchase()) {
+                // Check if user has an accepted bid on this advertisement
+                $hasAcceptedBid = $advertisement->bids()
+                    ->where('user_id', $user->id)
+                    ->where('status', 'accepted')
+                    ->exists();
+                
+                // Verify the item can be purchased (either available or has accepted bid)
+                if (!$advertisement->isAvailableForPurchase() && !$hasAcceptedBid) {
                     throw new \Exception(__('Advertentie niet meer beschikbaar: ') . $advertisement->title);
                 }
                 
