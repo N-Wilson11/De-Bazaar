@@ -156,4 +156,54 @@ class RentalController extends Controller
                 ->with('error', __('Er is een fout opgetreden bij het verwerken van je huuraanvraag: ') . $e->getMessage());
         }
     }
+    
+    /**
+     * Show a calendar overview of the user's rented items
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function rentalCalendar()
+    {
+        // Get the current authenticated user
+        $user = auth()->user();
+          // Get all order items for this user that are rentals with future dates
+        $upcomingRentals = OrderItem::whereIn('order_id', function($query) use ($user) {
+                $query->select('id')
+                    ->from('orders')
+                    ->where('user_id', $user->id);
+            })
+            ->where('is_rental', true)
+            ->with(['order', 'advertisement'])
+            ->orderBy('rental_start_date', 'asc')
+            ->get();
+            
+        // Get the current month's rental items
+        $today = Carbon::today();
+        $startOfMonth = Carbon::today()->startOfMonth();
+        $endOfMonth = Carbon::today()->endOfMonth();
+        
+        $currentMonthRentals = $upcomingRentals->filter(function($rental) use ($startOfMonth, $endOfMonth) {
+            $startDate = Carbon::parse($rental->rental_start_date);
+            $endDate = Carbon::parse($rental->rental_end_date);
+            
+            return ($startDate->between($startOfMonth, $endOfMonth) || 
+                   $endDate->between($startOfMonth, $endOfMonth) ||
+                   ($startDate->lte($startOfMonth) && $endDate->gte($endOfMonth)));
+        });
+        
+        // Get the next month's rental items
+        $nextMonthStart = Carbon::today()->addMonth()->startOfMonth();
+        $nextMonthEnd = Carbon::today()->addMonth()->endOfMonth();
+        
+        $nextMonthRentals = $upcomingRentals->filter(function($rental) use ($nextMonthStart, $nextMonthEnd) {
+            $startDate = Carbon::parse($rental->rental_start_date);
+            $endDate = Carbon::parse($rental->rental_end_date);
+            
+            return ($startDate->between($nextMonthStart, $nextMonthEnd) || 
+                   $endDate->between($nextMonthStart, $nextMonthEnd) ||
+                   ($startDate->lte($nextMonthStart) && $endDate->gte($nextMonthEnd)));
+        });
+        
+        return view('rentals.calendar', compact('upcomingRentals', 'currentMonthRentals', 'nextMonthRentals', 'today'));
+    }
 }

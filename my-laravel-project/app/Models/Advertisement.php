@@ -63,6 +63,32 @@ class Advertisement extends Model
     ];
     
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'images' => 'array',
+        'rental_availability' => 'array',
+        'rental_booked_dates' => 'array',
+        'rental_wear_and_tear_settings' => 'array',
+        'is_rental' => 'boolean',
+        'is_highlighted' => 'boolean',
+        'is_featured' => 'boolean',
+        'rental_requires_deposit' => 'boolean',
+        'rental_calculate_wear_and_tear' => 'boolean',
+        'is_accepting_bids' => 'boolean',
+        'price' => 'float',
+        'rental_price_day' => 'float',
+        'rental_price_week' => 'float',
+        'rental_price_month' => 'float',
+        'rental_deposit_amount' => 'float',
+        'min_bid_amount' => 'float',
+        'average_rating' => 'float',
+        'review_count' => 'integer',
+        'minimum_rental_days' => 'integer',
+        'expires_at' => 'datetime',
+    ];    /**
      * Get image URL for the first image
      */
     public function getFirstImageUrl()
@@ -71,7 +97,25 @@ class Advertisement extends Model
             return null;
         }
         
-        $image = $this->images[0];
+        // Handle different types of images property
+        $images = $this->images;
+        
+        if (is_string($images)) {
+            // Try to decode as JSON
+            $decodedImages = json_decode($images, true);
+            if (is_array($decodedImages)) {
+                $images = $decodedImages;
+            } else {
+                // If not JSON, try comma separated string
+                $images = explode(',', $images);
+            }
+        }
+        
+        if (empty($images)) {
+            return null;
+        }
+        
+        $image = $images[0];
         
         // Handle both absolute and relative paths
         if (filter_var($image, FILTER_VALIDATE_URL)) {
@@ -116,27 +160,8 @@ class Advertisement extends Model
     }
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * Get the user that owns the advertisement.
      */
-    protected $casts = [
-        'price' => 'decimal:2',
-        'rental_price_day' => 'decimal:2',
-        'rental_price_week' => 'decimal:2',
-        'rental_price_month' => 'decimal:2',
-        'rental_deposit_amount' => 'decimal:2',
-        'is_highlighted' => 'boolean',
-        'is_featured' => 'boolean',        'is_rental' => 'boolean',
-        'rental_requires_deposit' => 'boolean',
-        'rental_calculate_wear_and_tear' => 'boolean',
-        'expires_at' => 'datetime',
-        'images' => 'array',
-        'rental_availability' => 'array',
-        'rental_booked_dates' => 'array',
-        'rental_wear_and_tear_settings' => 'json',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -227,8 +252,7 @@ class Advertisement extends Model
       
     /**
      * Counts the number of images safely
-     */
-    public function countImages(): int
+     */    public function countImages(): int
     {
         if (empty($this->images)) {
             return 0;
@@ -238,7 +262,21 @@ class Advertisement extends Model
             return $this->images->count();
         }
         
-        return count($this->images);
+        if (is_array($this->images)) {
+            return count($this->images);
+        }
+        
+        if (is_string($this->images)) {
+            $imagesArray = json_decode($this->images, true);
+            if (is_array($imagesArray)) {
+                return count($imagesArray);
+            } else {
+                // If it's a comma-separated string
+                return count(explode(',', $this->images));
+            }
+        }
+        
+        return 0;
     }
     
     /**
@@ -261,12 +299,19 @@ class Advertisement extends Model
     {
         if (!$this->isRental()) {
             return false;
-        }
-
-        // Controleer of de data beschikbaar zijn in de beschikbaarheidskalender
+        }        // Controleer of de data beschikbaar zijn in de beschikbaarheidskalender
         // Dit is een eenvoudige implementatie; een geavanceerde implementatie zou kalenderfunctionaliteit gebruiken
         $availability = $this->rental_availability ?? [];
         $bookedDates = $this->rental_booked_dates ?? [];
+        
+        // Zorg ervoor dat $availability en $bookedDates arrays zijn
+        if (is_string($availability)) {
+            $availability = json_decode($availability, true) ?? [];
+        }
+        
+        if (is_string($bookedDates)) {
+            $bookedDates = json_decode($bookedDates, true) ?? [];
+        }
 
         // Controleer of de advertentie actief is
         if ($this->status !== 'active') {
@@ -276,11 +321,11 @@ class Advertisement extends Model
         // Als er geen specifieke beschikbaarheid is ingesteld, nemen we aan dat het beschikbaar is
         if (empty($availability)) {
             // Controleer of de data niet in de gereserveerde data zitten
-            return !in_array($startDate, $bookedDates) && !in_array($endDate, $bookedDates);
+            return is_array($bookedDates) && !in_array($startDate, $bookedDates) && !in_array($endDate, $bookedDates);
         }
 
         // Anders controleren we of beide data in de beschikbaarheidskalender zitten
-        return in_array($startDate, $availability) && in_array($endDate, $availability);
+        return is_array($availability) && in_array($startDate, $availability) && in_array($endDate, $availability);
     }
 
     /**

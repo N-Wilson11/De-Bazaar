@@ -296,6 +296,13 @@
                                     <i class="bi bi-cash-stack me-1"></i>{{ __('Mijn biedingen') }}
                                 </a>
                             </li>
+                            
+                            <!-- Huurkalender menu-item -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('rentals.calendar') }}">
+                                    <i class="bi bi-calendar-event me-1"></i>{{ __('Huurkalender') }}
+                                </a>
+                            </li>
                         @endauth
                         
                         <!-- Admin Menu Items -->
