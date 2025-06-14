@@ -1,0 +1,338 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Advertisement;
+use App\Models\Company;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class ImprovedAdvertisementSeeder extends Seeder
+{
+    // Arrays of realistic data for sale items
+    private $saleItems = [
+        'Moderne hoekbank in grijs textiel' => ['price' => [599, 999], 'category' => 'Meubels'],
+        '65 inch 4K OLED Smart TV' => ['price' => [1299, 2499], 'category' => 'Elektronica'],
+        'Complete golfset voor beginners' => ['price' => [449, 799], 'category' => 'Sport'],
+        'Compact bureau voor thuiswerken' => ['price' => [199, 349], 'category' => 'Meubels'],
+    ];
+    
+    // Arrays of realistic data for rental items
+    private $rentalItems = [
+        'Professionele tafelzaag met onderstel' => ['price' => [599, 899], 'rental' => [25, 45], 'category' => 'Gereedschap'],
+        'Robotmaaier voor tuinen tot 600m²' => ['price' => [899, 1499], 'rental' => [30, 60], 'category' => 'Tuin'],
+        'Drone met 4K camera en stabilisatie' => ['price' => [599, 999], 'rental' => [25, 50], 'category' => 'Elektronica'],
+        'Elektrische fiets met bereik van 80km' => ['price' => [1899, 2999], 'rental' => [35, 70], 'category' => 'Sport'],
+    ];
+    
+    // Common conditions based on item type
+    private $conditions = [
+        'nieuw', 'als nieuw', 'goed', 'gebruikt', 'met gebreken'
+    ];
+    
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Clear existing advertisements
+        DB::table('related_advertisements')->truncate();
+        Advertisement::truncate();
+        $this->command->info('Cleared existing advertisements.');
+        
+        // We need users to create advertisements
+        $users = User::whereIn('user_type', ['particulier', 'zakelijk'])->get();
+        
+        if ($users->isEmpty()) {
+            $this->command->info('No suitable users found. Please run UserTypesSeeder first.');
+            return;
+        }
+        
+        // Create sale advertisements
+        $this->createSaleAdvertisements($users);
+        
+        // Create rental advertisements
+        $this->createRentalAdvertisements($users);
+        
+        $this->command->info('Created 4 sale and 4 rental advertisements successfully!');
+    }
+    
+    /**
+     * Create sale advertisements
+     * 
+     * @param \Illuminate\Database\Eloquent\Collection $users
+     * @return void
+     */
+    private function createSaleAdvertisements($users): void
+    {
+        $counter = 0;
+        foreach ($this->saleItems as $title => $itemInfo) {
+            // Choose a random user
+            $user = $users->random();
+            
+            // For business users, get their company
+            $company = null;
+            if ($user->user_type === 'zakelijk') {
+                $company = Company::find($user->company_id);
+            }
+            
+            // Generate price
+            $price = rand($itemInfo['price'][0], $itemInfo['price'][1]);
+            
+            // Generate description
+            $description = $this->generateDescription($title, $itemInfo['category'], $price, false, $company);
+            
+            // Create the advertisement
+            $ad = new Advertisement([
+                'user_id' => $user->id,
+                'title' => $title,
+                'description' => $description,
+                'price' => $price,
+                'condition' => $this->getConditionForItem($title),
+                'category' => $itemInfo['category'],
+                'type' => 'normaal',
+                'status' => 'active',
+                'images' => json_encode(['placeholder1.jpg', 'placeholder2.jpg']),
+                'location' => $user->user_type === 'zakelijk' && $company ? $company->city : $this->getRandomDutchCity(),
+                'is_highlighted' => rand(0, 1) === 1, // 50% chance
+                'is_featured' => rand(0, 1) === 1, // 50% chance
+                'is_rental' => false,
+                'expires_at' => Carbon::now()->addDays(rand(15, 60)),
+                'purchase_status' => 'available',
+            ]);
+            
+            $ad->save();
+            $counter++;
+            
+            $this->command->info("Created sale advertisement {$counter}/4: {$title}");
+        }
+    }
+    
+    /**
+     * Create rental advertisements
+     * 
+     * @param \Illuminate\Database\Eloquent\Collection $users
+     * @return void
+     */
+    private function createRentalAdvertisements($users): void
+    {
+        $counter = 0;
+        foreach ($this->rentalItems as $title => $itemInfo) {
+            // Choose a random business user
+            $businessUsers = $users->where('user_type', 'zakelijk');
+            $user = $businessUsers->isNotEmpty() ? $businessUsers->random() : $users->random();
+            
+            // Get the user's company
+            $company = Company::find($user->company_id);
+            
+            // Generate price
+            $price = rand($itemInfo['price'][0], $itemInfo['price'][1]);
+            
+            // Generate description
+            $description = $this->generateDescription($title, $itemInfo['category'], $price, true, $company);
+            
+            // Create the advertisement
+            $ad = new Advertisement([
+                'user_id' => $user->id,
+                'title' => $title,
+                'description' => $description,
+                'price' => $price,
+                'condition' => $this->getConditionForItem($title),
+                'category' => $itemInfo['category'],
+                'type' => 'huur',
+                'status' => 'active',
+                'images' => json_encode(['placeholder1.jpg', 'placeholder2.jpg']),
+                'location' => $company ? $company->city : $this->getRandomDutchCity(),
+                'is_highlighted' => rand(0, 1) === 1, // 50% chance
+                'is_featured' => rand(0, 1) === 1, // 50% chance
+                'is_rental' => true,
+                'expires_at' => Carbon::now()->addDays(rand(15, 60)),
+                'purchase_status' => 'available',
+            ]);
+            
+            // Add rental-specific fields
+            $this->addRentalFields($ad, $itemInfo['rental']);
+            
+            $ad->save();
+            $counter++;
+            
+            $this->command->info("Created rental advertisement {$counter}/4: {$title}");
+        }
+    }
+    
+    /**
+     * Generate a realistic description for an item
+     * 
+     * @param string $title
+     * @param string $category
+     * @param float $price
+     * @param bool $isRental
+     * @param Company|null $company
+     * @return string
+     */
+    private function generateDescription(string $title, string $category, float $price, bool $isRental, $company = null): string
+    {
+        $description = "";
+        
+        if ($company) {
+            $description .= "{$company->name} biedt aan: {$title}.\n\n";
+        } else {
+            $description .= "Te " . ($isRental ? "huur" : "koop") . ": {$title}.\n\n";
+        }
+        
+        // Add category-specific descriptions
+        switch ($category) {
+            case 'Meubels':
+                $description .= "Dit kwaliteitsmeubel is perfect voor uw woning. Het is comfortabel, stijlvol en duurzaam gemaakt.\n\n";
+                $description .= "Afmetingen en kenmerken:\n";
+                $description .= "- Hoogwaardig materiaal\n";
+                $description .= "- Eenvoudig te monteren en te verplaatsen\n";
+                $description .= "- Past in elk interieur\n";
+                break;
+                
+            case 'Elektronica':
+                $description .= "Technische specificaties:\n";
+                $description .= "- Nieuwste generatie technologie\n";
+                $description .= "- Energiezuinig\n";
+                $description .= "- Volledige garantie\n";
+                $description .= "- Inclusief alle accessoires en handleiding\n\n";
+                break;
+                
+            case 'Gereedschap':
+                $description .= "Professioneel gereedschap voor zowel de hobbyist als de vakman.\n\n";
+                $description .= "Specificaties:\n";
+                $description .= "- Betrouwbare kwaliteit\n";
+                $description .= "- Gebruiksvriendelijk\n";
+                $description .= "- In uitstekende staat\n";
+                break;
+                
+            case 'Tuin':
+                $description .= "Verrijk uw tuin met dit geweldige product.\n\n";
+                $description .= "Kenmerken:\n";
+                $description .= "- Weerbestendig\n";
+                $description .= "- Onderhoudsarm\n";
+                $description .= "- Duurzaam ontwerp\n";
+                break;
+                
+            case 'Sport':
+                $description .= "Ideaal voor de sportliefhebber die waarde hecht aan kwaliteit.\n\n";
+                $description .= "Eigenschappen:\n";
+                $description .= "- Professionele kwaliteit\n";
+                $description .= "- Comfortabel in gebruik\n";
+                $description .= "- Geschikt voor zowel beginners als gevorderden\n";
+                break;
+        }
+        
+        if ($isRental) {
+            $description .= "\nTe huur per dag, week of maand. Vraag naar de mogelijkheden.\n";
+            $description .= "Bezorging in overleg mogelijk. Borg vereist.\n";
+        } else {
+            $description .= "\nPrijs: €" . number_format($price, 2, ',', '.') . "\n";
+            $description .= "Bezichtiging op afspraak mogelijk.\n";
+        }
+        
+        return $description;
+    }
+    
+    /**
+     * Add rental fields to an advertisement
+     * 
+     * @param Advertisement $ad
+     * @param array $rentalPrices
+     * @return void
+     */
+    private function addRentalFields(Advertisement $ad, array $rentalPrices): void
+    {
+        // Generate rental prices
+        $rentalPriceDay = rand($rentalPrices[0], $rentalPrices[1]);
+        $rentalPriceWeek = $rentalPriceDay * 5; // 5 days price for a week
+        $rentalPriceMonth = $rentalPriceDay * 18; // 18 days price for a month
+        
+        // Calculate availability dates (next 30 days)
+        $today = Carbon::today();
+        $availabilityDates = [];
+        
+        for ($i = 0; $i < 30; $i++) {
+            $availabilityDates[] = $today->copy()->addDays($i)->format('Y-m-d');
+        }
+        
+        // Randomly generate 1-5 booked dates
+        $bookedDates = [];
+        $numBookedDates = rand(1, 5);
+        
+        for ($j = 0; $j < $numBookedDates; $j++) {
+            $randomDay = rand(0, 29);
+            $bookedDates[] = $today->copy()->addDays($randomDay)->format('Y-m-d');
+        }
+        
+        // Rental conditions
+        $rentalConditions = [
+            'Legitimatie verplicht',
+            'Borg vereist',
+            'Schade komt voor rekening van huurder',
+            'Verzekering aanbevolen'
+        ];
+        
+        // Set rental fields
+        $ad->rental_price_day = $rentalPriceDay;
+        $ad->rental_price_week = $rentalPriceWeek;
+        $ad->rental_price_month = $rentalPriceMonth;
+        $ad->minimum_rental_days = rand(1, 3);
+        $ad->rental_availability = json_encode($availabilityDates);
+        $ad->rental_booked_dates = json_encode($bookedDates);
+        $ad->rental_conditions = json_encode($rentalConditions);
+        $ad->rental_requires_deposit = rand(0, 1) === 1;
+    }
+    
+    /**
+     * Get a random condition based on item title
+     * 
+     * @param string $title
+     * @return string
+     */
+    private function getConditionForItem(string $title): string
+    {
+        // New items are more likely to be in new or as new condition
+        if (str_contains(strtolower($title), 'nieuw') || str_contains(strtolower($title), 'new')) {
+            return $this->conditions[rand(0, 1)]; // nieuw or als nieuw
+        }
+        
+        // Vintage or used items are more likely to be in used condition
+        if (str_contains(strtolower($title), 'vintage') || str_contains(strtolower($title), 'gebruikt') || str_contains(strtolower($title), 'used')) {
+            return $this->conditions[rand(2, 4)]; // goed, gebruikt, or met gebreken
+        }
+        
+        // Otherwise, random condition with more weight to the better conditions
+        $weights = [40, 30, 20, 8, 2]; // Percentage chances for each condition
+        $rand = rand(1, 100);
+        
+        $cumulativeWeight = 0;
+        for ($i = 0; $i < count($weights); $i++) {
+            $cumulativeWeight += $weights[$i];
+            if ($rand <= $cumulativeWeight) {
+                return $this->conditions[$i];
+            }
+        }
+        
+        return $this->conditions[0];
+    }
+    
+    /**
+     * Get a random Dutch city name
+     *
+     * @return string
+     */
+    private function getRandomDutchCity(): string
+    {
+        $cities = [
+            'Amsterdam', 'Rotterdam', 'Den Haag', 'Utrecht', 'Eindhoven', 
+            'Tilburg', 'Groningen', 'Almere', 'Breda', 'Nijmegen',
+            'Enschede', 'Haarlem', 'Arnhem', 'Amersfoort', 'Zaanstad',
+            'Apeldoorn', 'Zwolle', 'Delft', 'Alkmaar', 'Dordrecht'
+        ];
+        
+        return $cities[array_rand($cities)];
+    }
+}

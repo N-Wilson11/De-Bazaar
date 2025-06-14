@@ -70,21 +70,28 @@ class ReviewController extends Controller
         
         return redirect()->route('advertisements.show', $advertisement)
             ->with('success', __('general.review_submitted'));
-    }
-
-    /**
+    }    /**
      * Show the form for editing a review.
      */
     public function edit(Review $review)
     {
         if ($review->user_id !== Auth::id()) {
-            return redirect()->route('advertisements.show', $review->advertisement_id)
-                ->with('error', __('general.cannot_edit_review'));
+            if ($review->isAdvertisementReview()) {
+                return redirect()->route('advertisements.show', $review->advertisement_id)
+                    ->with('error', __('general.cannot_edit_review'));
+            } else {
+                return redirect()->route('advertisers.show', $review->reviewer_id)
+                    ->with('error', __('general.cannot_edit_review'));
+            }
         }
         
-        $advertisement = $review->advertisement;
-        
-        return view('reviews.edit', compact('review', 'advertisement'));
+        if ($review->isAdvertisementReview()) {
+            $advertisement = $review->advertisement;
+            return view('reviews.edit', compact('review', 'advertisement'));
+        } else {
+            $user = $review->reviewer;
+            return view('advertisers.reviews.edit', compact('review', 'user'));
+        }
     }
 
     /**
@@ -93,40 +100,76 @@ class ReviewController extends Controller
     public function update(Request $request, Review $review)
     {
         if ($review->user_id !== Auth::id()) {
-            return redirect()->route('advertisements.show', $review->advertisement_id)
-                ->with('error', __('general.cannot_edit_review'));
+            if ($review->isAdvertisementReview()) {
+                return redirect()->route('advertisements.show', $review->advertisement_id)
+                    ->with('error', __('general.cannot_edit_review'));
+            } else {
+                return redirect()->route('advertisers.show', $review->reviewer_id)
+                    ->with('error', __('general.cannot_edit_review'));
+            }
         }
         
-        $validated = $request->validate([
+        $validationRules = [
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'comment' => ['required', 'string', 'min:10', 'max:1000'],
-        ]);
+        ];
         
-        $review->update([
+        if ($review->isAdvertiserReview()) {
+            $validationRules['title'] = ['required', 'string', 'max:100'];
+        }
+        
+        $validated = $request->validate($validationRules);
+        
+        $updateData = [
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
-        ]);
+        ];
         
-        // Update average rating (this will be handled by an observer)
+        if ($review->isAdvertiserReview() && isset($validated['title'])) {
+            $updateData['title'] = $validated['title'];
+        }
         
-        return redirect()->route('advertisements.show', $review->advertisement_id)
-            ->with('success', __('general.review_updated'));
-    }    /**
+        $review->update($updateData);
+        
+        // Determine redirect route based on review type
+        if ($review->isAdvertisementReview()) {
+            return redirect()->route('advertisements.show', $review->advertisement_id)
+                ->with('success', __('general.review_updated'));
+        } else {
+            return redirect()->route('advertisers.show', $review->reviewer_id)
+                ->with('success', __('general.review_updated'));
+        }
+    }
+    
+    /**
      * Delete a review.
      */
     public function destroy(Review $review)
     {
         if ($review->user_id !== Auth::id() && Auth::user()->user_type !== 'admin') {
-            return redirect()->route('advertisements.show', $review->advertisement_id)
-                ->with('error', __('general.cannot_delete_review'));
+            if ($review->isAdvertisementReview()) {
+                return redirect()->route('advertisements.show', $review->advertisement_id)
+                    ->with('error', __('general.cannot_delete_review'));
+            } else {
+                return redirect()->route('advertisers.show', $review->reviewer_id)
+                    ->with('error', __('general.cannot_delete_review'));
+            }
         }
         
+        // Store IDs for redirect before deleting the review
         $advertisementId = $review->advertisement_id;
+        $reviewerId = $review->reviewer_id;
+        $isAdvertiserReview = $review->isAdvertiserReview();
+        
         $review->delete();
         
-        // Update average rating (this will be handled by an observer)
-        
-        return redirect()->route('advertisements.show', $advertisementId)
-            ->with('success', __('general.review_deleted'));
+        // Redirect based on review type
+        if (!$isAdvertiserReview) {
+            return redirect()->route('advertisements.show', $advertisementId)
+                ->with('success', __('general.review_deleted'));
+        } else {
+            return redirect()->route('advertisers.show', $reviewerId)
+                ->with('success', __('general.review_deleted'));
+        }
     }
 }

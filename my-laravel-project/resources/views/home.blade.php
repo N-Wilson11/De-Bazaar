@@ -17,7 +17,7 @@
     </div>
 
     <!-- Laatste Verkoopadvertenties -->
-    @if($latestSaleAds->count() > 0)
+    @if(isset($latestSaleAds) && $latestSaleAds->count() > 0)
     <h2 class="mb-4 mt-5">Nieuwste Producten</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach($latestSaleAds as $advertisement)
@@ -37,7 +37,11 @@
                     <p class="card-text fw-bold">€ {{ number_format($advertisement->price, 2, ',', '.') }}</p>
                 </div>
                 <div class="card-footer bg-white border-top-0">
-                    <a href="{{ route('advertisements.show', $advertisement) }}" class="btn btn-primary">Bekijk Details</a>
+                    @if($advertisement->id)
+                        <a href="{{ route('advertisements.show', $advertisement->id) }}" class="btn btn-primary">Bekijk Details</a>
+                    @else
+                        <button class="btn btn-secondary" disabled>Advertentie niet beschikbaar</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -49,7 +53,7 @@
     @endif
 
     <!-- Laatste Verhuuradvertenties -->
-    @if($latestRentalAds->count() > 0)
+    @if(isset($latestRentalAds) && $latestRentalAds->count() > 0)
     <h2 class="mb-4 mt-5">Verhuur Aanbiedingen</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach($latestRentalAds as $rental)
@@ -67,10 +71,14 @@
                     <span class="badge bg-info mb-2">Verhuur</span>
                     <h5 class="card-title">{{ $rental->title }}</h5>
                     <p class="card-text text-muted">{{ Str::limit($rental->description, 100) }}</p>
-                    <p class="card-text fw-bold">€ {{ number_format($rental->price, 2, ',', '.') }} / {{ __($rental->rental_period) }}</p>
+                    <p class="card-text fw-bold">€ {{ number_format($rental->price, 2, ',', '.') }} / {{ __($rental->rental_period ?? 'dag') }}</p>
                 </div>
                 <div class="card-footer bg-white border-top-0">
-                    <a href="{{ route('advertisements.show', $rental) }}" class="btn btn-primary">Bekijk Details</a>
+                    @if($rental->id)
+                        <a href="{{ route('advertisements.show', $rental->id) }}" class="btn btn-primary">Bekijk Details</a>
+                    @else
+                        <button class="btn btn-secondary" disabled>Advertentie niet beschikbaar</button>
+                    @endif
                 </div>
             </div>
         </div>

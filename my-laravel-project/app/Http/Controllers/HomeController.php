@@ -13,7 +13,8 @@ class HomeController extends Controller
      * Toon de homepage met de laatste advertenties.
      *
      * @return \Illuminate\Http\Response
-     */    public function index()
+     */
+    public function index()
     {
         // Check of gebruiker is ingelogd
         if (Auth::check()) {
@@ -39,7 +40,22 @@ class HomeController extends Controller
             
             // Naar dashboard als de gebruiker is ingelogd
             return redirect()->route('dashboard');
-        }          // Voor niet-ingelogde gebruikers, doorsturen naar de login pagina
-        return redirect()->route('login');
+        }
+        
+        // Haal de meest recente verkoopadvertenties op
+        $latestSaleAds = Advertisement::where('is_rental', false)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+            
+        // Haal de meest recente verhuuradvertenties op
+        $latestRentalAds = Advertisement::where('is_rental', true)
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+            
+        return view('home', compact('latestSaleAds', 'latestRentalAds'));
     }
 }
