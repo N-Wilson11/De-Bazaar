@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\CompanyTheme;
+use Illuminate\Support\Facades\Auth;
 
 class ThemeController extends Controller
 {
@@ -20,7 +21,7 @@ class ThemeController extends Controller
     public function index()
     {
         // Get the authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
         
         // If the user is a business user, use their company ID
         if ($user && $user->user_type === 'zakelijk' && $user->company) {
@@ -73,7 +74,7 @@ class ThemeController extends Controller
         }
 
         // Get the authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
         
         // If the user is a business user, use their company ID
         if ($user && $user->user_type === 'zakelijk' && $user->company) {
@@ -170,7 +171,7 @@ class ThemeController extends Controller
     public function changeLogo()
     {
         // Get the authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
         
         // If the user is a business user, use their company ID
         if ($user && $user->user_type === 'zakelijk' && $user->company) {
@@ -210,7 +211,7 @@ class ThemeController extends Controller
         }
 
         // Get the authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
         
         // If the user is a business user, use their company ID
         if ($user && $user->user_type === 'zakelijk' && $user->company) {
@@ -272,7 +273,7 @@ class ThemeController extends Controller
     public function removeLogo()
     {
         // Get the authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
         
         // If the user is a business user, use their company ID
         if ($user && $user->user_type === 'zakelijk' && $user->company) {

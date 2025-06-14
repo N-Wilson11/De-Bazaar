@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+
 class RentalController extends Controller
 {
     /**
@@ -165,7 +166,7 @@ class RentalController extends Controller
     public function rentalCalendar()
     {
         // Get the current authenticated user
-        $user = auth()->user();
+        $user = Auth::user();
           // Get all order items for this user that are rentals with future dates
         $upcomingRentals = OrderItem::whereIn('order_id', function($query) use ($user) {
                 $query->select('id')
@@ -215,7 +216,7 @@ class RentalController extends Controller
     public function advertiserRentalCalendar()
     {
         // Get the current authenticated user (advertiser)
-        $user = auth()->user();
+         $user = Auth::user();
         
         // Get all order items where the current user is the seller and items are rentals
         $rentedOutItems = OrderItem::where('seller_id', $user->id)
