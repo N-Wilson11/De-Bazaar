@@ -113,16 +113,6 @@
                     @endif
                     
                     @if(Auth::user()->user_type === 'zakelijk')
-                        <div class="mt-4 p-3 bg-light rounded">
-                            <h5>{{ __('general.business_info') }}</h5>
-                            <p>{{ __('general.business_features') }}</p>
-                            <ul>
-                                <li>{{ __('general.ad_limit_info') }}</li>
-                                <li>{{ __('general.stats') }}</li>
-                                <li>{{ __('general.priority_search') }}</li>
-                            </ul>
-                            <p>{{ __('general.download_contract_info') }}</p>
-                        </div>
                         
                         <!-- Landing Page Settings for Business Users -->
                         <div class="mt-4">
@@ -134,9 +124,18 @@
                                     <p>{{ __('Als zakelijk gebruiker kunt u uw eigen landingspagina instellen met een unieke URL.') }}</p>
                                     <p>{{ __('Deel deze pagina met uw klanten om uw producten te presenteren.') }}</p>
                                     <div class="text-center mt-3">
-                                        <a href="{{ route('landing.settings') }}" class="btn btn-primary">
-                                            <i class="bi bi-gear me-2"></i>{{ __('Landingspagina Instellen') }}
-                                        </a>
+                                        @if(Auth::user()->company && Auth::user()->company->landing_url)
+                                            <a href="{{ route('landing.settings') }}" class="btn btn-primary">
+                                                <i class="bi bi-gear me-2"></i>{{ __('Landingspagina Instellen') }}
+                                            </a>
+                                        @else
+                                            <a href="{{ route('companies.edit') }}" class="btn btn-primary">
+                                                <i class="bi bi-pencil-square me-2"></i>{{ __('Eerst URL instellen') }}
+                                            </a>
+                                            <div class="text-muted mt-2">
+                                                <small>{{ __('Stel eerst een unieke URL in voordat je de landingspagina kunt instellen') }}</small>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

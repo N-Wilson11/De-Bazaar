@@ -54,38 +54,50 @@ class CompanyLandingController extends Controller
         
         // If the user doesn't have a company, create one
         if (!$company && $user->user_type === 'zakelijk') {
-            // Create a new company for this business user
-            $company = new \App\Models\Company([
-                'name' => $user->name . '\'s Company',
-                'slug' => \Illuminate\Support\Str::slug($user->name . '-company-' . $user->id),
-                'email' => $user->email,
-                'description' => 'My business page',
-                'is_active' => true
-            ]);
-            
-            $company->save();            // Associate the company with the user
-            \Illuminate\Support\Facades\DB::table('users')
-                ->where('id', $user->id)
-                ->update(['company_id' => $company->id]);
-            
-            // Create a default theme for the company
-            $theme = new \App\Models\CompanyTheme([
-                'company_id' => $company->id,
-                'name' => $company->name,
-                'background_color' => '#ffffff',
-                'text_color' => '#333333',
-                'primary_color' => '#4a90e2',
-                'secondary_color' => '#f5a623',
-                'accent_color' => '#50e3c2',
-                'is_active' => true
-            ]);
-            
-            $theme->save();
+            try {
+                // Create a new company for this business user
+                $company = new \App\Models\Company([
+                    'name' => $user->name . '\'s Company',
+                    'slug' => \Illuminate\Support\Str::slug($user->name . '-company-' . $user->id),
+                    'email' => $user->email,
+                    'description' => 'My business page',
+                    'is_active' => true
+                ]);
+                
+                $company->save();
+                
+                // Associate the company with the user
+                \Illuminate\Support\Facades\DB::table('users')
+                    ->where('id', $user->id)
+                    ->update(['company_id' => $company->id]);
+                
+                // Create a default theme for the company
+                $theme = new \App\Models\CompanyTheme([
+                    'company_id' => $company->id,
+                    'name' => $company->name,
+                    'background_color' => '#ffffff',
+                    'text_color' => '#333333',
+                    'primary_color' => '#4a90e2',
+                    'secondary_color' => '#f5a623',
+                    'accent_color' => '#50e3c2',
+                    'is_active' => true
+                ]);
+                
+                $theme->save();
+                
+                // Reload the user to get the updated company relationship
+                $user = $user->fresh();
+                $company = $user->company;
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Error creating company: ' . $e->getMessage());
+                return redirect()->route('dashboard')
+                    ->with('error', __('There was a problem creating your company profile. Please try again or contact support.'));
+            }
         }
         
         if (!$company) {
             return redirect()->route('dashboard')
-                ->with('error', __('There was a problem creating your company profile. Please contact support.'));
+                ->with('error', __('There was a problem accessing your company profile. Please contact support.'));
         }
         
         // Laad de pageComponents voor de component tab
@@ -108,21 +120,36 @@ class CompanyLandingController extends Controller
                 ->with('error', __('You do not have permission to access this page.'));
         }
         
-        // Redirect to settings which will create a company if needed
+        // If user doesn't have a company, redirect to settings which will create a company
         if (!$user->company) {
             return redirect()->route('landing.settings');
         }
         
-        $company = $user->company;
-          // Validate the request
-        $request->validate([
-            'landing_url' => 'required|alpha_dash|unique:companies,landing_url,' . $company->id,
-        ]);        
-        // Update the company URL
-        $company->landing_url = $request->landing_url;
-        $company->save();
-        
-        return redirect()->route('landing.settings')
-            ->with('success', __('Landing page settings updated successfully.'));
+        try {
+            // Reload the user to ensure we have the latest data
+            $user = $user->fresh();
+            $company = $user->company;
+
+            if (!$company) {
+                // If still no company, redirect to settings which will create one
+                return redirect()->route('landing.settings');
+            }
+            
+            // Validate the request
+            $request->validate([
+                'landing_url' => 'required|alpha_dash|unique:companies,landing_url,' . $company->id,
+            ]);
+            
+            // Update the company URL
+            $company->landing_url = $request->landing_url;
+            $company->save();
+            
+            return redirect()->route('landing.settings')
+                ->with('success', __('Landing page settings updated successfully.'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error updating landing page: ' . $e->getMessage());
+            return redirect()->route('landing.settings')
+                ->with('error', __('There was a problem updating your landing page settings. Please try again.'));
+        }
     }
 }

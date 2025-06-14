@@ -93,9 +93,21 @@ class CompanyController extends Controller
         if (empty($request->slug) && $request->name) {
             $request->merge(['slug' => Str::slug($request->name)]);
         }
+          // Check if the name is being changed
+        $nameChanged = $company->name !== $request->name;
+        $oldName = $company->name;
         
         $company->fill($request->all());
         $company->save();
+        
+        // If company name is changed, update the theme name too
+        if ($nameChanged) {
+            $theme = CompanyTheme::where('company_id', $company->id)->first();
+            if ($theme && $theme->name === $oldName) {
+                $theme->name = $company->name;
+                $theme->save();
+            }
+        }
         
         return redirect()->route('companies.edit')
             ->with('success', __('Bedrijfsgegevens zijn succesvol bijgewerkt.'));
