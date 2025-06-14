@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Fix advertisement show links",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-Command",
+				"(Get-Content -Path \"my-laravel-project/resources/views/dashboard.blade.php\") -replace \"route\\('advertisements\\.show', \\$advertisement\\)\", \"route('advertisements.show', \\$advertisement->id)\" | Set-Content -Path \"my-laravel-project/resources/views/dashboard.blade.php\""
+			],
+			"group": "none",
+			"problemMatcher": []
+		}
+	]
+}

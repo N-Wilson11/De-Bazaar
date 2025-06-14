@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'settings' => 'Theme Settings',
+    'company_theme_settings' => 'Company Theme Settings',
+    'customize_info' => 'Customize the look and feel of the application to match your company brand.',
+    'company_information' => 'Company Information',
+    'company_name' => 'Company Name',
+    'company_logo' => 'Company Logo',
+    'current_logo' => 'Current Logo',
+    'footer_text' => 'Footer Text',
+    'color_scheme' => 'Color Scheme',
+    'primary_color' => 'Primary Color',
+    'secondary_color' => 'Secondary Color',
+    'accent_color' => 'Accent Color',
+    'text_color' => 'Text Color',
+    'background_color' => 'Background Color',
+    'preview' => 'Preview',
+    'primary_color_heading' => 'Primary Color Heading',
+    'text_appearance' => 'This is how your text will appear on the site.',
+    'primary_button' => 'Primary Button',
+    'secondary_button' => 'Secondary Button',
+    'card_header' => 'Card Header',
+    'card_title' => 'Card title with accent color',
+    'card_sample' => 'This is a sample card with your theme colors applied.',
+    'save_theme_settings' => 'Save Theme Settings',
+    'settings_updated' => 'Theme settings updated successfully.',
+];

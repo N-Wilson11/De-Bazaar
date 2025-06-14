@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'settings' => 'Thema Instellingen',
+    'company_theme_settings' => 'Bedrijfsthema Instellingen',
+    'customize_info' => 'Pas de look en feel van de applicatie aan zodat deze bij uw bedrijfsmerk past.',
+    'company_information' => 'Bedrijfsinformatie',
+    'company_name' => 'Bedrijfsnaam',
+    'company_logo' => 'Bedrijfslogo',
+    'current_logo' => 'Huidig Logo',
+    'footer_text' => 'Voettekst',
+    'color_scheme' => 'Kleurenschema',
+    'primary_color' => 'Primaire Kleur',
+    'secondary_color' => 'Secundaire Kleur',
+    'accent_color' => 'Accentkleur',
+    'text_color' => 'Tekstkleur',
+    'background_color' => 'Achtergrondkleur',
+    'preview' => 'Voorbeeld',
+    'primary_color_heading' => 'Primaire Kleur Kop',
+    'text_appearance' => 'Zo zal uw tekst op de site verschijnen.',
+    'primary_button' => 'Primaire Knop',
+    'secondary_button' => 'Secundaire Knop',
+    'card_header' => 'Kaart Header',
+    'card_title' => 'Kaarttitel met accentkleur',
+    'card_sample' => 'Dit is een voorbeeldkaart met uw themakleuren toegepast.',
+    'save_theme_settings' => 'Thema-instellingen Opslaan',
+    'settings_updated' => 'Thema-instellingen succesvol bijgewerkt.',
+];
