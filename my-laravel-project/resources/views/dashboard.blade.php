@@ -181,11 +181,29 @@
                                     <i class="bi bi-palette me-2"></i>{{ __('general.theme_settings') }}
                                 </div>
                                 <div class="card-body">
-                                    <p>{{ __('general.theme_description') }}</p>
-                                    <p>{{ __('general.make_recognizable') }}</p>
+                                    <p>{{ __('general.theme_settings_business') }}</p>
+                                    <p>{{ __('general.theme_settings_customize') }}</p>
                                     <div class="text-center mt-3">
                                         <a href="{{ route('theme.settings') }}" class="btn btn-primary">
                                             <i class="bi bi-brush me-2"></i>{{ __('general.theme_customize') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Company Information for Business Users -->
+                        <div class="mt-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-building me-2"></i>{{ __('general.company_information') }}
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ __('general.company_information_manage') }}</p>
+                                    <p>{{ __('general.company_information_used') }}</p>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('companies.edit') }}" class="btn btn-primary">
+                                            <i class="bi bi-pencil-square me-2"></i>{{ __('general.edit_company_information') }}
                                         </a>
                                     </div>
                                 </div>

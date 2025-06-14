@@ -80,8 +80,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Share theme configuration with all views
         if (Config::get('theme.enabled', true)) {
-            // Get company ID from session or use a default
-            $companyId = Session::get('company_id', 'default');
+            // Bepaal het juiste bedrijfs-ID op basis van de authenticatiestatus
+            if (auth()->check() && auth()->user()->user_type === 'zakelijk' && auth()->user()->company_id) {
+                $companyId = auth()->user()->company_id;
+            } else {
+                // Anders, gebruik bedrijfs-ID uit sessie of standaardwaarde
+                $companyId = Session::get('company_id', 'default');
+            }
             
             // Check if the company_themes table exists before trying to use it
             if (Schema::hasTable('company_themes')) {

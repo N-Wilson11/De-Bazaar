@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 @php
+    // Bepaal het juiste bedrijfs-ID op basis van de authenticatiestatus
+    if (Auth::check() && Auth::user()->user_type === 'zakelijk' && Auth::user()->company_id) {
+        $companyId = Auth::user()->company_id;
+    } else {
+        $companyId = Session::get('company_id', 'default');
+    }
+    
     // Direct alle database-thema-elementen ophalen zonder transformaties
-    $dbTheme = \App\Models\CompanyTheme::where('company_id', Session::get('company_id', 'default'))
+    $dbTheme = \App\Models\CompanyTheme::where('company_id', $companyId)
         ->where('is_active', true)
         ->first();
     

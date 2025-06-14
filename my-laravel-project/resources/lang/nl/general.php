@@ -200,4 +200,8 @@ return [
     'theme_customize' => 'Thema Aanpassen',
     'theme_description' => 'Pas de kleuren en het logo van uw webpagina aan zodat deze past bij uw bedrijfsidentiteit.',
     'make_recognizable' => 'Maak uw pagina herkenbaar en professioneel met uw eigen huisstijl.',
+    'company_information' => 'Bedrijfsinformatie',
+    'company_information_manage' => 'Beheer uw bedrijfsgegevens zoals naam, adres, beschrijving en contactinformatie.',
+    'company_information_used' => 'Deze informatie wordt gebruikt voor uw bedrijfsprofiel en facturen.',
+    'edit_company_information' => 'Bedrijfsgegevens Bewerken',
 ];

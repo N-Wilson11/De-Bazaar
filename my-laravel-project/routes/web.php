@@ -167,6 +167,10 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
             Route::get('/landing/settings', [App\Http\Controllers\CompanyLandingController::class, 'settings'])->name('landing.settings');
             Route::post('/landing/update', [App\Http\Controllers\CompanyLandingController::class, 'update'])->name('landing.update');
             
+            // Company management routes
+            Route::get('/companies/edit', [App\Http\Controllers\CompanyController::class, 'edit'])->name('companies.edit');
+            Route::put('/companies/update', [App\Http\Controllers\CompanyController::class, 'update'])->name('companies.update');
+            
             // Component management routes
             Route::get('/components', [App\Http\Controllers\PageComponentController::class, 'index'])->name('components.index');
             Route::get('/components/create/{type}', [App\Http\Controllers\PageComponentController::class, 'create'])->name('components.create');

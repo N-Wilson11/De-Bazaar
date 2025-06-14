@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
 use App\Models\CompanyTheme;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,22 +21,32 @@ class CompanyThemeMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // First check for company ID in request params
-        if ($request->has('company_id')) {
-            Session::put('company_id', $request->input('company_id'));
+        // Voor zakelijke gebruikers, gebruik hun eigen bedrijfs-ID
+        if (Auth::check() && Auth::user()->user_type === 'zakelijk' && Auth::user()->company_id) {
+            $companyId = Auth::user()->company_id;
+        }
+        // Voor normale gebruikers die specifiek een bedrijf bezoeken
+        else if ($request->has('company_id')) {
+            $companyId = $request->input('company_id');
+        }
+        // Gebruik opgeslagen bedrijfs-ID uit sessie of cookie
+        else if (Session::has('company_id')) {
+            $companyId = Session::get('company_id');
+        }
+        else if (Cookie::has('company_id')) {
+            $companyId = Cookie::get('company_id');
+        }
+        // Standaardwaarde als er geen bedrijf is ingesteld
+        else {
+            $companyId = 'default';
         }
         
-        // Then check for company ID in session
-        if (!Session::has('company_id') && Cookie::has('company_id')) {
-            Session::put('company_id', Cookie::get('company_id'));
-        }
+        // Sla het bedrijfs-ID op in de sessie
+        Session::put('company_id', $companyId);
         
-        // Make sure we always have a company ID (default if none)
-        $companyId = Session::get('company_id', 'default');
-        
-        // Store company ID in cookie for persistence across sessions
-        // This ensures the theme stays consistent even after browser restart
-        Cookie::queue('company_id', $companyId, 60 * 24 * 30); // 30 days
+        // Bewaar het bedrijfs-ID in een cookie voor consistentie tussen sessies
+        // 30 dagen geldig
+        Cookie::queue('company_id', $companyId, 60 * 24 * 30);
         
         return $next($request);
     }
