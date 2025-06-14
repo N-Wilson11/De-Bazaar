@@ -357,7 +357,15 @@ class AdvertisementController extends Controller
             $validated = $this->validateAdvertisement($request);
         }
           // Handle image uploads
-        $images = $advertisement->images ?? [];
+        // Ensure $images is always an array
+        $images = is_array($advertisement->images) ? $advertisement->images : 
+                 (is_string($advertisement->images) && !empty($advertisement->images) ? json_decode($advertisement->images, true) : []);
+        
+        // If json_decode returned null or it's still not an array, use an empty array
+        if (!is_array($images)) {
+            $images = [];
+        }
+        
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('advertisements', 'public');
@@ -370,13 +378,19 @@ class AdvertisementController extends Controller
         
         // Handle image removals
         if ($request->has('remove_images')) {
+            // Ensure remove_images is an array
+            $removeImages = is_array($request->remove_images) ? $request->remove_images : [$request->remove_images];
+            
             $remainingImages = [];
-            foreach ($images as $image) {
-                if (!in_array($image, $request->remove_images)) {
-                    $remainingImages[] = $image;
-                } else {
-                    // Delete the image from storage
-                    Storage::disk('public')->delete($image);
+            // Only iterate if images is an array
+            if (is_array($images)) {
+                foreach ($images as $image) {
+                    if (!in_array($image, $removeImages)) {
+                        $remainingImages[] = $image;
+                    } else {
+                        // Delete the image from storage
+                        Storage::disk('public')->delete($image);
+                    }
                 }
             }
             $validated['images'] = $remainingImages;
