@@ -11,6 +11,10 @@
                     <h5 class="mb-0">{{ __('general.my_advertisements') }}</h5>
                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                         <div>
+                            <a href="{{ route('advertisements.import') }}" class="btn btn-sm btn-info me-2">
+                                <i class="bi bi-file-arrow-up"></i> {{ __('CSV importeren') }}
+                            </a>
+                            
                             @if($canCreateNormal)
                                 <a href="{{ route('advertisements.create') }}" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-plus-circle"></i> {{ __('general.new_advertisement') }}

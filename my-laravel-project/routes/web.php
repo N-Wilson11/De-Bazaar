@@ -57,6 +57,12 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         
         // Alle advertentie routes
         Route::get('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'index'])->name('advertisements.index');
+        
+        // CSV Import routes
+        Route::get('/advertisements/import', [App\Http\Controllers\AdvertisementImportController::class, 'showImportForm'])->name('advertisements.import');
+        Route::post('/advertisements/import', [App\Http\Controllers\AdvertisementImportController::class, 'processImport'])->name('advertisements.import.process');
+        Route::get('/advertisements/import/template', [App\Http\Controllers\AdvertisementImportController::class, 'downloadTemplate'])->name('advertisements.import.template');
+        
         Route::get('/advertisements/create', [App\Http\Controllers\AdvertisementController::class, 'create'])->name('advertisements.create');
         Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
         Route::get('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'show'])->name('advertisements.show');
@@ -159,6 +165,19 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
             Route::delete('/components/{component}', [App\Http\Controllers\PageComponentController::class, 'destroy'])->name('components.destroy');
             Route::post('/components/order', [App\Http\Controllers\PageComponentController::class, 'updateOrder'])->name('components.order');
         });
+        
+        // Test route voor eenvoudige controller
+        Route::get('/test-import', [App\Http\Controllers\SimpleImportController::class, 'showForm'])->name('test.import');
+        
+        // Test route voor eenvoudige view
+        Route::get('/test-view', function() {
+            return view('advertisements.test-import');
+        })->name('test.view');
+        
+        // Directe CSV import route zonder controller
+        Route::get('/direct-import', function() {
+            return view('advertisements.import');
+        })->middleware(['auth', 'business'])->name('direct.import');
     });
     
     // Gerelateerde advertenties routes

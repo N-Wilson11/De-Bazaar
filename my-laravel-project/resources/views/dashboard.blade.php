@@ -58,6 +58,53 @@
                         </table>
                     </div>
                     
+                    <!-- Snelle acties sectie -->
+                    <div class="mt-4">
+                        <h4>{{ __('Snelle acties') }}</h4>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ route('advertisements.index') }}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-tags fs-1 text-primary mb-2"></i>
+                                            <h5 class="card-title">{{ __('Mijn advertenties') }}</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ route('advertisements.import') }}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-file-arrow-up fs-1 text-success mb-2"></i>
+                                            <h5 class="card-title">{{ __('CSV importeren') }}</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ route('favorites.index') }}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-heart fs-1 text-danger mb-2"></i>
+                                            <h5 class="card-title">{{ __('Favorieten') }}</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="{{ route('orders.index') }}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-bag fs-1 text-info mb-2"></i>
+                                            <h5 class="card-title">{{ __('Mijn bestellingen') }}</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Advertentie statistieken -->
                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                     <div class="mt-4">
