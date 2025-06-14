@@ -175,6 +175,10 @@ class AdvertisementController extends Controller
         $advertisement = new Advertisement($validated);
         $advertisement->user_id = Auth::id();
         $advertisement->images = $images;
+        
+        // Stel de vervaldatum in op een maand vanaf nu
+        $advertisement->expires_at = now()->addMonth();
+        
         $advertisement->save();
         
         return redirect()->route('advertisements.show', $advertisement)
@@ -221,6 +225,9 @@ class AdvertisementController extends Controller
         $advertisement->images = $images;
         $advertisement->is_rental = true;
         $advertisement->type = 'rental';
+        
+        // Stel de vervaldatum in op een maand vanaf nu
+        $advertisement->expires_at = now()->addMonth();
         
         // Verwerk slijtage-instellingen indien ingeschakeld
         if ($request->has('rental_calculate_wear_and_tear') && $request->rental_calculate_wear_and_tear) {
@@ -336,6 +343,21 @@ class AdvertisementController extends Controller
         if ($advertisement->user_id !== Auth::id()) {
             return redirect()->route('advertisements.index')
                 ->with('error', __('Je hebt geen toegang tot deze advertentie.'));
+        }
+        
+        // Check if this is a request to extend the expiration date
+        if ($request->has('extend_expiry') && $request->extend_expiry === 'month') {
+            // Als er al een vervaldatum is, verleng deze met een maand vanaf de huidige vervaldatum
+            if ($advertisement->expires_at) {
+                $advertisement->expires_at = $advertisement->expires_at->addMonth();
+            } else {
+                // Als er nog geen vervaldatum is, stel deze in op een maand vanaf nu
+                $advertisement->expires_at = now()->addMonth();
+            }
+            $advertisement->save();
+            
+            return redirect()->back()
+                ->with('success', __('De vervaldatum is succesvol verlengd tot ') . $advertisement->expires_at->format('d-m-Y'));
         }
         
         if ($advertisement->isRental()) {
@@ -652,5 +674,92 @@ class AdvertisementController extends Controller
         $advertisements->appends($request->except('page'));
             
         return view('advertisements.browse', compact('advertisements'));
+    }
+    
+    /**
+     * Display a calendar showing when the advertiser's advertisements expire.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function expirationCalendar()
+    {
+        $user = Auth::user();
+        
+        // Get all advertisements from the user that have an expiration date
+        $advertisements = Advertisement::where('user_id', $user->id)
+            ->whereNotNull('expires_at')
+            ->orderBy('expires_at', 'asc')
+            ->get();
+            
+        // Get advertisements expiring this month
+        $today = \Carbon\Carbon::today();
+        $startOfMonth = $today->copy()->startOfMonth();
+        $endOfMonth = $today->copy()->endOfMonth();
+        
+        $expiringThisMonth = $advertisements->filter(function($advertisement) use ($startOfMonth, $endOfMonth) {
+            $expiresAt = \Carbon\Carbon::parse($advertisement->expires_at);
+            return $expiresAt->between($startOfMonth, $endOfMonth);
+        });
+        
+        // Get advertisements expiring next month
+        $nextMonthStart = $today->copy()->addMonth()->startOfMonth();
+        $nextMonthEnd = $today->copy()->addMonth()->endOfMonth();
+        
+        $expiringNextMonth = $advertisements->filter(function($advertisement) use ($nextMonthStart, $nextMonthEnd) {
+            $expiresAt = \Carbon\Carbon::parse($advertisement->expires_at);
+            return $expiresAt->between($nextMonthStart, $nextMonthEnd);
+        });
+        
+        // Group advertisements by expiration date for the calendar view
+        $groupedByDate = $advertisements->groupBy(function($advertisement) {
+            return \Carbon\Carbon::parse($advertisement->expires_at)->format('Y-m-d');
+        });
+        
+        return view('advertisements.expiration-calendar', compact(
+            'advertisements', 
+            'expiringThisMonth', 
+            'expiringNextMonth', 
+            'groupedByDate',
+            'today'
+        ));
+    }
+    
+    /**
+     * Extend the expiration date for multiple advertisements at once.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function extendMultiple(Request $request)
+    {
+        $request->validate([
+            'advertisement_ids' => 'required|array',
+            'advertisement_ids.*' => 'exists:advertisements,id',
+        ]);
+        
+        $user = Auth::user();
+        $advertisementIds = $request->advertisement_ids;
+        $count = 0;
+        
+        foreach ($advertisementIds as $id) {
+            // Controleer of de advertentie van deze gebruiker is
+            $advertisement = Advertisement::where('id', $id)
+                ->where('user_id', $user->id)
+                ->first();
+                
+            if ($advertisement) {
+                // Verleng de vervaldatum
+                if ($advertisement->expires_at) {
+                    $advertisement->expires_at = $advertisement->expires_at->addMonth();
+                } else {
+                    $advertisement->expires_at = now()->addMonth();
+                }
+                $advertisement->save();
+                $count++;
+            }
+        }
+        
+        return redirect()->route('advertisements.expiration-calendar')
+            ->with('success', __('De vervaldatum van ') . $count . __(' advertentie(s) is succesvol verlengd met 1 maand.'));
     }
 }

@@ -17,6 +17,13 @@
                         <i class="bi bi-info-circle me-2"></i>
                         {{ __('general.ad_limit_info') }}. {{ __('general.delete_to_add') }}.
                     </div>
+                    
+                    <!-- Informatie over vervaldatum -->
+                    <div class="alert alert-warning mb-4">
+                        <i class="bi bi-clock-history me-2"></i>
+                        Deze verhuuradvertentie krijgt automatisch een vervaldatum van één maand vanaf de aanmaakdatum. Na deze datum zal de advertentie niet meer zichtbaar zijn in de zoekresultaten zonder verlenging.
+                    </div>
+                    
                     <form method="POST" action="{{ route('rentals.store') }}" enctype="multipart/form-data">
                         @csrf
 

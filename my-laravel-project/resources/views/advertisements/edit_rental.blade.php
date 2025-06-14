@@ -12,6 +12,31 @@
                 </div>
 
                 <div class="card-body">
+                    <!-- Huidige vervaldatum weergeven -->
+                    <div class="alert alert-info mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-calendar-event me-2"></i>
+                                <strong>Vervaldatum:</strong> {{ $advertisement->expires_at ? $advertisement->expires_at->format('d-m-Y') : 'Geen vervaldatum ingesteld' }}
+                                @if($advertisement->expires_at && $advertisement->expires_at->isPast())
+                                    <span class="badge bg-danger ms-2">Verlopen</span>
+                                @elseif($advertisement->expires_at && floor($advertisement->expires_at->floatDiffInDays(now())) <= 7)
+                                    <span class="badge bg-warning text-dark ms-2">Verloopt binnenkort</span>
+                                @endif
+                            </div>
+                            <a href="{{ route('advertisements.update', ['advertisement' => $advertisement->id, 'extend' => 'month']) }}" class="btn btn-sm btn-outline-primary" onclick="event.preventDefault(); document.getElementById('extend-form').submit();">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Verleng met 1 maand
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Verborgen formulier voor het verlengen van de vervaldatum -->
+                    <form id="extend-form" action="{{ route('advertisements.update', $advertisement) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="extend_expiry" value="month">
+                    </form>
+                    
                     <form method="POST" action="{{ route('advertisements.update', $advertisement) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')

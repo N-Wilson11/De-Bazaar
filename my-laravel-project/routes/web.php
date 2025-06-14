@@ -63,6 +63,10 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::post('/advertisements/import', [App\Http\Controllers\AdvertisementImportController::class, 'processImport'])->name('advertisements.import.process');
         Route::get('/advertisements/import/template', [App\Http\Controllers\AdvertisementImportController::class, 'downloadTemplate'])->name('advertisements.import.template');
         
+        // Advertentie verloopdatum kalender voor adverteerders
+        Route::get('/advertisements/expiration-calendar', [App\Http\Controllers\AdvertisementController::class, 'expirationCalendar'])->name('advertisements.expiration-calendar');
+        Route::post('/advertisements/extend-multiple', [App\Http\Controllers\AdvertisementController::class, 'extendMultiple'])->name('advertisements.extend-multiple');
+        
         Route::get('/advertisements/create', [App\Http\Controllers\AdvertisementController::class, 'create'])->name('advertisements.create');
         Route::post('/advertisements', [App\Http\Controllers\AdvertisementController::class, 'store'])->name('advertisements.store');
         Route::get('/advertisements/{advertisement}', [App\Http\Controllers\AdvertisementController::class, 'show'])->name('advertisements.show');

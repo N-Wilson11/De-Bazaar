@@ -19,7 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register Calendar helper as a singleton
+        $this->app->singleton('calendar', function () {
+            return new \App\Helpers\Calendar();
+        });
     }
 
     /**
@@ -29,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix URL handling for asset storage in Windows environments
         \Illuminate\Support\Facades\URL::forceScheme('http');
+        
+        // Register Calendar facade
+        $this->app->alias(\App\Helpers\Calendar::class, 'Calendar');
+        $this->app->alias(\App\Facades\Calendar::class, 'Calendar');
         
         // Gebruik Bootstrap 5 voor paginering
         \Illuminate\Pagination\Paginator::useBootstrap();

@@ -11,6 +11,9 @@
                     <h5 class="mb-0">{{ __('general.my_advertisements') }}</h5>
                     @if(Auth::user()->user_type === 'particulier' || Auth::user()->user_type === 'zakelijk')
                         <div>
+                            <a href="{{ route('advertisements.expiration-calendar') }}" class="btn btn-sm btn-secondary me-2">
+                                <i class="bi bi-calendar-event"></i> {{ __('Verloop Kalender') }}
+                            </a>
                             <a href="{{ route('advertisements.import') }}" class="btn btn-sm btn-info me-2">
                                 <i class="bi bi-file-arrow-up"></i> {{ __('CSV importeren') }}
                             </a>
