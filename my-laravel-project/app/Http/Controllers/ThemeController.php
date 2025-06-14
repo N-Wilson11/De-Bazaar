@@ -19,8 +19,16 @@ class ThemeController extends Controller
      */
     public function index()
     {
-        // Get current company ID from session or use a default
-        $companyId = Session::get('company_id', 'default');
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // If the user is a business user, use their company ID
+        if ($user && $user->user_type === 'zakelijk' && $user->company) {
+            $companyId = $user->company->id;
+        } else {
+            // Otherwise, get current company ID from session or use a default
+            $companyId = Session::get('company_id', 'default');
+        }
         
         // Try to load the company theme from database
         $companyTheme = CompanyTheme::where('company_id', $companyId)->first();
@@ -64,8 +72,16 @@ class ThemeController extends Controller
                 ->withInput();
         }
 
-        // Get current company ID from session or use a default
-        $companyId = Session::get('company_id', 'default');
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // If the user is a business user, use their company ID
+        if ($user && $user->user_type === 'zakelijk' && $user->company) {
+            $companyId = $user->company->id;
+        } else {
+            // Otherwise, get current company ID from session or use a default
+            $companyId = Session::get('company_id', 'default');
+        }
 
         // Handle logo upload if provided
         $logoPath = null;
@@ -153,8 +169,16 @@ class ThemeController extends Controller
      */
     public function changeLogo()
     {
-        // Get current company ID from session or use a default
-        $companyId = Session::get('company_id', 'default');
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // If the user is a business user, use their company ID
+        if ($user && $user->user_type === 'zakelijk' && $user->company) {
+            $companyId = $user->company->id;
+        } else {
+            // Otherwise, get current company ID from session or use a default
+            $companyId = Session::get('company_id', 'default');
+        }
         
         // Load the company theme from database
         $companyTheme = CompanyTheme::where('company_id', $companyId)
@@ -185,8 +209,16 @@ class ThemeController extends Controller
                 ->withInput();
         }
 
-        // Get current company ID from session or use a default
-        $companyId = Session::get('company_id', 'default');
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // If the user is a business user, use their company ID
+        if ($user && $user->user_type === 'zakelijk' && $user->company) {
+            $companyId = $user->company->id;
+        } else {
+            // Otherwise, get current company ID from session or use a default
+            $companyId = Session::get('company_id', 'default');
+        }
 
         // Find the company theme
         $companyTheme = CompanyTheme::where('company_id', $companyId)->first();
@@ -239,8 +271,16 @@ class ThemeController extends Controller
      */
     public function removeLogo()
     {
-        // Get current company ID from session or use a default
-        $companyId = Session::get('company_id', 'default');
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // If the user is a business user, use their company ID
+        if ($user && $user->user_type === 'zakelijk' && $user->company) {
+            $companyId = $user->company->id;
+        } else {
+            // Otherwise, get current company ID from session or use a default
+            $companyId = Session::get('company_id', 'default');
+        }
 
         // Find the company theme
         $companyTheme = CompanyTheme::where('company_id', $companyId)->first();

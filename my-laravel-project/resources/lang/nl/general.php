@@ -28,7 +28,11 @@ return [
     'unlimited_ads' => 'Maximum 4 verkoop- en 4 verhuuradvertenties',
     'stats' => 'Statistieken over je advertenties',
     'priority_search' => 'Prioriteit in zoekresultaten',
-    'download_contract_info' => 'Download je contract om de samenwerking te formaliseren.',
+    'download_contract_info' => 'Je kunt je contract downloaden door op de bovenstaande knop te klikken.',
+    'theme_settings' => 'Thema Instellingen',
+    'theme_settings_business' => 'Als zakelijke gebruiker kunt u uw eigen bedrijfsthema instellen.',
+    'theme_settings_customize' => 'Pas kleuren, logo en meer aan zodat het bij uw bedrijfsmerk past.',
+    'theme_customize' => 'Thema Aanpassen',
     'advertiser_type' => 'Type adverteerder',
     'successfulllogin' => 'Je bent succesvol ingelogd.',
     'normal_user' => 'Normale gebruiker',
@@ -190,4 +194,10 @@ return [
     'add_to_favorites' => 'Toevoegen aan favorieten',
     'write_review' => 'Schrijf een review',
     'reviews' => 'Reviews',
+    
+    // Theme settings
+    'theme_settings' => 'Thema Instellingen',
+    'theme_customize' => 'Thema Aanpassen',
+    'theme_description' => 'Pas de kleuren en het logo van uw webpagina aan zodat deze past bij uw bedrijfsidentiteit.',
+    'make_recognizable' => 'Maak uw pagina herkenbaar en professioneel met uw eigen huisstijl.',
 ];

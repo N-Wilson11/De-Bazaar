@@ -28,7 +28,11 @@ return [
     'unlimited_ads' => 'Maximum of 4 sale and 4 rental advertisements',
     'stats' => 'Statistics about your advertisements',
     'priority_search' => 'Priority in search results',
-    'download_contract_info' => 'Download your contract to formalize the partnership.',
+    'download_contract_info' => 'You can download your contract by clicking the button above.',
+    'theme_settings' => 'Theme Settings',
+    'theme_settings_business' => 'As a business user, you can set up your own company theme.',
+    'theme_settings_customize' => 'Customize colors, logo and more to match your company brand.',
+    'theme_customize' => 'Customize Theme',
     'advertiser_type' => 'Advertiser type',
     'successfulllogin' => 'You have successfully logged in.',
     'normal_user' => 'Normal user',
@@ -367,4 +371,10 @@ return [
     'posted_on' => 'Posted on',
     'viewed' => 'times viewed',
     'offered_by' => 'Offered by',
+    
+    // Theme settings
+    'theme_settings' => 'Theme Settings',
+    'theme_customize' => 'Customize Theme',
+    'theme_description' => 'Customize the colors and logo of your webpage to match your company identity.',
+    'make_recognizable' => 'Make your page recognizable and professional with your own style.',
 ];

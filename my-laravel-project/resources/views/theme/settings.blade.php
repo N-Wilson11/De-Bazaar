@@ -4,7 +4,19 @@
 
 @section('content')
 <div class="container">
-    <h1>{{ __('theme.company_theme_settings') }}</h1>
+    @php
+        $user = auth()->user();
+        $isBusinessUser = $user && $user->user_type === 'zakelijk';
+        $companyName = $isBusinessUser && $user->company ? $user->company->name : '';
+    @endphp
+    
+    <h1>
+        @if($isBusinessUser)
+            {{ __('theme.company_theme_settings') }}: {{ $companyName }}
+        @else
+            {{ __('theme.company_theme_settings') }}
+        @endif
+    </h1>
     <p class="lead">{{ __('theme.customize_info') }}</p>
 
     @if (session('success'))

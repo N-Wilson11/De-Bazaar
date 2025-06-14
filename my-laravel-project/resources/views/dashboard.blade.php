@@ -173,6 +173,24 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Theme Settings for Business Users -->
+                        <div class="mt-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-palette me-2"></i>{{ __('general.theme_settings') }}
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ __('general.theme_description') }}</p>
+                                    <p>{{ __('general.make_recognizable') }}</p>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('theme.settings') }}" class="btn btn-primary">
+                                            <i class="bi bi-brush me-2"></i>{{ __('general.theme_customize') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @elseif(Auth::user()->user_type === 'normaal')
                         <div class="mt-4 p-3 bg-light rounded">
                             <h5>{{ __('general.normal_user_info') }}</h5>

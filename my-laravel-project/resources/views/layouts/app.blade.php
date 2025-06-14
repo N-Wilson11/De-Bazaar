@@ -420,6 +420,13 @@
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
+                                    @if(Auth::user()->user_type === 'admin' || Auth::user()->user_type === 'zakelijk')
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('theme.settings') }}">
+                                            <i class="bi bi-palette me-2"></i>{{ __('general.theme_settings') }}
+                                        </a>
+                                    </li>
+                                    @endif
                                     <li>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
