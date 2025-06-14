@@ -345,21 +345,6 @@ class AdvertisementController extends Controller
                 ->with('error', __('Je hebt geen toegang tot deze advertentie.'));
         }
         
-        // Check if this is a request to extend the expiration date
-        if ($request->has('extend_expiry') && $request->extend_expiry === 'month') {
-            // Als er al een vervaldatum is, verleng deze met een maand vanaf de huidige vervaldatum
-            if ($advertisement->expires_at) {
-                $advertisement->expires_at = $advertisement->expires_at->addMonth();
-            } else {
-                // Als er nog geen vervaldatum is, stel deze in op een maand vanaf nu
-                $advertisement->expires_at = now()->addMonth();
-            }
-            $advertisement->save();
-            
-            return redirect()->back()
-                ->with('success', __('De vervaldatum is succesvol verlengd tot ') . $advertisement->expires_at->format('d-m-Y'));
-        }
-        
         if ($advertisement->isRental()) {
             $validated = $this->validateRentalAdvertisement($request);
             
@@ -724,42 +709,5 @@ class AdvertisementController extends Controller
         ));
     }
     
-    /**
-     * Extend the expiration date for multiple advertisements at once.
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function extendMultiple(Request $request)
-    {
-        $request->validate([
-            'advertisement_ids' => 'required|array',
-            'advertisement_ids.*' => 'exists:advertisements,id',
-        ]);
-        
-        $user = Auth::user();
-        $advertisementIds = $request->advertisement_ids;
-        $count = 0;
-        
-        foreach ($advertisementIds as $id) {
-            // Controleer of de advertentie van deze gebruiker is
-            $advertisement = Advertisement::where('id', $id)
-                ->where('user_id', $user->id)
-                ->first();
-                
-            if ($advertisement) {
-                // Verleng de vervaldatum
-                if ($advertisement->expires_at) {
-                    $advertisement->expires_at = $advertisement->expires_at->addMonth();
-                } else {
-                    $advertisement->expires_at = now()->addMonth();
-                }
-                $advertisement->save();
-                $count++;
-            }
-        }
-        
-        return redirect()->route('advertisements.expiration-calendar')
-            ->with('success', __('De vervaldatum van ') . $count . __(' advertentie(s) is succesvol verlengd met 1 maand.'));
-    }
+
 }

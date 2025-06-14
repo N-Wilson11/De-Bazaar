@@ -13,30 +13,16 @@
                         <i class="bi bi-arrow-left me-1"></i>{{ __('Terug naar advertenties') }}
                     </a>
                 </div>
-                <div class="card-body">
-                    @if($advertisements->isEmpty())
+                <div class="card-body">                    @if($advertisements->isEmpty())
                         <div class="alert alert-info">
                             {{ __('Je hebt momenteel geen advertenties met een vervaldatum.') }}
                         </div>
                     @else
-                        <form action="{{ route('advertisements.extend-multiple') }}" method="POST" id="bulk-extend-form">
-                            @csrf
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="mb-0">{{ __('Overzicht vervallende advertenties') }}</h4>
-                                <button type="submit" class="btn btn-primary" id="bulk-extend-btn" disabled>
-                                    <i class="bi bi-arrow-clockwise me-1"></i>{{ __('Verleng geselecteerde advertenties met 1 maand') }}
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="select-all">
-                                                    <label class="form-check-label" for="select-all">{{ __('Alle') }}</label>
-                                                </div>
-                                            </th>
+                        <h4 class="mb-3">{{ __('Overzicht vervallende advertenties') }}</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
                                             <th>{{ __('Advertentie') }}</th>
                                             <th>{{ __('Verloopt op') }}</th>
                                             <th>{{ __('Dagen resterend') }}</th>
@@ -53,14 +39,7 @@
                                                 // Status bepalen
                                                 $isExpired = $daysRemaining < 0;
                                                 $isCloseToExpiry = $daysRemaining >= 0 && $daysRemaining <= 7;
-                                            @endphp
-                                            <tr class="{{ $isExpired ? 'table-danger' : ($isCloseToExpiry ? 'table-warning' : 'table-light') }}">
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input ad-checkbox" type="checkbox" name="advertisement_ids[]" value="{{ $advertisement->id }}" id="ad-{{ $advertisement->id }}">
-                                                        <label class="form-check-label" for="ad-{{ $advertisement->id }}"></label>
-                                                    </div>
-                                                </td>
+                                            @endphp                                            <tr class="{{ $isExpired ? 'table-danger' : ($isCloseToExpiry ? 'table-warning' : 'table-light') }}">
                                                 <td>
                                                     <strong>{{ $advertisement->title }}</strong>
                                                     <div class="small text-muted">{{ __('Categorie') }}: {{ $advertisement->category }}</div>
@@ -91,9 +70,7 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
-                            </div>
-                        </form>
+                                </table>                            </div>
                     @endif
 
                     <div class="my-5">
@@ -326,52 +303,4 @@
 </style>
 @endpush
 
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Selecteer alle checkboxes
-        const selectAll = document.getElementById('select-all');
-        const checkboxes = document.querySelectorAll('.ad-checkbox');
-        const bulkExtendBtn = document.getElementById('bulk-extend-btn');
-        
-        // Functie om de status van de bulk-extend knop bij te werken
-        function updateBulkExtendButton() {
-            const checkedCount = document.querySelectorAll('.ad-checkbox:checked').length;
-            bulkExtendBtn.disabled = checkedCount === 0;
-        }
-        
-        // Voeg event listeners toe aan alle checkboxes
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                updateBulkExtendButton();
-                
-                // Controleer of alle checkboxes zijn aangevinkt
-                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                selectAll.checked = allChecked;
-                
-                // Controleer of geen enkele checkbox is aangevinkt
-                const noneChecked = Array.from(checkboxes).every(cb => !cb.checked);
-                if (noneChecked) {
-                    selectAll.checked = false;
-                }
-            });
-        });
-        
-        // "Selecteer alle" checkbox handler
-        if (selectAll) {
-            selectAll.addEventListener('change', function() {
-                const isChecked = selectAll.checked;
-                
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.checked = isChecked;
-                });
-                
-                updateBulkExtendButton();
-            });
-        }
-        
-        // Update de status van de bulk-extend knop bij het laden van de pagina
-        updateBulkExtendButton();
-    });
-</script>
-@endpush
+
