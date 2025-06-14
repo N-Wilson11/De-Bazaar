@@ -24,20 +24,6 @@
                     <h3>{{ __('general.welcome') }}, {{ Auth::user()->name }}</h3>
                     <p>{{ __('general.successfulllogin') }}</p>
                     
-                    <!-- Rental Calendar Link -->
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="bi bi-calendar-event me-2"></i>
-                                <strong>{{ __('Nieuw!') }}</strong> {{ __('Je kunt nu een agenda overzicht zien van je gehuurde producten.') }}
-                            </div>
-                            <a href="{{ route('rentals.calendar') }}" class="btn btn-sm btn-primary">
-                                {{ __('Bekijk Huurkalender') }} <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    
                     <div class="mt-4">
                         <h4>{{ __('general.account_details') }}</h4>
                         <table class="table">
