@@ -206,4 +206,66 @@ class RentalController extends Controller
         
         return view('rentals.calendar', compact('upcomingRentals', 'currentMonthRentals', 'nextMonthRentals', 'today'));
     }
+    
+    /**
+     * Show a calendar overview of the advertiser's rented out items
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function advertiserRentalCalendar()
+    {
+        // Get the current authenticated user (advertiser)
+        $user = auth()->user();
+        
+        // Get all order items where the current user is the seller and items are rentals
+        $rentedOutItems = OrderItem::where('seller_id', $user->id)
+            ->where('is_rental', true)
+            ->with(['order.user', 'advertisement'])
+            ->orderBy('rental_start_date', 'asc')
+            ->get();
+        
+        // Filter only to orders that are not cancelled
+        $rentedOutItems = $rentedOutItems->filter(function($item) {
+            return $item->order->status !== Order::STATUS_CANCELLED;
+        });
+            
+        // Get today's date and current month range
+        $today = Carbon::today();
+        $startOfMonth = Carbon::today()->startOfMonth();
+        $endOfMonth = Carbon::today()->endOfMonth();
+        
+        // Filter for current month rentals
+        $currentMonthRentals = $rentedOutItems->filter(function($rental) use ($startOfMonth, $endOfMonth) {
+            $startDate = Carbon::parse($rental->rental_start_date);
+            $endDate = Carbon::parse($rental->rental_end_date);
+            
+            return ($startDate->between($startOfMonth, $endOfMonth) || 
+                   $endDate->between($startOfMonth, $endOfMonth) ||
+                   ($startDate->lte($startOfMonth) && $endDate->gte($endOfMonth)));
+        });
+        
+        // Filter for next month rentals
+        $nextMonthStart = Carbon::today()->addMonth()->startOfMonth();
+        $nextMonthEnd = Carbon::today()->addMonth()->endOfMonth();
+        
+        $nextMonthRentals = $rentedOutItems->filter(function($rental) use ($nextMonthStart, $nextMonthEnd) {
+            $startDate = Carbon::parse($rental->rental_start_date);
+            $endDate = Carbon::parse($rental->rental_end_date);
+            
+            return ($startDate->between($nextMonthStart, $nextMonthEnd) || 
+                   $endDate->between($nextMonthStart, $nextMonthEnd) ||
+                   ($startDate->lte($nextMonthStart) && $endDate->gte($nextMonthEnd)));
+        });
+        
+        // Group rentals by advertisement for easier organization
+        $rentalsByProduct = $rentedOutItems->groupBy('advertisement_id');
+        
+        return view('rentals.advertiser_calendar', compact(
+            'rentedOutItems', 
+            'currentMonthRentals', 
+            'nextMonthRentals', 
+            'rentalsByProduct',
+            'today'
+        ));
+    }
 }

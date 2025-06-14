@@ -303,6 +303,15 @@
                                     <i class="bi bi-calendar-event me-1"></i>{{ __('Huurkalender') }}
                                 </a>
                             </li>
+                            
+                            @if(auth()->user()->advertisements()->where('is_rental', true)->count() > 0)
+                                <!-- Verhuurkalender menu-item voor adverteerders -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('rentals.advertiser-calendar') }}">
+                                        <i class="bi bi-calendar-week me-1"></i>{{ __('Verhuurkalender') }}
+                                    </a>
+                                </li>
+                            @endif
                         @endauth
                         
                         <!-- Admin Menu Items -->

@@ -155,6 +155,24 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Rental Calendar for Business Users -->
+                        <div class="mt-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="bi bi-calendar-week me-2"></i>{{ __('Verhuurkalender') }}
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ __('Bekijk al uw verhuurde producten in een overzichtelijke agenda.') }}</p>
+                                    <p>{{ __('Zo weet u precies wanneer u producten moet uitlenen en wanneer u ze terugkrijgt.') }}</p>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('rentals.advertiser-calendar') }}" class="btn btn-primary">
+                                            <i class="bi bi-calendar3 me-2"></i>{{ __('Verhuuragenda Bekijken') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @elseif(Auth::user()->user_type === 'normaal')
                         <div class="mt-4 p-3 bg-light rounded">
                             <h5>{{ __('general.normal_user_info') }}</h5>

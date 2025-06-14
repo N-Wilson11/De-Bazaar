@@ -83,6 +83,9 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         // Huurkalender overzicht voor gebruiker
         Route::get('/rentals/calendar', [App\Http\Controllers\RentalController::class, 'rentalCalendar'])->name('rentals.calendar');
         
+        // Huurkalender overzicht voor verhuurders/adverteerders
+        Route::get('/rentals/my-rentings', [App\Http\Controllers\RentalController::class, 'advertiserRentalCalendar'])->name('rentals.advertiser-calendar');
+        
         // Product terugbreng routes
         Route::get('/rentals/return/{orderItem}', [App\Http\Controllers\RentalReturnController::class, 'showReturnForm'])->name('rentals.return');
         Route::post('/rentals/return/{orderItem}/process', [App\Http\Controllers\RentalReturnController::class, 'processReturn'])->name('rentals.process-return');
