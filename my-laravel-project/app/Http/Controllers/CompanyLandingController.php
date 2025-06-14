@@ -84,9 +84,8 @@ class CompanyLandingController extends Controller
                 ]);
                 
                 $theme->save();
-                
-                // Reload the user to get the updated company relationship
-                $user = $user->fresh();
+                  // Reload the user to get the updated company relationship
+                $user = Auth::user();
                 $company = $user->company;
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Error creating company: ' . $e->getMessage());
@@ -125,9 +124,8 @@ class CompanyLandingController extends Controller
             return redirect()->route('landing.settings');
         }
         
-        try {
-            // Reload the user to ensure we have the latest data
-            $user = $user->fresh();
+        try {            // Reload the user to ensure we have the latest data
+            $user = Auth::user();
             $company = $user->company;
 
             if (!$company) {
