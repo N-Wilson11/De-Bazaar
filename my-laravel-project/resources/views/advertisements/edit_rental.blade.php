@@ -20,6 +20,14 @@
                             <span class="badge bg-warning text-dark ms-2">Verloopt binnenkort</span>
                         @endif
                     </div>
+                      <!-- QR Code voor deze advertentie -->
+                    <div class="alert alert-light border mb-4 text-center">
+                        <h6><i class="bi bi-qr-code me-2"></i>QR-code voor deze advertentie</h6>
+                        <div class="p-2">
+                            <img src="{{ route('qrcode.advertisement', $advertisement) }}?size=120" alt="QR Code" class="img-fluid rounded border p-1 mb-2" style="max-width: 120px;">
+                        </div>
+                        <small class="text-muted d-block mb-2">Scan deze code om direct naar je advertentie te gaan</small>
+                    </div>
                     
                     <form method="POST" action="{{ route('advertisements.update', $advertisement) }}" enctype="multipart/form-data">
                         @csrf

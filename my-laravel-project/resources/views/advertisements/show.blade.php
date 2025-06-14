@@ -198,12 +198,21 @@
                         {{ $advertisement->location ?: __('Niet gespecificeerd') }}
                     </div>
                     
-                    <div class="mb-3">                        <strong><i class="bi bi-clock-history me-1"></i>{{ __('general.posted_on') }}:</strong> 
+                    <div class="mb-3">
+                        <strong><i class="bi bi-clock-history me-1"></i>{{ __('general.posted_on') }}:</strong> 
                         {{ $advertisement->created_at->format('d-m-Y') }}
                     </div>
                     
-                    <div class="mb-3">                        <strong><i class="bi bi-eye me-1"></i>{{ __('general.views') }}:</strong> 
+                    <div class="mb-3">
+                        <strong><i class="bi bi-eye me-1"></i>{{ __('general.views') }}:</strong> 
                         {{ $advertisement->views }} {{ __('general.viewed') }}
+                    </div>
+                      <!-- QR Code sectie -->
+                    <div class="mt-4 mb-3 text-center">
+                        <h6 class="mb-3"><i class="bi bi-qr-code me-2"></i>QR-code voor deze advertentie</h6>
+                        <div class="qr-code-container">
+                            <img src="{{ route('qrcode.advertisement', $advertisement) }}?size=150" alt="QR Code" class="img-fluid rounded border p-1 mb-2" style="max-width: 150px;">
+                        </div>
                     </div>
                     
                     @if($advertisement->user_id === Auth::id())
