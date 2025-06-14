@@ -257,6 +257,9 @@ class AdvertisementController extends Controller
         // Increment view count
         $advertisement->increment('views');
         
+        // Eager load related advertisements
+        $advertisement->load('relatedAdvertisements');
+        
         // Check if the advertisement is available for purchase
         $canBePurchased = $advertisement->isAvailableForPurchase();
         

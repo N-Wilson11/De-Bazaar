@@ -479,4 +479,41 @@ class Advertisement extends Model
     {
         return $this->is_accepting_bids && $this->purchase_status === self::PURCHASE_STATUS_AVAILABLE;
     }
+    
+    /**
+     * Get the related advertisements.
+     */
+    public function relatedAdvertisements()
+    {
+        return $this->belongsToMany(
+            Advertisement::class,
+            'related_advertisements',
+            'advertisement_id',
+            'related_advertisement_id'
+        )->withTimestamps();
+    }
+    
+    /**
+     * Get the advertisements that have this one as related.
+     */
+    public function relatedToAdvertisements()
+    {
+        return $this->belongsToMany(
+            Advertisement::class,
+            'related_advertisements',
+            'related_advertisement_id',
+            'advertisement_id'
+        )->withTimestamps();
+    }
+    
+    /**
+     * Check if this advertisement has a specific related advertisement.
+     *
+     * @param Advertisement $advertisement
+     * @return bool
+     */
+    public function hasRelatedAdvertisement(Advertisement $advertisement): bool
+    {
+        return $this->relatedAdvertisements()->where('related_advertisement_id', $advertisement->id)->exists();
+    }
 }

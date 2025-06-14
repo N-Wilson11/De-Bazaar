@@ -161,4 +161,14 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         });
     });
     
+    // Gerelateerde advertenties routes
+    Route::middleware('auth')->group(function () {
+        Route::get('/advertisements/{advertisement}/related', [App\Http\Controllers\RelatedAdvertisementController::class, 'index'])
+            ->name('advertisements.related.index');
+        Route::post('/advertisements/{advertisement}/related', [App\Http\Controllers\RelatedAdvertisementController::class, 'store'])
+            ->name('advertisements.related.store');
+        Route::delete('/advertisements/{advertisement}/related/{relatedId}', [App\Http\Controllers\RelatedAdvertisementController::class, 'destroy'])
+            ->name('advertisements.related.destroy');
+    });
+    
 });

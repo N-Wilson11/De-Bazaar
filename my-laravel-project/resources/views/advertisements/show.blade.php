@@ -176,6 +176,8 @@
             </div>
             
             @include('advertisements._bidding_section')
+            
+            @include('advertisements._related_products')
         </div>
         
         <div class="col-md-4">
@@ -214,6 +216,10 @@
                                     <i class="bi bi-calendar-event me-1"></i>{{ __('general.manage_availability') }}
                                 </a>
                             @endif
+                            
+                            <a href="{{ route('advertisements.related.index', $advertisement) }}" class="btn btn-outline-info">
+                                <i class="bi bi-link-45deg me-1"></i>{{ __('Gerelateerde producten beheren') }}
+                            </a>
                             
                             <form action="{{ route('advertisements.destroy', $advertisement) }}" method="POST">
                                 @csrf

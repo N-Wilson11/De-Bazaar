@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CompanyThemeSeeder::class,
             AdvertisementSeeder::class,
             PurchasableAdvertisementsSeeder::class,
+            RelatedAdvertisementsSeeder::class,
         ]);
     }
 }

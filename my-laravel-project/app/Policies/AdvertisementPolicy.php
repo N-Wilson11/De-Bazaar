@@ -21,4 +21,16 @@ class AdvertisementPolicy
     {
         return $user->id === $advertisement->user_id;
     }
+
+    /**
+     * Determine whether the user can update the advertisement.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Advertisement  $advertisement
+     * @return bool
+     */
+    public function update(User $user, Advertisement $advertisement)
+    {
+        return $user->id === $advertisement->user_id;
+    }
 }
