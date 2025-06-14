@@ -36,8 +36,7 @@
                                 </p>
                                 
                                 <div class="mt-2">
-                                    @if($related->purchase_status === 'available' && auth()->check() && auth()->id() !== $related->user_id)
-                                        @if(!$related->isRental())
+                                    @if($related->purchase_status === 'available' && auth()->check() && auth()->id() !== $related->user_id)                                        @if(!$related->isRental())
                                             <form action="{{ route('cart.add', $related) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-primary">
@@ -45,7 +44,7 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <a href="{{ route('rental.create', $related) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('rentals.rent', $related) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-calendar-plus"></i> {{ __('Huren') }}
                                             </a>
                                         @endif

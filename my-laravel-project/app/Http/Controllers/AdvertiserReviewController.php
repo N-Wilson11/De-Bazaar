@@ -96,8 +96,7 @@ class AdvertiserReviewController extends Controller
     
     /**
      * Controleer of een gebruiker een adverteerder kan beoordelen
-     */
-    private function canReviewAdvertiser($currentUser, $advertiser)
+     */    private function canReviewAdvertiser($currentUser, $advertiser)
     {
         if (!$currentUser || !$advertiser) {
             return false;
@@ -108,8 +107,9 @@ class AdvertiserReviewController extends Controller
             return false;
         }
         
-        // Controleer of de gebruiker een bestelling heeft geplaatst bij deze verkoper
-        // of een advertentie heeft gehuurd van deze verhuurder
+        // Optioneel: Controleer of de gebruiker een bestelling heeft geplaatst bij deze verkoper
+        // Deze check is nu uitgeschakeld, zodat alle gebruikers reviews kunnen plaatsen
+        /*
         $hasTransaction = $currentUser->orders()
             ->whereHas('items', function($query) use ($advertiser) {
                 $query->where('seller_id', $advertiser->id);
@@ -117,6 +117,10 @@ class AdvertiserReviewController extends Controller
             ->exists();
             
         return $hasTransaction;
+        */
+        
+        // Sta alle gebruikers toe om reviews te plaatsen
+        return true;
     }
     
     /**
