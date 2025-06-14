@@ -222,6 +222,21 @@ class AdvertisementController extends Controller
         $advertisement->is_rental = true;
         $advertisement->type = 'rental';
         
+        // Verwerk slijtage-instellingen indien ingeschakeld
+        if ($request->has('rental_calculate_wear_and_tear') && $request->rental_calculate_wear_and_tear) {
+            $wearAndTearSettings = [
+                'base_percentage' => floatval($request->base_percentage ?? 1.0),
+                'condition_multipliers' => [
+                    'excellent' => floatval($request->condition_excellent ?? 0.0),
+                    'good' => floatval($request->condition_good ?? 0.5),
+                    'fair' => floatval($request->condition_fair ?? 1.0),
+                    'poor' => floatval($request->condition_poor ?? 2.0),
+                ]
+            ];
+            
+            $advertisement->rental_wear_and_tear_settings = $wearAndTearSettings;
+        }
+        
         // Convert availability dates to JSON
         if ($request->filled('rental_availability_dates')) {
             $dates = explode(',', $request->rental_availability_dates);
@@ -320,6 +335,21 @@ class AdvertisementController extends Controller
                 }
             }
             $validated['images'] = $remainingImages;
+        }
+        
+        // Verwerk slijtage-instellingen voor verhuuradvertenties
+        if ($advertisement->isRental() && $request->has('rental_calculate_wear_and_tear')) {
+            $wearAndTearSettings = [
+                'base_percentage' => floatval($request->base_percentage ?? 1.0),
+                'condition_multipliers' => [
+                    'excellent' => floatval($request->condition_excellent ?? 0.0),
+                    'good' => floatval($request->condition_good ?? 0.5),
+                    'fair' => floatval($request->condition_fair ?? 1.0),
+                    'poor' => floatval($request->condition_poor ?? 2.0),
+                ]
+            ];
+            
+            $validated['rental_wear_and_tear_settings'] = $wearAndTearSettings;
         }
         
         $advertisement->update($validated);
@@ -525,6 +555,12 @@ class AdvertisementController extends Controller
             'rental_conditions' => 'nullable|string|max:1000',
             'rental_requires_deposit' => 'sometimes|boolean',
             'rental_deposit_amount' => 'nullable|numeric|min:0',
+            'rental_calculate_wear_and_tear' => 'sometimes|boolean',
+            'base_percentage' => 'nullable|numeric|min:0|max:10',
+            'condition_excellent' => 'nullable|numeric|min:0|max:5',
+            'condition_good' => 'nullable|numeric|min:0|max:5',
+            'condition_fair' => 'nullable|numeric|min:0|max:5',
+            'condition_poor' => 'nullable|numeric|min:0|max:5',
             'rental_pickup_location' => 'nullable|string|max:200',
             'rental_availability_dates' => 'nullable|string',
         ]);

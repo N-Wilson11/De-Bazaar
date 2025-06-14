@@ -50,9 +50,10 @@ class Advertisement extends Model
         'minimum_rental_days',
         'rental_availability',
         'rental_booked_dates',
-        'rental_conditions',
-        'rental_requires_deposit',
+        'rental_conditions',        'rental_requires_deposit',
         'rental_deposit_amount',
+        'rental_calculate_wear_and_tear',
+        'rental_wear_and_tear_settings',
         'rental_pickup_location',
         // Review velden
         'average_rating',
@@ -124,13 +125,14 @@ class Advertisement extends Model
         'rental_price_month' => 'decimal:2',
         'rental_deposit_amount' => 'decimal:2',
         'is_highlighted' => 'boolean',
-        'is_featured' => 'boolean',
-        'is_rental' => 'boolean',
+        'is_featured' => 'boolean',        'is_rental' => 'boolean',
         'rental_requires_deposit' => 'boolean',
+        'rental_calculate_wear_and_tear' => 'boolean',
         'expires_at' => 'datetime',
         'images' => 'array',
         'rental_availability' => 'array',
         'rental_booked_dates' => 'array',
+        'rental_wear_and_tear_settings' => 'json',
     ];
 
     public function user(): BelongsTo
@@ -144,8 +146,84 @@ class Advertisement extends Model
     public function isRental(): bool
     {
         return $this->is_rental === true;
+    }    /**
+     * Calculate wear and tear costs based on rental duration and settings
+     * 
+     * @param \Carbon\Carbon $startDate
+     * @param \Carbon\Carbon $endDate
+     * @param string $condition The condition after return, e.g. 'excellent', 'good', 'fair', 'poor'
+     * @return float
+     */    public function calculateWearAndTear($startDate, $endDate, $condition = 'good'): float
+    {
+        // Als slijtageberekening niet ingeschakeld is, return 0
+        if (!$this->rental_calculate_wear_and_tear) {
+            return 0;
+        }
+        
+        // Log debugging info
+        \Illuminate\Support\Facades\Log::debug('Wear and tear calculation', [
+            'advertisement_id' => $this->id,
+            'calculate_enabled' => $this->rental_calculate_wear_and_tear,
+            'deposit_amount' => $this->rental_deposit_amount,
+            'settings' => $this->rental_wear_and_tear_settings,
+            'condition' => $condition,
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ]);
+        
+        // Haal de instellingen op
+        $settings = $this->rental_wear_and_tear_settings ?? [
+            'base_percentage' => 1.0, // 1% van de prijs per dag
+            'condition_multipliers' => [
+                'excellent' => 0.0,   // Perfect staat, geen slijtage
+                'good' => 0.5,        // Goede staat, halve slijtage
+                'fair' => 1.0,        // Normale slijtage
+                'poor' => 2.0,        // Slechte staat, dubbele slijtage
+            ]
+        ];
+        
+        // Bereken het aantal dagen
+        $days = $startDate->diffInDays($endDate) + 1; // +1 omdat we de laatste dag ook meetellen
+        
+        // Bereken de slijtagekosten
+        $basePercentage = $settings['base_percentage'] ?? 1.0;
+        $conditionMultiplier = $settings['condition_multipliers'][$condition] ?? 1.0;
+        
+        // Bepaal het basisbedrag waarop de slijtage wordt berekend
+        // Gebruik borg als die er is, anders de dagprijs x aantal dagen
+        $baseAmount = 0;
+        if ($this->rental_deposit_amount && $this->rental_deposit_amount > 0) {
+            $baseAmount = $this->rental_deposit_amount;
+        } elseif ($this->rental_price_day && $this->rental_price_day > 0) {
+            $baseAmount = $this->rental_price_day * $days;
+        } elseif ($this->price && $this->price > 0) {
+            $baseAmount = $this->price;
+        } else {
+            return 0; // Geen basisbedrag beschikbaar
+        }
+        
+        // Bereken de totale slijtagekosten: (basePercentage * dagen * conditionMultiplier * baseAmount) / 100
+        $wearAndTearCost = ($basePercentage * $days * $conditionMultiplier * $baseAmount) / 100;
+        
+        // Log more debug info
+        \Illuminate\Support\Facades\Log::debug('Wear and tear calculation details', [
+            'base_amount' => $baseAmount,
+            'base_percentage' => $basePercentage,
+            'days' => $days,
+            'condition_multiplier' => $conditionMultiplier,
+            'calculation' => "($basePercentage * $days * $conditionMultiplier * $baseAmount) / 100",
+            'wear_and_tear_cost' => $wearAndTearCost
+        ]);
+        
+        // Zorg ervoor dat we nooit meer dan de borg rekenen als die er is
+        if ($this->rental_deposit_amount && $this->rental_deposit_amount > 0) {
+            $wearAndTearCost = min($wearAndTearCost, $this->rental_deposit_amount);
+        }
+        
+        return round($wearAndTearCost, 2);
     }
-      /**
+      
+    /**
      * Counts the number of images safely
      */
     public function countImages(): int

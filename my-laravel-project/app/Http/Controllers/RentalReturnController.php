@@ -35,8 +35,7 @@ class RentalReturnController extends Controller
      * @param Request $request
      * @param OrderItem $orderItem
      * @return \Illuminate\Http\RedirectResponse
-     */
-    public function processReturn(Request $request, OrderItem $orderItem)
+     */    public function processReturn(Request $request, OrderItem $orderItem)
     {        // Controleer of de gebruiker de eigenaar is van de bestelling
         $this->authorize('return-orderItem', $orderItem);
 
@@ -49,23 +48,69 @@ class RentalReturnController extends Controller
         $request->validate([
             'return_photo' => 'required|image|max:5120', // Max 5MB
             'return_notes' => 'nullable|string|max:1000',
+            'return_condition' => 'required|in:excellent,good,fair,poor', // Conditie van het product
         ]);
 
         // Upload de foto
         $path = $request->file('return_photo')->store('return_photos', 'public');
-
-        // Update het orderItem
+          // Bereken slijtage als deze functionaliteit is ingeschakeld voor de advertentie
+        $wearAndTearAmount = 0;
+        $advertisement = $orderItem->advertisement;
+        $depositRefundedAmount = $orderItem->deposit_amount ?? 0;
+        
+        if ($advertisement && $advertisement->rental_calculate_wear_and_tear) {
+            $startDate = Carbon::parse($orderItem->rental_start_date);
+            $endDate = Carbon::parse($orderItem->rental_end_date);
+            $condition = $request->return_condition;
+            
+            // Bereken slijtage op basis van de duur en conditie
+            $wearAndTearAmount = $advertisement->calculateWearAndTear($startDate, $endDate, $condition);
+            
+            // Bereken terug te betalen borg (borg - slijtage)
+            if ($orderItem->deposit_amount > 0) {
+                $depositRefundedAmount = max(0, $orderItem->deposit_amount - $wearAndTearAmount);
+            }
+            
+            Log::info('Calculated wear and tear amount', [
+                'order_item_id' => $orderItem->id,
+                'advertisement_id' => $advertisement->id,
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+                'condition' => $condition,
+                'amount' => $wearAndTearAmount,
+                'deposit' => $orderItem->deposit_amount,
+                'deposit_refunded' => $depositRefundedAmount
+            ]);
+        }        // Update het orderItem
         $orderItem->update([
             'is_returned' => true,
             'returned_at' => Carbon::now(),
             'return_photo' => $path,
             'return_notes' => $request->return_notes,
-        ]);
-
+            'return_condition' => $request->return_condition,
+            'wear_and_tear_amount' => $wearAndTearAmount,
+            'deposit_refunded_amount' => $depositRefundedAmount,
+        ]);        // Bereid succes bericht voor, inclusief slijtage informatie indien van toepassing
+        $successMessage = 'Het product is succesvol teruggebracht. Bedankt!';
+        
+        if ($orderItem->deposit_amount > 0) {
+            if ($wearAndTearAmount > 0) {
+                $successMessage .= ' Er is €' . number_format($wearAndTearAmount, 2, ',', '.') . 
+                    ' aan slijtage berekend, waardoor er €' . number_format($depositRefundedAmount, 2, ',', '.') . 
+                    ' van de oorspronkelijke borg (€' . number_format($orderItem->deposit_amount, 2, ',', '.') . ') wordt terugbetaald.';
+            } else {
+                $successMessage .= ' De volledige borg van €' . number_format($orderItem->deposit_amount, 2, ',', '.') . 
+                    ' wordt terugbetaald.';
+            }
+        } elseif ($wearAndTearAmount > 0) {
+            $successMessage .= ' Er is €' . number_format($wearAndTearAmount, 2, ',', '.') . 
+                ' aan slijtage berekend op basis van de huurperiode en de opgegeven conditie.';
+        }
+        
         // Notificatie naar verkoper zou hier kunnen worden toegevoegd
-
+        
         return redirect()->route('orders.show', $orderItem->order_id)
-            ->with('success', 'Het product is succesvol teruggebracht. Bedankt!');
+            ->with('success', $successMessage);
     }
     
     /**

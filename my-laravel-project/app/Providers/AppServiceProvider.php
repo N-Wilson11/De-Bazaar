@@ -36,6 +36,23 @@ class AppServiceProvider extends ServiceProvider
         // Registreer observers
         Review::observe(ReviewObserver::class);
         
+        // Standaard slijtage-instellingen toevoegen bij het maken van een advertentie
+        \App\Models\Advertisement::creating(function ($advertisement) {
+            if ($advertisement->is_rental && $advertisement->rental_calculate_wear_and_tear) {
+                if (empty($advertisement->rental_wear_and_tear_settings)) {
+                    $advertisement->rental_wear_and_tear_settings = [
+                        'base_percentage' => 1.0, // 1% van de prijs per dag
+                        'condition_multipliers' => [
+                            'excellent' => 0.0,   // Perfect staat, geen slijtage
+                            'good' => 0.5,        // Goede staat, halve slijtage
+                            'fair' => 1.0,        // Normale slijtage
+                            'poor' => 2.0,        // Slechte staat, dubbele slijtage
+                        ]
+                    ];
+                }
+            }
+        });
+        
         // Registreer policies
         \Illuminate\Support\Facades\Gate::define('return-orderItem', function ($user, $orderItem) {
             return $user->id === $orderItem->order->user_id;

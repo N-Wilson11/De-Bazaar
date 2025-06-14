@@ -190,14 +190,80 @@
 
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <label for="rental_conditions" class="form-label fw-semibold">{{ __('Verhuurvoorwaarden') }}</label>
-                                <textarea id="rental_conditions" class="form-control @error('rental_conditions') is-invalid @enderror" name="rental_conditions" rows="4" maxlength="1000">{{ old('rental_conditions', $advertisement->rental_conditions) }}</textarea>
-                                <div class="form-text">{{ __('Specifieke voorwaarden voor de verhuur, bijv. hoe het item behandeld moet worden, schoonmaak, etc.') }}</div>
-                                @error('rental_conditions')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="rental_calculate_wear_and_tear" id="rental_calculate_wear_and_tear" value="1" {{ old('rental_calculate_wear_and_tear', $advertisement->rental_calculate_wear_and_tear) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="rental_calculate_wear_and_tear">
+                                                <strong>{{ __('Slijtageberekening inschakelen') }}</strong>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="wearAndTearSettingsContainer" style="display: {{ $advertisement->rental_calculate_wear_and_tear ? 'block' : 'none' }};">
+                                        <p class="card-text text-muted">
+                                            {{ __('Stel het percentage per dag in en vermenigvuldigers per conditie om slijtage te berekenen wanneer het product wordt teruggebracht.') }}
+                                        </p>
+                                        
+                                        @php
+                                            $settings = $advertisement->rental_wear_and_tear_settings ?? [
+                                                'base_percentage' => 1.0,
+                                                'condition_multipliers' => [
+                                                    'excellent' => 0.0,
+                                                    'good' => 0.5,
+                                                    'fair' => 1.0,
+                                                    'poor' => 2.0,
+                                                ]
+                                            ];
+                                            $basePercentage = $settings['base_percentage'] ?? 1.0;
+                                            $conditionMultipliers = $settings['condition_multipliers'] ?? [
+                                                'excellent' => 0.0,
+                                                'good' => 0.5,
+                                                'fair' => 1.0,
+                                                'poor' => 2.0,
+                                            ];
+                                        @endphp
+                                        
+                                        <div class="mb-3">
+                                            <label for="base_percentage" class="form-label">{{ __('Basis percentage per dag') }}</label>
+                                            <div class="input-group">
+                                                <input type="number" step="0.1" min="0" max="10" class="form-control" id="base_percentage" name="base_percentage" value="{{ old('base_percentage', $basePercentage) }}">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            <div class="form-text">{{ __('Percentage van de borg dat per dag als slijtage wordt berekend') }}</div>
+                                        </div>
+                                        
+                                        <p class="fw-semibold">{{ __('Vermenigvuldigers per conditie:') }}</p>
+                                        <p class="text-muted small">{{ __('Deze waarden vermenigvuldigen het basisbedrag per conditie waarin het product wordt teruggebracht.') }}</p>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <label for="condition_excellent" class="form-label">{{ __('Uitstekend') }}</label>
+                                                <input type="number" step="0.1" min="0" max="5" class="form-control" id="condition_excellent" name="condition_excellent" value="{{ old('condition_excellent', $conditionMultipliers['excellent']) }}">
+                                                <div class="form-text">{{ __('Perfect staat, geen slijtage') }}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="condition_good" class="form-label">{{ __('Goed') }}</label>
+                                                <input type="number" step="0.1" min="0" max="5" class="form-control" id="condition_good" name="condition_good" value="{{ old('condition_good', $conditionMultipliers['good']) }}">
+                                                <div class="form-text">{{ __('Goede staat, minimale slijtage') }}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="condition_fair" class="form-label">{{ __('Redelijk') }}</label>
+                                                <input type="number" step="0.1" min="0" max="5" class="form-control" id="condition_fair" name="condition_fair" value="{{ old('condition_fair', $conditionMultipliers['fair']) }}">
+                                                <div class="form-text">{{ __('Normale slijtage') }}</div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <label for="condition_poor" class="form-label">{{ __('Slecht') }}</label>
+                                                <input type="number" step="0.1" min="0" max="5" class="form-control" id="condition_poor" name="condition_poor" value="{{ old('condition_poor', $conditionMultipliers['poor']) }}">
+                                                <div class="form-text">{{ __('Beschadigd/overmatige slijtage') }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="alert alert-info mt-3">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            {{ __('Voorbeeld:') }} {{ __('Bij een borg van €100, een basis percentage van 1% per dag, en een huurperiode van 10 dagen, zou een product dat in goede staat (0.5 vermenigvuldiger) wordt teruggebracht, een slijtage van €5 hebben.') }}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -294,6 +360,14 @@
         // Toon/verberg borg bedrag veld
         depositCheckbox.addEventListener('change', function() {
             depositContainer.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        const wearAndTearCheckbox = document.getElementById('rental_calculate_wear_and_tear');
+        const wearAndTearContainer = document.getElementById('wearAndTearSettingsContainer');
+        
+        // Toon/verberg slijtageberekening instellingen
+        wearAndTearCheckbox.addEventListener('change', function() {
+            wearAndTearContainer.style.display = this.checked ? 'block' : 'none';
         });
     });
 </script>

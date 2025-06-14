@@ -17,6 +17,7 @@ class OrderItem extends Model
         'advertisement_id',
         'quantity',
         'price',
+        'deposit_amount',
         'title',
         'seller_id',
         'is_rental',
@@ -26,6 +27,9 @@ class OrderItem extends Model
         'returned_at',
         'return_photo',
         'return_notes',
+        'return_condition',
+        'wear_and_tear_amount',
+        'deposit_refunded_amount',
     ];
 
     /**

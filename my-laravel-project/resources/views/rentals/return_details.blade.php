@@ -60,6 +60,121 @@
                             @endif
                         </div>
                     </div>
+                      <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">{{ __('Gegevens teruggave') }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-md-4 fw-bold">{{ __('Conditie bij teruggave') }}:</div>
+                                <div class="col-md-8">
+                                    @php
+                                        $conditionLabels = [
+                                            'excellent' => __('Uitstekend'),
+                                            'good' => __('Goed'),
+                                            'fair' => __('Redelijk'),
+                                            'poor' => __('Slecht'),
+                                        ];
+                                        $conditionBadges = [
+                                            'excellent' => 'success',
+                                            'good' => 'info',
+                                            'fair' => 'warning',
+                                            'poor' => 'danger',
+                                        ];
+                                    @endphp
+                                    
+                                    @if($orderItem->return_condition)
+                                        <span class="badge bg-{{ $conditionBadges[$orderItem->return_condition] ?? 'secondary' }}">
+                                            {{ $conditionLabels[$orderItem->return_condition] ?? $orderItem->return_condition }}
+                                        </span>
+                                    @else
+                                        <span class="text-muted">{{ __('Niet gespecificeerd') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                              @if($orderItem->deposit_amount > 0)
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">{{ __('Borg') }}:</div>
+                                    <div class="col-md-8">
+                                        <span>€{{ number_format($orderItem->deposit_amount, 2, ',', '.') }}</span>
+                                    </div>
+                                </div>
+
+                                @if($orderItem->advertisement && $orderItem->advertisement->rental_calculate_wear_and_tear)
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">{{ __('Berekende slijtage') }}:</div>
+                                        <div class="col-md-8">
+                                            @if($orderItem->wear_and_tear_amount > 0)
+                                                <span class="text-danger">
+                                                    €{{ number_format($orderItem->wear_and_tear_amount, 2, ',', '.') }}
+                                                </span>
+                                                <small class="d-block text-muted">
+                                                    {{ __('Dit bedrag wordt ingehouden van de borg') }}
+                                                </small>
+                                            @else
+                                                <span class="text-success">€0,00</span>
+                                                <small class="d-block text-muted">
+                                                    {{ __('Geen slijtage berekend') }}
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">{{ __('Terugbetaling') }}:</div>
+                                        <div class="col-md-8">
+                                            @if($orderItem->deposit_refunded_amount >= $orderItem->deposit_amount)
+                                                <span class="text-success fw-bold">
+                                                    €{{ number_format($orderItem->deposit_refunded_amount, 2, ',', '.') }}
+                                                </span>
+                                                <small class="d-block text-muted">
+                                                    {{ __('Volledige borg wordt terugbetaald') }}
+                                                </small>
+                                            @else
+                                                <span class="fw-bold @if($orderItem->deposit_refunded_amount > 0) text-warning @else text-danger @endif">
+                                                    €{{ number_format($orderItem->deposit_refunded_amount, 2, ',', '.') }}
+                                                </span>
+                                                <small class="d-block text-muted">
+                                                    {{ __('Borg minus slijtagekosten') }}
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">{{ __('Terugbetaling') }}:</div>
+                                        <div class="col-md-8">
+                                            <span class="text-success fw-bold">
+                                                €{{ number_format($orderItem->deposit_amount, 2, ',', '.') }}
+                                            </span>
+                                            <small class="d-block text-muted">
+                                                {{ __('Volledige borg wordt terugbetaald') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                @endif
+                            @elseif($orderItem->advertisement && $orderItem->advertisement->rental_calculate_wear_and_tear)
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">{{ __('Berekende slijtage') }}:</div>
+                                    <div class="col-md-8">
+                                        @if($orderItem->wear_and_tear_amount > 0)
+                                            <span class="text-danger">
+                                                €{{ number_format($orderItem->wear_and_tear_amount, 2, ',', '.') }}
+                                            </span>
+                                            <small class="d-block text-muted">
+                                                {{ __('Voor dit product was geen borg vereist') }}
+                                            </small>
+                                        @else
+                                            <span class="text-success">€0,00</span>
+                                            <small class="d-block text-muted">
+                                                {{ __('Geen slijtage berekend') }}
+                                            </small>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                     
                     @if($orderItem->return_notes)
                         <div class="card mb-4">

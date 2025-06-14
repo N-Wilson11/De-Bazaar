@@ -109,8 +109,7 @@ class RentalController extends Controller
             $order->billing_address = null; // Dit kan later worden bijgewerkt
             $order->notes = 'Verhuur van ' . $advertisement->title . ' van ' . $startDate . ' tot ' . $endDate;
             $order->save();
-            
-            // Maak een order item aan voor de verhuur
+              // Maak een order item aan voor de verhuur
             $orderItem = new OrderItem();
             $orderItem->order_id = $order->id;
             $orderItem->advertisement_id = $advertisement->id;
@@ -118,6 +117,10 @@ class RentalController extends Controller
             $orderItem->title = $advertisement->title; // Voeg titel toe
             $orderItem->quantity = 1;
             $orderItem->price = $rentalPrice;
+            // Sla borg op als die vereist is
+            if ($advertisement->rental_requires_deposit && $advertisement->rental_deposit_amount > 0) {
+                $orderItem->deposit_amount = $advertisement->rental_deposit_amount;
+            }
             $orderItem->is_rental = true;
             $orderItem->rental_start_date = $startDate;
             $orderItem->rental_end_date = $endDate;

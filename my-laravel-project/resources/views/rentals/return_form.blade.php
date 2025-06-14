@@ -36,11 +36,23 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="alert alert-info">
+                      <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2"></i>
                         {{ __('Om dit product terug te brengen, upload een foto van de huidige staat van het product en voeg eventuele opmerkingen toe.') }}
                     </div>
+                    
+                    @if($orderItem->advertisement && $orderItem->advertisement->rental_calculate_wear_and_tear)
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        {{ __('Let op: Voor dit product wordt een slijtageberekening uitgevoerd op basis van de huurperiode en de conditie waarin het product wordt teruggebracht. De kosten hiervan kunnen worden ingehouden van de borg.') }}
+                        
+                        @if($orderItem->advertisement->rental_deposit_amount)
+                            <p class="mb-0 mt-2">
+                                <strong>{{ __('Maximale borg') }}:</strong> €{{ number_format($orderItem->advertisement->rental_deposit_amount, 2, ',', '.') }}
+                            </p>
+                        @endif
+                    </div>
+                    @endif
                     
                     <form method="POST" action="{{ route('rentals.process-return', $orderItem) }}" enctype="multipart/form-data">
                         @csrf
@@ -51,6 +63,20 @@
                                 id="return_photo" name="return_photo" accept="image/*" required>
                             <small class="form-text text-muted">{{ __('Upload een duidelijke foto van het product in de huidige staat.') }}</small>
                             @error('return_photo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                          <div class="mb-3">
+                            <label for="return_condition" class="form-label">{{ __('Conditie van het product') }} <span class="text-danger">*</span></label>
+                            <select class="form-select @error('return_condition') is-invalid @enderror" 
+                                id="return_condition" name="return_condition" required>
+                                <option value="" selected disabled>{{ __('Selecteer de huidige conditie van het product...') }}</option>
+                                <option value="excellent">{{ __('Uitstekend') }} - {{ __('Zoals nieuw, geen zichtbare gebreken') }}</option>
+                                <option value="good">{{ __('Goed') }} - {{ __('Lichte gebruikssporen, maar in goede staat') }}</option>
+                                <option value="fair">{{ __('Redelijk') }} - {{ __('Duidelijke gebruikssporen, maar nog functioneel') }}</option>
+                                <option value="poor">{{ __('Slecht') }} - {{ __('Beschadigd of niet volledig functioneel') }}</option>
+                            </select>
+                            @error('return_condition')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
