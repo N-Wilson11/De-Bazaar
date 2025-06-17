@@ -5,7 +5,11 @@
 @section('content')
 <div class="container">
     <h1>{{ __('Change Company Logo') }}</h1>
-    <p class="lead">{{ __('Upload a new logo for your company') }}</p>
+    <p class="lead">{{ __('This functionality has been disabled') }}</p>
+    
+    <div class="alert alert-warning">
+        {{ __('The logo upload functionality has been disabled by the administrator.') }}
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success">

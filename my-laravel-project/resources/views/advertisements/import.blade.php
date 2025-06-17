@@ -37,11 +37,7 @@
                         </a>
                     </div>
                       <form action="{{ route('advertisements.import.process') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <!-- Debug info om te tonen of CSRF token ok is -->
-                        @if(session('_token'))
-                            <div class="alert alert-info mb-3">CSRF token is present</div>
-                        @endif
+                        @csrf                      
                           <div class="mb-3">
                             <label for="csv_file" class="form-label">{{ __('Selecteer CSV-bestand') }}</label>
                             <input type="file" class="form-control @error('csv_file') is-invalid @enderror" id="csv_file" name="csv_file" accept=".csv, text/csv" required>

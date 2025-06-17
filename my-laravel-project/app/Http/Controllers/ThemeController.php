@@ -64,7 +64,7 @@ class ThemeController extends Controller
             'text_color' => 'required|string|max:7',
             'background_color' => 'required|string|max:7',
             'footer_text' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'logo' option removed
         ]);
 
         if ($validator->fails()) {
@@ -84,21 +84,8 @@ class ThemeController extends Controller
             $companyId = Session::get('company_id', 'default');
         }
 
-        // Handle logo upload if provided
+        // Logo upload functionality removed
         $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $image = $request->file('logo');
-            $logoName = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/images/theme/' . $companyId);
-            
-            // Create directory if it doesn't exist
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
-            }
-            
-            $image->move($destinationPath, $logoName);
-            $logoPath = '/images/theme/' . $companyId . '/' . $logoName;
-        }
 
         // Find or create the company theme
         $companyTheme = CompanyTheme::firstOrNew(['company_id' => $companyId]);

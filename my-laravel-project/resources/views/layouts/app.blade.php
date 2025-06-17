@@ -248,7 +248,7 @@
     <header>
         <nav class="navbar navbar-expand-md navbar-dark mb-4">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ route('home') }}">
                     @if($dbLogoPath)
                         <img src="{{ asset($dbLogoPath) }}" alt="{{ $dbCompanyName }}" height="40">
                     @else
@@ -264,7 +264,7 @@
                     <!-- Left side navigation items -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/') }}">{{ __('general.home') }}</a>
+                            <a class="nav-link" href="{{ route('home') }}">{{ __('general.home') }}</a>
                         </li>
                         
                         @auth

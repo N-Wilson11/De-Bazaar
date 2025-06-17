@@ -25,47 +25,9 @@
         </div>
     @endif
 
-    <div class="card mb-4">
-        <div class="card-header">
-            {{ __('Active Company') }}: <strong>{{ $companyId }}</strong>
-        </div>
-        <div class="card-body">
-            <p>{{ __('You are currently editing the theme for company') }}: <strong>{{ $companyId }}</strong></p>
-            
-            <form class="mb-0" method="POST" action="{{ route('company.switch', ['companyId' => 'new']) }}">
-                @csrf
-                <div class="input-group">
-                    <input type="text" class="form-control" name="new_company_id" placeholder="{{ __('Enter new company ID') }}">
-                    <button class="btn btn-outline-secondary" type="submit">{{ __('Switch Company') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- Company switcher removed -->
 
-    <!-- Display list of available company themes if any -->
-    @php
-        $availableThemes = \App\Models\CompanyTheme::select('company_id', 'name')->get();
-    @endphp
-    
-    @if($availableThemes->count() > 0)
-    <div class="card mb-4">
-        <div class="card-header">
-            {{ __('Available Company Themes') }}
-        </div>
-        <div class="card-body">
-            <div class="list-group">
-                @foreach($availableThemes as $availableTheme)
-                    <a href="{{ route('company.switch', ['companyId' => $availableTheme->company_id]) }}" 
-                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
-                       {{ $availableTheme->company_id === $companyId ? 'active' : '' }}">
-                        {{ $availableTheme->name }} 
-                        <span class="badge bg-primary rounded-pill">{{ $availableTheme->company_id }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-    @endif
+    <!-- Available themes list removed -->
 
     <div class="card">
         <div class="card-body">
@@ -85,30 +47,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="logo" class="form-label">{{ __('theme.company_logo') }}</label>
-                            <input type="file" class="form-control @error('logo') is-invalid @enderror" 
-                                id="logo" name="logo">
-                            @error('logo')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            
-                            @if(isset($theme['logo']) && $theme['logo'])
-                                <div class="mt-2">
-                                    <strong>{{ __('theme.current_logo') }}:</strong><br>
-                                    <img src="{{ asset($theme['logo']) }}" alt="{{ $theme['name'] }}" 
-                                        style="max-height: 100px; max-width: 300px;">
-                                </div>
-                            @endif
-
-                            <div class="mt-3">
-                                <a href="{{ route('theme.change-logo') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-image"></i> {{ __('Ga naar speciale logo pagina') }}
-                                </a>
-                                <small class="d-block mt-1 text-muted">
-                                    {{ __('Gebruik deze link om alleen het logo te wijzigen') }}
-                                </small>
-                            </div>
+                        <!-- Logo upload functionality removed -->
                         </div>
                         
                         <div class="mb-3">

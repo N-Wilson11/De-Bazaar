@@ -157,9 +157,7 @@ Route::middleware(['language', CompanyThemeMiddleware::class])->group(function (
         Route::middleware(\App\Http\Middleware\AdminOrBusinessMiddleware::class)->group(function () {
             Route::get('/theme/settings', [ThemeController::class, 'index'])->name('theme.settings');
             Route::post('/theme/update', [ThemeController::class, 'update'])->name('theme.update');
-            Route::get('/theme/logo', [ThemeController::class, 'changeLogo'])->name('theme.change-logo');
-            Route::post('/theme/logo/update', [ThemeController::class, 'updateLogo'])->name('theme.update-logo');
-            Route::post('/theme/logo/remove', [ThemeController::class, 'removeLogo'])->name('theme.remove-logo');
+            // Logo management routes removed
         });
         
         // Landing page settings routes - toegankelijk voor zakelijke gebruikers
