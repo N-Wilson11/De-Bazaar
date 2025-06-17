@@ -84,11 +84,6 @@
                             <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
                         </div>
                     @endif
-                    
-                    <div class="alert alert-info">
-                        <strong>Debuginfo:</strong> Dit formulier is correct geladen. Als je deze melding ziet, dan is het template correct gevonden.
-                    </div>
-                    
                     <form action="{{ route('rentals.process', $advertisement) }}" method="POST">
                         @csrf
                         
