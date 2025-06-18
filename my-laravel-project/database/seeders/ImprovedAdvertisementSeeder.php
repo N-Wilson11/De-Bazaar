@@ -10,21 +10,20 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ImprovedAdvertisementSeeder extends Seeder
-{
-    // Arrays of realistic data for sale items
+{    // Arrays of realistic data for sale items with actual images
     private $saleItems = [
-        'Moderne hoekbank in grijs textiel' => ['price' => [599, 999], 'category' => 'Meubels'],
-        '65 inch 4K OLED Smart TV' => ['price' => [1299, 2499], 'category' => 'Elektronica'],
-        'Complete golfset voor beginners' => ['price' => [449, 799], 'category' => 'Sport'],
-        'Compact bureau voor thuiswerken' => ['price' => [199, 349], 'category' => 'Meubels'],
+        'Moderne hoekbank in beige textiel' => ['price' => [599, 999], 'category' => 'Meubels', 'images' => ['sofa.jpg']],
+        '65 inch 4K OLED Smart TV' => ['price' => [1299, 2499], 'category' => 'Elektronica', 'images' => ['tv.jpg']],
+        'Complete golfset voor beginners' => ['price' => [449, 799], 'category' => 'Sport', 'images' => ['golf.jpg']],
+        'Verstelbaar bureau voor thuiswerken' => ['price' => [199, 349], 'category' => 'Meubels', 'images' => ['desk.jpg']],
     ];
     
-    // Arrays of realistic data for rental items
+    // Arrays of realistic data for rental items with actual images
     private $rentalItems = [
-        'Professionele tafelzaag met onderstel' => ['price' => [599, 899], 'rental' => [25, 45], 'category' => 'Gereedschap'],
-        'Robotmaaier voor tuinen tot 600m²' => ['price' => [899, 1499], 'rental' => [30, 60], 'category' => 'Tuin'],
-        'Drone met 4K camera en stabilisatie' => ['price' => [599, 999], 'rental' => [25, 50], 'category' => 'Elektronica'],
-        'Elektrische fiets met bereik van 80km' => ['price' => [1899, 2999], 'rental' => [35, 70], 'category' => 'Sport'],
+        'Professionele tafelzaag met onderstel' => ['price' => [599, 899], 'rental' => [25, 45], 'category' => 'Gereedschap', 'images' => ['tablesaw.jpg']],
+        'Robotmaaier voor tuinen tot 600m²' => ['price' => [899, 1499], 'rental' => [30, 60], 'category' => 'Tuin', 'images' => ['mower.jpg']],
+        'Drone met 4K camera en stabilisatie' => ['price' => [599, 999], 'rental' => [25, 50], 'category' => 'Elektronica', 'images' => ['drone.jpg']],
+        'Elektrische fiets met bereik van 80km' => ['price' => [1899, 2999], 'rental' => [35, 70], 'category' => 'Sport', 'images' => ['ebike.jpg']],
     ];
     
     // Common conditions based on item type
@@ -89,18 +88,16 @@ class ImprovedAdvertisementSeeder extends Seeder
             
             // Generate description
             $description = $this->generateDescription($title, $itemInfo['category'], $price, false, $company);
-            
-            // Create the advertisement
+              // Create the advertisement
             $ad = new Advertisement([
                 'user_id' => $user->id,
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
-                'condition' => $this->getConditionForItem($title),
-                'category' => $itemInfo['category'],
+                'condition' => $this->getConditionForItem($title),                'category' => $itemInfo['category'],
                 'type' => 'normaal',
                 'status' => 'active',
-                'images' => json_encode(['placeholder1.jpg', 'placeholder2.jpg']),
+                'images' => $itemInfo['images'],
                 'location' => $user->user_type === 'zakelijk' && $company ? $company->city : $this->getRandomDutchCity(),
                 'is_highlighted' => rand(0, 1) === 1, // 50% chance
                 'is_featured' => rand(0, 1) === 1, // 50% chance
@@ -138,18 +135,16 @@ class ImprovedAdvertisementSeeder extends Seeder
             
             // Generate description
             $description = $this->generateDescription($title, $itemInfo['category'], $price, true, $company);
-            
-            // Create the advertisement
+              // Create the advertisement
             $ad = new Advertisement([
                 'user_id' => $user->id,
                 'title' => $title,
                 'description' => $description,
                 'price' => $price,
-                'condition' => $this->getConditionForItem($title),
-                'category' => $itemInfo['category'],
+                'condition' => $this->getConditionForItem($title),                'category' => $itemInfo['category'],
                 'type' => 'huur',
                 'status' => 'active',
-                'images' => json_encode(['placeholder1.jpg', 'placeholder2.jpg']),
+                'images' => $itemInfo['images'],
                 'location' => $company ? $company->city : $this->getRandomDutchCity(),
                 'is_highlighted' => rand(0, 1) === 1, // 50% chance
                 'is_featured' => rand(0, 1) === 1, // 50% chance

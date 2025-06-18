@@ -22,13 +22,16 @@ class DatabaseSeeder extends Seeder
             // 2. Create sample companies for business users
             SampleCompanySeeder::class,
             
-            // 3. Create realistic advertisements
+            // 3. Set up advertisement images
+            AdvertisementImagesSeeder::class,
+            
+            // 4. Create realistic advertisements
             ImprovedAdvertisementSeeder::class,
             
-            // 4. Create page components for company landing pages
+            // 5. Create page components for company landing pages
             PageComponentSeeder::class,
             
-            // 5. Create related advertisements with meaningful connections
+            // 6. Create related advertisements with meaningful connections
             ImprovedRelatedAdvertisementsSeeder::class,
         ]);
         

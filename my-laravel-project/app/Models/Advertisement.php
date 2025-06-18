@@ -117,6 +117,9 @@ class Advertisement extends Model
         
         $image = $images[0];
         
+        // Clean up the image name in case it has quotes or brackets
+        $image = trim($image, '"[]\'');
+        
         // Handle both absolute and relative paths
         if (filter_var($image, FILTER_VALIDATE_URL)) {
             return $image;
@@ -125,15 +128,18 @@ class Advertisement extends Model
         // Fix path separators for Windows
         $image = str_replace('\\', '/', $image);
         
+        // Handle images in public/images/advertisements directory
+        if (file_exists(public_path('images/advertisements/' . $image))) {
+            return asset('images/advertisements/' . $image);
+        }
+        
         // Add storage URL prefix if needed
         if (strpos($image, '/storage/') !== 0) {
             return asset('storage/' . $image);
         }
         
         return asset($image);
-    }
-    
-    /**
+    }/**
      * Get all image URLs
      */    public function getAllImageUrls()
     {
@@ -141,7 +147,27 @@ class Advertisement extends Model
             return [];
         }
         
-        return collect($this->images)->map(function($image) {
+        // If images is a string (possibly JSON), convert it to array first
+        $images = $this->images;
+        if (is_string($images)) {
+            try {
+                $decoded = json_decode($images, true);
+                if (is_array($decoded)) {
+                    $images = $decoded;
+                } else {
+                    // If not valid JSON, treat as single image
+                    $images = [$images];
+                }
+            } catch (\Exception $e) {
+                // In case of errors, treat as single image
+                $images = [$images];
+            }
+        }
+        
+        return collect($images)->map(function($image) {
+            // Clean up the image name in case it has quotes or brackets
+            $image = trim($image, '"[]\'');
+            
             // Handle both absolute and relative paths
             if (filter_var($image, FILTER_VALIDATE_URL)) {
                 return $image;
@@ -149,6 +175,11 @@ class Advertisement extends Model
             
             // Fix path separators for Windows
             $image = str_replace('\\', '/', $image);
+            
+            // Handle images in public/images/advertisements directory
+            if (file_exists(public_path('images/advertisements/' . $image))) {
+                return asset('images/advertisements/' . $image);
+            }
             
             // Add storage URL prefix if needed
             if (strpos($image, '/storage/') !== 0) {
