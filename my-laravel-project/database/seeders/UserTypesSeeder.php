@@ -39,7 +39,7 @@ class UserTypesSeeder extends Seeder
         User::factory()->create([
             'name' => 'Normale Gebruiker',
             'email' => 'normaal@example.com',
-            'user_type' => 'normaal',
+            'user_type' => 'normaal', 
             'password' => Hash::make('password'),
         ]);
     }
